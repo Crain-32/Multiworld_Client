@@ -1,0 +1,38 @@
+80363120 - Pointer to the Current Stage Name
+
+Shop Data - https://github.com/LagoLunatic/WW-Hacking-Docs/blob/0abf443d0a81dde6a1d42f849fd8fd4fbe534c82/RAM%20Map.txt#L155
+80375E1C-80375FBB (372E1C in main.dol) - Shop item data.
+  Entry length 0x10.
+  00,4: Item ID.
+  04,4: Negative prerequisite item ID you need to NOT own before you can buy this item.
+  08,4: Prerequisite item ID you need before you can buy this item.
+    -1 for no prerequisite? Or -1 might be an invalid prerequisite?
+  0C,1: Bitfield affecting what can prevent you from buying the item.
+    & 01 - This item has a prerequisite item. This bit must be set for the prerequisite item ID above to do anything.
+    & 02 - This item has a negative prerequisite item. This bit must be set for the negative prerequisite item ID above to do anything.
+    & 04 - This item has a maximum number of it you can carry. (Bombs, bait, etc.)
+    & 08 - This item requires you to own a bottle. Doesn't need to be empty.
+    & 10 - This item requires an empty bottle.
+    & 20 - This item costs rupees to buy.
+  0D,3: Padding.
+
+Shop Mapping - https://github.com/LagoLunatic/WW-Hacking-Docs/blob/0abf443d0a81dde6a1d42f849fd8fd4fbe534c82/RAM%20Map.txt#L169
+  Entry length 0x14.
+  00,4: Pointer to the shop item data for this item. (In list 80375E1C, see "Shop Data")
+  ^ This is going to be what we want first.
+  04,4: Message ID shown when you select this item in the shop.
+  08,4: Message ID that asks you if you're sure you want to buy this item.
+  0C,4: ??
+  10,4: Number of the item given...?
+
+Link's Pointer - 803CA754,4 // Don't want to give the Player an Item while they can't get it.
+daPy_lk_c::mCurrProc is a decent reference for the Player's current state.
+
+Event Index of the next Event - https://github.com/LagoLunatic/WW-Hacking-Docs/blob/0abf443d0a81dde6a1d42f849fd8fd4fbe534c82/RAM%20Map.txt#L1016
+Event Manager Start - https://github.com/LagoLunatic/WW-Hacking-Docs/blob/0abf443d0a81dde6a1d42f849fd8fd4fbe534c82/RAM%20Map.txt#L1018
+
+Future Scope - Shared Wind - https://github.com/LagoLunatic/WW-Hacking-Docs/blob/0abf443d0a81dde6a1d42f849fd8fd4fbe534c82/RAM%20Map.txt#L1272
+
+Find a way to manipulate Message Ids?
+
+Get Items as Mail - mattwiens on Twitch 1/11/2022

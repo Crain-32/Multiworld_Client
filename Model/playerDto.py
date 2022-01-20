@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict
 from .itemDto import ItemDto
+from .serverConfig import ServerConfig
 
 
 @dataclass
@@ -23,3 +24,7 @@ class PlayerDto:
 
     def as_dict(self):
         return asdict(self)
+
+    @staticmethod
+    def from_server_config(serverConfig: ServerConfig):
+        return PlayerDto(serverConfig.worldId, serverConfig.userName)

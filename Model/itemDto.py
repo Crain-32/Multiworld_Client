@@ -7,6 +7,12 @@ class ItemDto:
     targetPlayerWorldId: int
     itemId: int
 
+    @staticmethod
+    def from_dict(dictionary):
+        return ItemDto(dictionary['sourcePlayerWorldId'],
+                       dictionary['targetPlayerWorldId'],
+                       dictionary['itemId'])
+
     def __init__(self, sourcePlayerWorldId: int, targetPlayerWorldId: int, itemId: int):
         self.sourcePlayerWorldId = sourcePlayerWorldId
         self.targetPlayerWorldId = targetPlayerWorldId

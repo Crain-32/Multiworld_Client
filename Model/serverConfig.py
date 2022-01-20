@@ -12,4 +12,6 @@ class ServerConfig:
     def as_dict(self):
         return asdict(self)
 
+    def get_uri(self):
+        return self.server_ip + ":" + str(self.server_port) + "/ws"
 

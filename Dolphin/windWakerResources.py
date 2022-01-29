@@ -204,7 +204,90 @@ item_id_dict = {
     "Triforce Chart 2": 0XFD,
     "Triforce Chart 1": 0XFE,
 }
+item_name_dict = {v: k for k, v in item_id_dict.items()}
 
+inventory_handling = [
+    0x20,  # Telescope
+    0x78,  # Sail
+    0x22,  # Wind Waker
+    0x25,  # Grappling Hook
+    0x21,  # Tingle Tuner
+    0x29,  # Iron Boots
+    0x2A,  # Magic Armor
+    0x2D,  # Boomerang
+    0x34,  # Deku Leaf
+    0x31,  # Bombs
+    0x2F,  # Hookshot
+    0x33  # Skull Hammer
+]
+rupees = [
+    0x01,  # Green
+    0x02,  # Blue
+    0x03,  # Yellow
+    0x04,  # Red
+    0x05,  # Purple
+    0x06,  # Orange
+    0x0F,  # Silver
+    0xB8   # TREVOR
+]
+rupee_map = {
+    0x01: 0x01,
+    0x02: 0x05,
+    0x03: 0x0A,
+    0x04: 0x14,
+    0x05: 0x32,
+    0x06: 0x64,
+    0x0F: 0xC8,
+    0xB8: 0x1F4
+}
+curr_swords = 1
+swords = [
+    0x38,  # Hero's
+    0x39,  # Master Sword
+    0x3A,  # Half Power
+    0x3E,  # Full Power
+]
+curr_shields = 0
+shields = [
+    0x3B,  # Hero's Shield
+    0x3C   # Mirror Shield
+]
+shards = [
+    0x61,  # Triforce Shard 1 - 8
+    0x62,
+    0x63,
+    0x64,
+    0x65,
+    0x66,
+    0x67,
+    0x68
+]
+non_progressive_key_items = {
+    0x20: False,  # Telescope
+    0x78: False,  # Sail
+    0x22: False,  # Wind Waker
+    0x25: False,  # Grappling Hook
+    0x21: False,  # Tingle Tuner
+    0x29: False,  # Iron Boots
+    0x2A: False,  # Magic Armor
+    0x2D: False,  # Boomerang
+    0x34: False,  # Deku Leaf
+    0x31: False,  # Bombs
+    0x2F: False,  # Hookshot
+    0x33: False,  # Skull Hammer
+    0x61: False,  # Triforce Shard 1 - 8
+    0x62: False,
+    0x63: False,
+    0x64: False,
+    0x65: False,
+    0x66: False,
+    0x67: False,
+    0x68: False,
+    0x28: False   # Power Bracelets
+}
+
+map_byte = 0xFF
+curr_bottles = 0
 keylunacy_item_dictionary = {
     "DRC Small Key": 0x13,
     "DRC Big Key": 0x14,
@@ -230,9 +313,7 @@ keylunacy_item_dictionary = {
     "WT Compass": 0x85,
 }
 """
-Leftover Item Ids - Might come in handy, since they're always patched,
-it means once we can specify certain players, we can handle
-keys as well.
+Leftover Item Ids - Might come in handy, since they're always patched.
 13 14 1B 1C (Keylunacy) 
 1D 40 41 5A (Keylunacy)
 5B 5C 5D 5E (Keylunacy)
@@ -277,7 +358,30 @@ player_inventory = {
 }
 
 useful_address = {
-    "Rupees to Add": 0x803CA768
+    "Add Rupees": 0x803CA768
+}
+
+misc_memory_location = {
+    "current_b_button": 0x803C4C16,
+    "current_shield": 0x803C4C17,
+    "power_bracelet_status": 0x803C4C18,
+    "current_wallet": 0x803C4C1A
+}
+
+toggle_bit_ownership = {
+    "grappling_hook": 0x803C4C5C,
+    "spoils_bag": 0x803C4C5D,
+    "boomerang": 0x803C4C5E,
+    "deku_leaf": 0x803C4C5F,
+    "tingle_tuner": 0x803C4C5F,
+    "iron_boots": 0x803C4C62,
+    "magic_armor": 0x803C4C63,
+    "bait_bag": 0x803C4C64,
+    "bombs": 0x803C4C66,
+    "delivery_bag": 0x803C4C6B,
+    "hookshot": 0x803C4C6C,
+    "skull_hammer": 0x803C4C6D,
+    "power_bracelets": 0x803C4CBE
 }
 """
   Bottle item IDs:

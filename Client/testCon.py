@@ -14,10 +14,11 @@ async def test():
         foo = await websocket.recv()
         print(foo)
         print(websocket.id)
-        await websocket.send(f.subscribe("/topic/test"))
-        testDto = ItemDto(4, 0, 0x34)
-        await websocket.send(f.send_json("/app/test", json.dumps(testDto.as_dict())))
+        await websocket.send(f.subscribe("/topic/item"))
+        testDto = ItemDto(0, 0, 0x61)
+        await websocket.send(f.send_json("/app/item", json.dumps(testDto.as_dict())))
         foo = await websocket.recv()
+        print(foo)
 
 
 

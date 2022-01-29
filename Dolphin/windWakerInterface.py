@@ -93,7 +93,7 @@ def give_map_by_id(item_id: int):
 
 
 def give_rupees(amount: int):
-    dme.write_byte(0x803CA768, amount)
+    dme.write_word(0x803CA768, amount)
 
 
 def upgrade_sword():
@@ -118,9 +118,39 @@ def downgrade_sword():
     dme.write_byte(0x803C4CBC, (curr_val >> 1))
 
 
+def upgrade_bow():
+    bow_vals = [0x27, 0x35, 0x36]
+    curr_val = dme.read_byte(0x803C4C50)
+    next_bow_val = 0
+    if curr_val == 0x27:
+        next_bow_val = 1
+    if curr_val == 0x35:
+        next_bow_val = 2
+    if curr_val == 0x36:
+        pass
+    dme.write_byte(0x803C4C50, bow_vals[next_bow_val])
+    curr_val = dme.read_byte(0x803C4C65)
+    dme.write_byte(0x803C4C65, (curr_val | (1 << next_bow_val)))
+
+
+def downgrade_bow():
+    bow_vals = [0x27, 0x35, 0x36, 0xFF]
+    curr_val = dme.read_byte(0x803C4C50)
+    next_bow_val = 0
+    if curr_val == 0x27:
+        next_bow_val = 3
+    if curr_val == 0x35:
+        next_bow_val = 0
+    if curr_val == 0x36:
+        next_bow_val = 1
+    dme.write_byte(0x803C4C50, bow_vals[next_bow_val])
+    curr_val = dme.read_byte(0x803C4C65)
+    dme.write_byte(0x803C4C65, (curr_val | (1 << next_bow_val)))
+
+
 def upgrade_shield():
     curr_val = dme.read_byte(0x803C4C17)
-    if curr_val == 0x00:
+    if curr_val == 0xFF:
         curr_val = 0x3A
     dme.write_byte(0x803C4C17, (curr_val + 1))
     curr_val = dme.read_byte(0x803C4C17)

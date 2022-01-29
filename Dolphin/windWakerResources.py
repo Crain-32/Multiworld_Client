@@ -1,3 +1,5 @@
+import itertools
+
 item_id_dict = {
     "Heart (Pickup)": 0x00,
     "Green Rupee": 0x01,
@@ -204,8 +206,6 @@ item_id_dict = {
     "Triforce Chart 2": 0XFD,
     "Triforce Chart 1": 0XFE,
 }
-item_name_dict = {v: k for k, v in item_id_dict.items()}
-
 inventory_handling = [
     0x20,  # Telescope
     0x78,  # Sail
@@ -231,14 +231,14 @@ rupees = [
     0xB8   # TREVOR
 ]
 rupee_map = {
-    0x01: 0x01,
-    0x02: 0x05,
-    0x03: 0x0A,
-    0x04: 0x14,
-    0x05: 0x32,
-    0x06: 0x64,
-    0x0F: 0xC8,
-    0xB8: 0x1F4
+    0x01: 0x0001,
+    0x02: 0x0005,
+    0x03: 0x000A,
+    0x04: 0x0014,
+    0x05: 0x0032,
+    0x06: 0x0064,
+    0x0F: 0x00C8,
+    0xB8: 0x01F4
 }
 curr_swords = 1
 swords = [
@@ -261,6 +261,12 @@ shards = [
     0x66,
     0x67,
     0x68
+]
+curr_bow = 0
+bows = [
+    0x27,
+    0x35,
+    0x36
 ]
 non_progressive_key_items = {
     0x20: False,  # Telescope
@@ -312,6 +318,8 @@ keylunacy_item_dictionary = {
     "WT Dungeon Map": 0x84,
     "WT Compass": 0x85,
 }
+
+item_name_dict = {v: k for k, v in itertools.chain(item_id_dict.items(), keylunacy_item_dictionary.items())}
 """
 Leftover Item Ids - Might come in handy, since they're always patched.
 13 14 1B 1C (Keylunacy) 

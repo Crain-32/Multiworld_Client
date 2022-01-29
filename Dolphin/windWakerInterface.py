@@ -62,6 +62,10 @@ def give_item_by_value(item: int):
         upgrade_wallet()
     elif item in WWR.bows:
         upgrade_bow()
+    elif item in WWR.songs:
+        give_song(item)
+    elif item in WWR.pearls:
+        give_pearl(item)
     elif item == 0x50:
         give_bottle()
     elif item == 0x28:
@@ -223,15 +227,13 @@ def remove_bottle():
 
 
 def bottle_index():
-    bottle_list = []
-    bottle_list.append(dme.read_byte(0x803C4C52))
-    bottle_list.append(dme.read_byte(0x803C4C53))
-    bottle_list.append(dme.read_byte(0x803C4C54))
-    bottle_list.append(dme.read_byte(0x803C4C55))
+    bottle_list = [dme.read_byte(0x803C4C52), dme.read_byte(0x803C4C53), dme.read_byte(0x803C4C54),
+                   dme.read_byte(0x803C4C55)]
     for index, bottle in enumerate(bottle_list):
         if bottle == 0xFF:
             return index
     return -1
+
 
 def give_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)

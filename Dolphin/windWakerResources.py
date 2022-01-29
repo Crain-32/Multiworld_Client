@@ -270,7 +270,20 @@ bows = [
 ]
 wallets = [
     0XAB,
-    0XAC,
+    0XAC
+]
+songs = [
+    0x6D,
+    0x6E,
+    0x6F,
+    0x70,
+    0x71,
+    0x72
+]
+pearls = [
+    0x69,
+    0x6A,
+    0x6B
 ]
 non_progressive_key_items = {
     0x20: False,  # Telescope

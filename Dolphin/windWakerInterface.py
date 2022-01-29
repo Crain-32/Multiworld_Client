@@ -265,3 +265,9 @@ def take_pearl(item: int):
         # Raise ToTG
         totg_flags = dme.read_byte(0x803C524A)
         dme.write_byte(0x803C524A, (totg_flags ^ 0x40))
+
+
+def check_menu():
+    curr_val = dme.read_bytes(0x803C9D3C, 8)
+    return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
+

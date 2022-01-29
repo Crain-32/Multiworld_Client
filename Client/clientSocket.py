@@ -52,6 +52,7 @@ async def handle_message(message):
     if message[:7] == "MESSAGE":
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
+        print_item_dto(item_dto)
         if item_dto.sourcePlayerWorldId != world_id:
             items_to_process.append(item_dto)
 
@@ -84,11 +85,14 @@ async def handle_dolphin():
 
 
 async def give_item():
+    print("Attempting to Process the Following.....")
+    print_item_dto(items_to_process[0])
     while len(items_to_process) > 0:
         item_dto = items_to_process[-1]
         try:
-            print("Attempting to Process the Following.....")
-            print_item_dto(item_dto)
+            if WWI.check_menu():
+                await asyncio.sleep(3)
+                continue
             WWI.give_item_by_value(item_dto.itemId)
             items_to_process.pop()
             await asyncio.sleep(0)

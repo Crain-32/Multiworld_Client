@@ -149,12 +149,18 @@ def downgrade_bow():
 
 
 def upgrade_shield():
+    shield_list = [0x3B, 0x3C]
     curr_val = dme.read_byte(0x803C4C17)
+    next_shield = -1
     if curr_val == 0xFF:
-        curr_val = 0x3A
-    dme.write_byte(0x803C4C17, (curr_val + 1))
-    curr_val = dme.read_byte(0x803C4C17)
-    dme.write_byte(0x803C4CBD, (curr_val << 1) + 1)
+        next_shield = 0
+    if curr_val == 0x3B:
+        next_shield = 1
+    if next_shield < 0:
+        pass
+    dme.write_byte(0x803C4C17, shield_list[next_shield])
+    curr_val = dme.read_byte(0x803C4CBD)
+    dme.write_byte(0x803C4CBD, (curr_val | 1 << next_shield))
 
 
 def downgrade_shield():

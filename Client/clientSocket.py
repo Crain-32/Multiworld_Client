@@ -21,7 +21,6 @@ world_id = 0
 
 
 async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget):
-    world_id = server_config.worldId
     frame_manager = StompFrameManager(server_config)
     print("Trying to Connect to Dolphin......")
     asyncio.create_task(connect_dolphin())
@@ -33,8 +32,12 @@ async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput
             if not foo.startswith("ERROR"):
                 print("Subscribing to Item Queue........")
                 await client_websocket.send(frame_manager.subscribe("/topic/item"))
-                async for message in client_websocket:
-                    asyncio.create_task(handle_message(message))
+                while True:
+                    message = await client_websocket.recv()
+                    if message is not None:
+                        asyncio.create_task(handle_message(message))
+                    for itemDto in items_to_send:
+                        await client_websocket.send(frame_manager.send_json("/app/item", json.dumps(itemDto.as_dict())))
                     await asyncio.sleep(0)
             else:
                 print("Failed to Subscribe to Item Queue, please confirm your config with the Server host.")

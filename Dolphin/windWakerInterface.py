@@ -51,7 +51,7 @@ def give_item_by_value(item: int):
     if item in WWR.inventory_handling:
         give_inventory_item_by_value(item)
     elif item in WWR.rupees:
-        give_rupees(rupee_map[item])
+        give_rupees(WWR.rupee_map[item])
     elif item in WWR.swords:
         upgrade_sword()
     elif item in WWR.shields:

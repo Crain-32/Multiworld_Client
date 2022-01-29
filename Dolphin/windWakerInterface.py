@@ -72,10 +72,16 @@ def give_item_by_value(item: int):
 
 def give_inventory_item_by_value(item: int):
     write_byte(WWR.player_inventory[WWR.item_name_dict[item]], item)
+    item_name = WWR.item_name_dict[item]
+    if item_name in WWR.toggle_bit_ownership.keys():
+        write_byte(WWR.toggle_bit_ownership[item_name], 0x01)
 
 
 def remove_inventory_item_by_value(item: int):
     write_byte(WWR.player_inventory[WWR.item_name_dict[item]], 0xFF)
+    item_name = WWR.item_name_dict[item]
+    if item_name in WWR.toggle_bit_ownership.keys():
+        write_byte(WWR.toggle_bit_ownership[item_name], 0x00)
 
 
 def give_item_by_name(item: str):
@@ -213,3 +219,49 @@ def remove_bottle():
     if WWR.curr_bottles == 4:
         return
     dme.write_byte((0x803C4C52 + WWR.curr_bottles), 0xFF)
+
+
+def give_song(item: int):
+    curr_val = dme.read_byte(0x803C4CC5)
+    song_index = 0
+    if item != 0x6B:
+        song_index = (item % 0x6C)
+    dme.write_byte(0x803C4CC5, (curr_val | (1 << song_index)))
+
+
+def take_song(item: int):
+    curr_val = dme.read_byte(0x803C4CC5)
+    song_index = 0
+    if item != 0x6B:
+        song_index = (item % 0x6C)
+    dme.write_byte(0x803C4CC5, (curr_val ^ (1 << song_index)))
+
+
+def give_pearl(item: int):
+    curr_val = dme.read_byte(0x803C4CC7)
+    pearl_index = 0
+    if item == 0x6A:
+        pearl_index = 1
+    if item == 0x6B:
+        pearl_index = 2
+    curr_val = curr_val | (1 << pearl_index)
+    dme.write_byte(0x803C4CC7, curr_val)
+    if curr_val == 0x7:
+        # Raise ToTG
+        totg_flags = dme.read_byte(0x803C524A)
+        dme.write_byte(0x803C524A, (totg_flags | 0x40))
+
+
+def take_pearl(item: int):
+    curr_val = dme.read_byte(0x803C4CC7)
+    pearl_index = 0
+    if item == 0x6A:
+        pearl_index = 1
+    if item == 0x6B:
+        pearl_index = 2
+    changed_val = curr_val ^ (1 << pearl_index)
+    dme.write_byte(0x803C4CC7, changed_val)
+    if curr_val == 0x7:
+        # Raise ToTG
+        totg_flags = dme.read_byte(0x803C524A)
+        dme.write_byte(0x803C524A, (totg_flags ^ 0x40))

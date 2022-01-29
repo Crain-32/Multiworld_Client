@@ -58,6 +58,10 @@ def give_item_by_value(item: int):
         upgrade_shield()
     elif item in WWR.shards:
         give_triforce_shard(item & 0xF)
+    elif item in WWR.wallets:
+        upgrade_wallet()
+    elif item in WWR.bows:
+        upgrade_bow()
     elif item == 0x50:
         give_bottle()
     elif item == 0x28:
@@ -90,6 +94,20 @@ def remove_power_bracelets():
 
 def give_map_by_id(item_id: int):
     pass
+
+
+def upgrade_wallet():
+    curr_val = dme.read_byte(0x803C4C1A)
+    if curr_val == 2:
+        pass
+    dme.write_byte(0x803C4C1A, curr_val + 1)
+
+
+def downgrade_wallet():
+    curr_val = dme.read_byte(0x803C4C1A)
+    if curr_val == 0:
+        pass
+    dme.write_byte(0x803C4C1A, curr_val - 1)
 
 
 def give_rupees(amount: int):

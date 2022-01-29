@@ -209,17 +209,29 @@ def remove_triforce_shard(shard_num: int):
 
 
 def give_bottle():
-    if WWR.curr_bottles == 4:
-        return
-    dme.write_byte((0x803C4C52 + WWR.curr_bottles), 0x50)
-    WWR.curr_bottles += 1
+    open_index = bottle_index()
+    if open_index < 0:
+        pass
+    dme.write_byte((0x803C4C52 + open_index), 0x50)
 
 
 def remove_bottle():
-    if WWR.curr_bottles == 4:
-        return
-    dme.write_byte((0x803C4C52 + WWR.curr_bottles), 0xFF)
+    open_index = bottle_index()
+    if open_index <= 0:
+        pass
+    dme.write_byte((0x803C4C52 + (open_index - 1)), 0xFF)
 
+
+def bottle_index():
+    bottle_list = []
+    bottle_list.append(dme.read_byte(0x803C4C52))
+    bottle_list.append(dme.read_byte(0x803C4C53))
+    bottle_list.append(dme.read_byte(0x803C4C54))
+    bottle_list.append(dme.read_byte(0x803C4C55))
+    for index, bottle in enumerate(bottle_list):
+        if bottle == 0xFF:
+            return index
+    return -1
 
 def give_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)

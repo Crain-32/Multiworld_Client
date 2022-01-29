@@ -67,11 +67,11 @@ def give_item_by_value(item: int):
 
 
 def give_inventory_item_by_value(item: int):
-    write_byte(player_inventory[WWR.item_name_dict[item]], item)
+    write_byte(WWR.player_inventory[WWR.item_name_dict[item]], item)
 
 
 def remove_inventory_item_by_value(item: int):
-    write_byte(player_inventory[WWR.item_name_dict[item]], 0xFF)
+    write_byte(WWR.player_inventory[WWR.item_name_dict[item]], 0xFF)
 
 
 def give_item_by_name(item: str):

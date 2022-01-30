@@ -1,6 +1,5 @@
 server:localhost
-host:8080
+port:8080
 world_id:0
 max_players:255
 gameroom_name:Name
-This new line is required : Trust Me

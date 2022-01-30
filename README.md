@@ -1,6 +1,6 @@
 ## Read Me ##
 
-Welcome to the Client implementation for the Wind Waker Multiworld project! 
+Welcome to the Client implementation for the Wind Waker Multiplayer project! 
 Please understand that the project is still under development. At times one aspect
 may seem more refined than others, and that is to be expected.
 

@@ -13,11 +13,12 @@ from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
+from Model.config import Config
 
 items_to_process = list()
 items_to_send = list()
 dolphin_busy = False
-world_id = 0
+world_id = Config.get_config().get_world_id()
 
 
 async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget):
@@ -43,16 +44,17 @@ async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput
     except Exception as e:
         print("Problem with Server connection, please check the status with the Server host.")
 
+
 async def listen_to_server(client_connection):
     async for message in client_connection:
         asyncio.create_task(handle_message(message))
         await asyncio.sleep(0)
 
+
 async def handle_message(message):
     if message[:7] == "MESSAGE":
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
-        print_item_dto(item_dto)
         if item_dto.sourcePlayerWorldId != world_id:
             items_to_process.append(item_dto)
 

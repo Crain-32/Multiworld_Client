@@ -237,17 +237,13 @@ def bottle_index():
 
 def give_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)
-    song_index = 0
-    if item != 0x6B:
-        song_index = (item % 0x6C)
+    song_index = item % 0x6D
     dme.write_byte(0x803C4CC5, (curr_val | (1 << song_index)))
 
 
 def take_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)
-    song_index = 0
-    if item != 0x6B:
-        song_index = (item % 0x6C)
+    song_index = item % 0x6D
     dme.write_byte(0x803C4CC5, (curr_val ^ (1 << song_index)))
 
 

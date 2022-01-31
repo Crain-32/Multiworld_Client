@@ -285,6 +285,10 @@ pearls = [
     0x6A,
     0x6B
 ]
+pictos = [
+    0x23,
+    0x26
+]
 non_progressive_key_items = {
     0x20: False,  # Telescope
     0x78: False,  # Sail

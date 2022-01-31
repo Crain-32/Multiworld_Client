@@ -66,10 +66,14 @@ def give_item_by_value(item: int):
         give_song(item)
     elif item in WWR.pearls:
         give_pearl(item)
+    elif item in WWR.pictos:
+        upgrade_picto()
     elif item == 0x50:
         give_bottle()
     elif item == 0x28:
         give_power_bracelets()
+    elif item == 0x43:
+        give_heros_charm()
     else:
         pass
 
@@ -125,14 +129,18 @@ def give_rupees(amount: int):
 
 
 def upgrade_sword():
+    swords_list = [0x38, 0x39, 0x3A, 0x3E]
     curr_val = dme.read_byte(0x803C4C16)
-    if curr_val == 0x00:
-        curr_val = 0x37  # Undershoot by one so no logic changes
+    next_sword = 0  # Undershoot by one so no logic changes
+    if curr_val == 0x38:
+        next_sword = 1
+    if curr_val == 0x39:
+        next_sword = 2
     if curr_val == 0x3A:
-        curr_val = 0x3D
-    dme.write_byte(0x803C4C16, (curr_val + 1))
+        next_sword = 3
+    dme.write_byte(0x803C4C16, swords_list[next_sword])
     curr_val = dme.read_byte(0x803C4CBC)
-    dme.write_byte(0x803C4CBC, ((curr_val << 1) + 1))
+    dme.write_byte(0x803C4CBC, (curr_val | (1 << next_sword)))
 
 
 def downgrade_sword():
@@ -155,7 +163,7 @@ def upgrade_bow():
     if curr_val == 0x35:
         next_bow_val = 2
     if curr_val == 0x36:
-        pass
+        return
     dme.write_byte(0x803C4C50, bow_vals[next_bow_val])
     curr_val = dme.read_byte(0x803C4C65)
     dme.write_byte(0x803C4C65, (curr_val | (1 << next_bow_val)))
@@ -171,6 +179,8 @@ def downgrade_bow():
         next_bow_val = 0
     if curr_val == 0x36:
         next_bow_val = 1
+    if curr_val == 0xFF:
+        return
     dme.write_byte(0x803C4C50, bow_vals[next_bow_val])
     curr_val = dme.read_byte(0x803C4C65)
     dme.write_byte(0x803C4C65, (curr_val | (1 << next_bow_val)))
@@ -185,7 +195,7 @@ def upgrade_shield():
     if curr_val == 0x3B:
         next_shield = 1
     if next_shield < 0:
-        pass
+        return
     dme.write_byte(0x803C4C17, shield_list[next_shield])
     curr_val = dme.read_byte(0x803C4CBD)
     dme.write_byte(0x803C4CBD, (curr_val | 1 << next_shield))
@@ -198,6 +208,32 @@ def downgrade_shield():
     dme.write_byte(0x803C4C17, (curr_val - 1))
     curr_val = dme.read_byte(0x803C4C17)
     dme.write_byte(0x803C4CBD, (curr_val >> 1))
+
+
+def upgrade_picto():
+    picto_ids = [0x23, 0x26]
+    curr_val = dme.read_byte(0x803C4C4C)
+    next_picto = 0
+    if curr_val == 0x23:
+        next_picto = 1
+    elif curr_val == 0x26:
+        return
+    dme.write_byte(0x803C4C4C, picto_ids[next_picto])
+    curr_val = dme.read_byte(0x803C4C61)
+    dme.write_byte(0x803C4C61, (curr_val | (1 << next_picto)))
+
+
+def downgrade_picto():
+    picto_ids = [0xFF, 0x23, 0x26]
+    curr_val = dme.read_byte(0x803C4C4C)
+    next_picto = 0
+    if curr_val == 0x26:
+        next_picto = 1
+    elif curr_val == 0xFF:
+        return
+    dme.write_byte(0x803C4C4C, picto_ids[next_picto])
+    curr_val = dme.read_byte(0x803C4C61)
+    dme.write_byte(0x803C4C61, (curr_val ^ (1 << next_picto)))
 
 
 def give_triforce_shard(shard_num: int):
@@ -215,20 +251,19 @@ def remove_triforce_shard(shard_num: int):
 def give_bottle():
     open_index = bottle_index()
     if open_index < 0:
-        pass
+        return
     dme.write_byte((0x803C4C52 + open_index), 0x50)
 
 
 def remove_bottle():
     open_index = bottle_index()
     if open_index <= 0:
-        pass
+        return
     dme.write_byte((0x803C4C52 + (open_index - 1)), 0xFF)
 
 
 def bottle_index():
-    bottle_list = [dme.read_byte(0x803C4C52), dme.read_byte(0x803C4C53), dme.read_byte(0x803C4C54),
-                   dme.read_byte(0x803C4C55)]
+    bottle_list = [dme.read_byte(0x803C4C52 + offset) for offset in range(4)]
     for index, bottle in enumerate(bottle_list):
         if bottle == 0xFF:
             return index
@@ -275,6 +310,14 @@ def take_pearl(item: int):
         # Raise ToTG
         totg_flags = dme.read_byte(0x803C524A)
         dme.write_byte(0x803C524A, (totg_flags ^ 0x40))
+
+
+def give_heros_charm():
+    dme.write_byte(0x803C4CC0, 0x01)
+
+
+def take_heros_charm():
+    dme.write_byte(0x803C4CC0, 0x00)
 
 
 def check_menu():

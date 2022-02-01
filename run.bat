@@ -1,1 +1,1 @@
-powershell -Command "python ./Multiworld_Client-master/main.py"
+powershell -Command "python ./main.py"

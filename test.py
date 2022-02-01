@@ -5,11 +5,12 @@ import websockets
 
 from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
-from Model.config import Config
+#from Model.config import Config
 
-address = Config.get_config().get_address()
-port = Config.get_config().get_port()
-world_id = Config.get_config().get_world_id()
+address = "localhost"
+port = 8080
+world_id = 60
+game_room = "other"
 
 
 async def test():
@@ -19,11 +20,13 @@ async def test():
         foo = await websocket.recv()
         print(foo)
         print(websocket.id)
-        await websocket.send(f.subscribe("/topic/item"))
-        test_dto = ItemDto(world_id, 0, 0x50)
-        await websocket.send(f.send_json("/app/item", json.dumps(test_dto.as_dict())))
+        await websocket.send(f.subscribe(f"/topic/item/{game_room}"))
+        print("Subscribed")
+        test_dto = ItemDto(world_id, 0, 0x01)
+        await websocket.send(f.send_json(f"/app/item/{game_room}", json.dumps(test_dto.as_dict())))
         foo = await websocket.recv()
         print(foo)
-
+        foo = await websocket.recv()
+        print(foo)
 
 asyncio.run(test())

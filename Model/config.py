@@ -5,6 +5,7 @@ class Config:
     _ServerAddress = "localhost"
     _Port = 8080
     _World_id = 0
+    _Game_Room = ""
 
     @staticmethod
     def get_config():
@@ -32,6 +33,9 @@ class Config:
                 if contents[0] == "port":
                     self._Port = int(contents[1])
                     continue
+                if contents[0] == "gameroom_name":
+                    self._Game_Room = contents[1]
+                    continue
 
     def get_address(self):
         return self._ServerAddress
@@ -41,3 +45,6 @@ class Config:
 
     def get_world_id(self):
         return self._World_id
+
+    def get_game_room(self):
+        return self._Game_Room

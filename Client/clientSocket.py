@@ -24,18 +24,18 @@ game_room = Config.get_config().get_game_room()
 
 async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget):
     frame_manager = StompFrameManager(server_config)
-    print("Trying to Connect to Dolphin......")
-    print(game_room)
     asyncio.create_task(connect_dolphin())
     try:
         async with websockets.connect("ws://" + server_config.get_uri()) as client_websocket:
-            print("Connecting to Server.......")
+            print("Connecting to Server.................")
+            print(f"Attempting to Connect to {game_room}.........")
             await client_websocket.send(frame_manager.connect(server_config.server_ip))
             foo = await client_websocket.recv()
             if not foo.startswith("ERROR"):
                 print("Subscribing to Item Queue........")
                 await client_websocket.send(frame_manager.subscribe(f"/topic/item/{game_room}"))
                 asyncio.create_task(listen_to_server(client_websocket))
+                print(f"Successfully connected and subscribed to {game_room}")
                 while True:
                     for itemDto in items_to_send:
                         await client_websocket.send(frame_manager.send_json(f"/app/item/{game_room}", json.dumps(itemDto.as_dict())))
@@ -62,6 +62,7 @@ async def handle_message(message):
 
 
 async def connect_dolphin():
+    print("Trying to Connect to Dolphin......")
     while not WWI.is_hooked():
         await asyncio.sleep(1)
         WWI.hook()

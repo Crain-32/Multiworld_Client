@@ -34,7 +34,7 @@ async def client(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput
             foo = await client_websocket.recv()
             if not foo.startswith("ERROR"):
                 print("Subscribing to Item Queue........")
-                await client_websocket.send(frame_manager.subscribe(f"/topic/item{game_room}"))
+                await client_websocket.send(frame_manager.subscribe(f"/topic/item/{game_room}"))
                 asyncio.create_task(listen_to_server(client_websocket))
                 while True:
                     for itemDto in items_to_send:

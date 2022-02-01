@@ -7,10 +7,10 @@ from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 #from Model.config import Config
 
-address = "localhost"
+address = "ec2-18-219-40-133.us-east-2.compute.amazonaws.com"
 port = 8080
 world_id = 60
-game_room = "other"
+game_room = "BobIsDumb"
 
 
 async def test():

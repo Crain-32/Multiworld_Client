@@ -57,7 +57,6 @@ async def handle_message(message):
     if message[:7] == "MESSAGE":
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
-        print_item_dto(item_dto)
         if item_dto.sourcePlayerWorldId != world_id:
             items_to_process.append(item_dto)
 

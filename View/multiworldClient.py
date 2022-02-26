@@ -24,6 +24,6 @@ class MultiworldClientWindow(QMainWindow):
         set_up_dto = SetUpDto(int(self.ui.maxPlayersInput.text()), self.ui.gameRoomNameInput.text(), None, False)
         try:
             print("Into Listener")
-            asyncio.run(clientFunctions.client(server_config, set_up_dto, self.ui.dialogLog))
+            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.ui.dialogLog))
         except RuntimeWarning:
             self.ui.dialogLog.addItem("Failed to Create Room")

@@ -36,3 +36,9 @@ Future Scope - Shared Wind - https://github.com/LagoLunatic/WW-Hacking-Docs/blob
 Find a way to manipulate Message Ids?
 
 Get Items as Mail - mattwiens on Twitch 1/11/2022
+
+dSalvage_control_c::entry -> 0x800CC81C loads the Params for d_a_salvage
+Branch to write the World ID into the byte location 2 bytes ahead of ItemID
+
+0x803C4D4D
+

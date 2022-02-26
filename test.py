@@ -7,10 +7,10 @@ from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 #from Model.config import Config
 
-address = "ec2-18-219-40-133.us-east-2.compute.amazonaws.com"
+address = "twwmultiplayer.com"
 port = 8080
-world_id = 60
-game_room = "BobIsDumb"
+world_id = 69
+game_room = "Test"
 
 
 async def test():
@@ -22,10 +22,8 @@ async def test():
         print(websocket.id)
         await websocket.send(f.subscribe(f"/topic/item/{game_room}"))
         print("Subscribed")
-        test_dto = ItemDto(world_id, 0, 0x01)
+        test_dto = ItemDto(world_id, 0, 0x24)
         await websocket.send(f.send_json(f"/app/item/{game_room}", json.dumps(test_dto.as_dict())))
-        foo = await websocket.recv()
-        print(foo)
         foo = await websocket.recv()
         print(foo)
 

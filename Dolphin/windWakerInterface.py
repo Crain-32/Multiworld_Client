@@ -1,7 +1,11 @@
+import random
+
 import dolphin_memory_engine as dme
 
 import Dolphin.windWakerResources as WWR
+from Model.config import Config
 
+random_rupoors = Config.get_config().Random_Rupoors
 
 def hook():
     dme.hook()
@@ -40,11 +44,11 @@ def read_float(address):
 
 
 def read_chest_items():
-    return [read_word(0x803FF6FD), read_word(0x803FF701)]
+    return [(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))]
 
 
 def clear_chest_items():
-    return [write_word(0x803FF6FD, 0x0000), write_word(0x803FF701, 0x0000)]
+    return [write_word(0x803FED40, 0x0000), write_word(0x803FED44, 0x0000)]
 
 
 def give_item_by_value(item: int):
@@ -68,6 +72,26 @@ def give_item_by_value(item: int):
         give_pearl(item)
     elif item in WWR.pictos:
         upgrade_picto()
+    elif item in WWR.delivery_bag_items:
+        give_delivery_bag_item(item)
+    elif item in WWR.drc_dungeon_items:
+        give_drc_item(item)
+    elif item in WWR.fw_dungeon_items:
+        give_fw_item(item)
+    elif item in WWR.totg_dungeon_items:
+        give_totg_item(item)
+    elif item in WWR.ff_dungeon_items:
+        give_ff_item(item)
+    elif item in WWR.et_dungeon_items:
+        give_et_item(item)
+    elif item in WWR.wt_dungeon_items:
+        give_wt_item(item)
+    elif item in WWR.charts:
+        give_map_by_id(item)
+    elif item == 0x08:
+        give_heart_container()
+    elif item == 0x07:
+        give_heart_pieces(1)
     elif item == 0x50:
         give_bottle()
     elif item == 0x28:
@@ -79,17 +103,17 @@ def give_item_by_value(item: int):
 
 
 def give_inventory_item_by_value(item: int):
-    write_byte(WWR.player_inventory[WWR.item_name_dict[item]], item)
+    write_byte(WWR.player_inventory[item], item)
     item_name = WWR.item_name_dict[item]
-    if item_name in WWR.toggle_bit_ownership.keys():
-        write_byte(WWR.toggle_bit_ownership[item_name], 0x01)
+    if item_name in WWR.single_bit_own_flag.keys():
+        write_byte(WWR.single_bit_own_flag[item], 0x01)
 
 
 def remove_inventory_item_by_value(item: int):
-    write_byte(WWR.player_inventory[WWR.item_name_dict[item]], 0xFF)
+    write_byte(WWR.player_inventory[item], 0xFF)
     item_name = WWR.item_name_dict[item]
-    if item_name in WWR.toggle_bit_ownership.keys():
-        write_byte(WWR.toggle_bit_ownership[item_name], 0x00)
+    if item_name in WWR.single_bit_own_flag.keys():
+        write_byte(WWR.single_bit_own_flag[item], 0x00)
 
 
 def give_item_by_name(item: str):
@@ -98,7 +122,7 @@ def give_item_by_name(item: str):
 
 def give_power_bracelets():
     dme.write_byte(0x803C4C18, 0x28)
-    dme.write_byte(0x803C4CBD, 0x01)
+    dme.write_byte(0x803C4CBE, 0x01)
 
 
 def remove_power_bracelets():
@@ -107,7 +131,16 @@ def remove_power_bracelets():
 
 
 def give_map_by_id(item_id: int):
-    pass
+    mapping = WWR.chart_mapping[item_id]
+    curr_val = dme.read_word(mapping[0])
+    dme.write_word(mapping[0], (curr_val | mapping[1]))
+
+
+def take_map_by_id(item_id: int):
+    mapping = WWR.chart_mapping[item_id]
+    mask = 0xFFFFFFFF
+    curr_val = dme.read_word(mapping[0])
+    dme.write_word(mapping[0], (curr_val & (mask ^ mapping[1])))
 
 
 def upgrade_wallet():
@@ -125,6 +158,8 @@ def downgrade_wallet():
 
 
 def give_rupees(amount: int):
+    if random_rupoors and bool(random.getrandbits(1)):
+            amount *= -1
     dme.write_word(0x803CA768, amount)
 
 
@@ -132,12 +167,14 @@ def upgrade_sword():
     swords_list = [0x38, 0x39, 0x3A, 0x3E]
     curr_val = dme.read_byte(0x803C4C16)
     next_sword = 0  # Undershoot by one so no logic changes
-    if curr_val == 0x38:
+    if curr_val == 0x83:
         next_sword = 1
-    if curr_val == 0x39:
+    elif curr_val == 0x39:
         next_sword = 2
-    if curr_val == 0x3A:
+    elif curr_val == 0x3A:
         next_sword = 3
+    elif curr_val == 0x3E:
+        return
     dme.write_byte(0x803C4C16, swords_list[next_sword])
     curr_val = dme.read_byte(0x803C4CBC)
     dme.write_byte(0x803C4CBC, (curr_val | (1 << next_sword)))
@@ -189,12 +226,11 @@ def downgrade_bow():
 def upgrade_shield():
     shield_list = [0x3B, 0x3C]
     curr_val = dme.read_byte(0x803C4C17)
-    next_shield = -1
     if curr_val == 0xFF:
         next_shield = 0
-    if curr_val == 0x3B:
+    elif curr_val == 0x3B:
         next_shield = 1
-    if next_shield < 0:
+    else:
         return
     dme.write_byte(0x803C4C17, shield_list[next_shield])
     curr_val = dme.read_byte(0x803C4CBD)
@@ -213,10 +249,11 @@ def downgrade_shield():
 def upgrade_picto():
     picto_ids = [0x23, 0x26]
     curr_val = dme.read_byte(0x803C4C4C)
-    next_picto = 0
     if curr_val == 0x23:
         next_picto = 1
-    elif curr_val == 0x26:
+    elif curr_val == 0xFF:
+        next_picto = 0
+    else:
         return
     dme.write_byte(0x803C4C4C, picto_ids[next_picto])
     curr_val = dme.read_byte(0x803C4C61)
@@ -226,10 +263,11 @@ def upgrade_picto():
 def downgrade_picto():
     picto_ids = [0xFF, 0x23, 0x26]
     curr_val = dme.read_byte(0x803C4C4C)
-    next_picto = 0
     if curr_val == 0x26:
         next_picto = 1
-    elif curr_val == 0xFF:
+    elif curr_val == 0x23:
+        next_picto = 0
+    else:
         return
     dme.write_byte(0x803C4C4C, picto_ids[next_picto])
     curr_val = dme.read_byte(0x803C4C61)
@@ -241,31 +279,46 @@ def give_triforce_shard(shard_num: int):
     curr_shards = curr_shards | (1 << (shard_num - 1))
     dme.write_byte(0x803C4CC6, curr_shards)
 
-
 def remove_triforce_shard(shard_num: int):
     shard_mask = map_byte ^ (1 << (shard_num - 1))
     curr_shards = dme.read_byte(0x803C4CC6)
     dme.write_byte(0x803C4CC6, (curr_shards ^ shard_mask))
 
 
+def give_delivery_bag_item(item_id: int):
+    open_index = free_index(0x803C4C8E, 9)
+    if open_index < 0:
+        print(f"Error Adding {item_id} to the delivery bag")
+        return
+    dme.write_byte((0x803C4C8E + open_index), item_id)
+
+def take_delivery_bag_item(item_id: int):
+    target_index = find_val_in_list(0x803C4C8E, 9, item_id)
+    if target_index < 0:
+        return
+    dme.write_byte((0x803C4C8E + target_index), 0xFF)
+
+
 def give_bottle():
-    open_index = bottle_index()
+    open_index = free_index(0x803C4C52, 4)
     if open_index < 0:
         return
     dme.write_byte((0x803C4C52 + open_index), 0x50)
 
-
 def remove_bottle():
-    open_index = bottle_index()
+    open_index = free_index(0x803C4C52, 4)
     if open_index <= 0:
         return
     dme.write_byte((0x803C4C52 + (open_index - 1)), 0xFF)
 
 
-def bottle_index():
-    bottle_list = [dme.read_byte(0x803C4C52 + offset) for offset in range(4)]
-    for index, bottle in enumerate(bottle_list):
-        if bottle == 0xFF:
+def free_index(starting_loc: int, amount: int):
+    return find_val_in_list(starting_loc, amount, 0xFF)
+
+def find_val_in_list(starting_loc:int, amount: int, target_val: int):
+    value_list = [dme.read_byte(starting_loc + offset) for offset in range(amount)]
+    for index, value in enumerate(value_list):
+        if value == target_val:
             return index
     return -1
 
@@ -274,7 +327,6 @@ def give_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)
     song_index = item % 0x6D
     dme.write_byte(0x803C4CC5, (curr_val | (1 << song_index)))
-
 
 def take_song(item: int):
     curr_val = dme.read_byte(0x803C4CC5)
@@ -296,7 +348,6 @@ def give_pearl(item: int):
         totg_flags = dme.read_byte(0x803C524A)
         dme.write_byte(0x803C524A, (totg_flags | 0x40))
 
-
 def take_pearl(item: int):
     curr_val = dme.read_byte(0x803C4CC7)
     pearl_index = 0
@@ -307,7 +358,7 @@ def take_pearl(item: int):
     changed_val = curr_val ^ (1 << pearl_index)
     dme.write_byte(0x803C4CC7, changed_val)
     if curr_val == 0x7:
-        # Raise ToTG
+        # Lower ToTG
         totg_flags = dme.read_byte(0x803C524A)
         dme.write_byte(0x803C524A, (totg_flags ^ 0x40))
 
@@ -315,12 +366,131 @@ def take_pearl(item: int):
 def give_heros_charm():
     dme.write_byte(0x803C4CC0, 0x01)
 
-
 def take_heros_charm():
     dme.write_byte(0x803C4CC0, 0x00)
 
 
-def check_menu():
+def give_small_key_by_stage_id(stage_id: int):
+    curr_stage_id = dme.read_byte(0x803C53A4)
+    if curr_stage_id != stage_id:
+        stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
+        curr_keys = dme.read_byte(stage_mem_loc + 0x20)
+        dme.write_byte(stage_mem_loc + 0x20, curr_keys + 1)
+    else:
+        dme.write_bytes(0x803CA77C, b'\x00\x01')
+
+def take_small_key_by_stage_id(stage_id: int):
+    curr_stage_id = dme.read_byte(0x803C53A4)
+    if curr_stage_id != stage_id:
+        stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
+        curr_keys = dme.read_byte(stage_mem_loc + 0x20)
+        if curr_keys > 0:
+            dme.write_byte(stage_mem_loc + 0x20, curr_keys - 1)
+    else:
+        dme.write_bytes(0x803CA77C, b'\xFF\xFF')
+
+
+def toggle_dungeon_map(stage_id: int):
+    toggle_dungeon_flag(stage_id, 0)
+
+def toggle_dungeon_compass(stage_id: int):
+    toggle_dungeon_flag(stage_id, 1)
+
+def toggle_dungeon_bk(stage_id: int):
+    toggle_dungeon_flag(stage_id, 2)
+
+def toggle_dungeon_flag(stage_id: int, offset: int):
+    curr_stage_id = dme.read_byte(0x803C53A4)
+    if curr_stage_id != stage_id:
+        stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
+        curr_flags = dme.read_byte(stage_mem_loc + 0x21)
+        dme.write_byte(stage_mem_loc + 0x21, (curr_flags ^ (1 << offset)))
+    else:
+        stage_mem_loc = WWR.stage_id_memory_locations[0x10] # Currently, Loaded Stage Location
+        curr_flags = dme.read_byte(stage_mem_loc + 0x21)
+        dme.write_byte(stage_mem_loc + 0x21, (curr_flags ^ (1 << offset)))
+
+def give_drc_item(item_id: int):
+    if item_id == 0x13:
+        give_small_key_by_stage_id(3)
+    elif item_id == 0x14:
+        toggle_dungeon_bk(3)
+    elif item_id == 0x1B:
+        toggle_dungeon_map(3)
+    elif item_id == 0x1C:
+        toggle_dungeon_compass(3)
+    else:
+        return
+
+def give_fw_item(item_id: int):
+    if item_id == 0x1D:
+        give_small_key_by_stage_id(4)
+    elif item_id == 0x40:
+        toggle_dungeon_bk(4)
+    elif item_id == 0x41:
+        toggle_dungeon_map(4)
+    elif item_id == 0x5A:
+        toggle_dungeon_compass(4)
+    else:
+        return
+
+def give_totg_item(item_id: int):
+    if item_id == 0x5B:
+        give_small_key_by_stage_id(5)
+    elif item_id == 0x5C:
+        toggle_dungeon_bk(5)
+    elif item_id == 0x5D:
+        toggle_dungeon_map(5)
+    elif item_id == 0x5E:
+        toggle_dungeon_compass(5)
+    else:
+        return
+
+
+def give_ff_item(item_id: int):
+    if item_id == 0x5F:
+        toggle_dungeon_map(2)
+    elif item_id == 0x60:
+        toggle_dungeon_compass(2)
+    else:
+        return
+
+
+
+def give_et_item(item_id: int):
+    if item_id == 0x73:
+        give_small_key_by_stage_id(6)
+    elif item_id == 0x74:
+        toggle_dungeon_bk(6)
+    elif item_id == 0x75:
+        toggle_dungeon_map(6)
+    elif item_id == 0x76:
+        toggle_dungeon_compass(6)
+    else:
+        return
+
+
+def give_wt_item(item_id: int):
+    if item_id == 0x77:
+        give_small_key_by_stage_id(7)
+    elif item_id == 0x81:
+        toggle_dungeon_bk(7)
+    elif item_id == 0x84:
+        toggle_dungeon_map(7)
+    elif item_id == 0x85:
+        toggle_dungeon_compass(7)
+    else:
+        return
+
+def give_heart_container():
+    give_heart_pieces(4)
+
+def give_heart_pieces(amount: int):
+    #Actual Location is 803CA77E with a Width of 2
+    dme.write_byte(0x803CA77F, amount)
+
+
+def check_valid_state():
     curr_val = dme.read_bytes(0x803C9D3C, 8)
     return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
 

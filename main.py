@@ -5,7 +5,7 @@ from Model.serverConfig import ServerConfig
 import Client.clientSocket as clientFunctions
 from Model.config import Config
 
-print("Using Client version 0.0.2")
+print("Using Client version 0.0.2.1")
 print("Loading Config...")
 config_info = Config.get_config()
 server_config = ServerConfig(config_info.get_address(), config_info.get_port(),

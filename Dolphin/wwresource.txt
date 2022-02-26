@@ -42,3 +42,9 @@ Branch to write the World ID into the byte location 2 bytes ahead of ItemID
 
 0x803C4D4D
 
+0x803C5296 0x04 = Dragon Tingle Statue
+0x803C5296 0x08 = Forbidden Tingle Statue
+0x803C5296 0x10 = Goddess Tingle Statue
+0x803C5296 0x20 = Earth Tingle Statue
+0x803C5296 0x40 = Wind Tingle Statue
+

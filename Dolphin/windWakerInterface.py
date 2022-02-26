@@ -51,52 +51,58 @@ def clear_chest_items():
     return [write_word(0x803FED40, 0x0000), write_word(0x803FED44, 0x0000)]
 
 
-def give_item_by_value(item: int):
-    if item in WWR.inventory_handling:
-        give_inventory_item_by_value(item)
-    elif item in WWR.rupees:
-        give_rupees(WWR.rupee_map[item])
-    elif item in WWR.swords:
+def give_item_by_value(item_id: int):
+    if item_id in WWR.inventory_handling:
+        give_inventory_item_by_value(item_id)
+    elif item_id in WWR.rupees:
+        give_rupees(WWR.rupee_map[item_id])
+    elif item_id in WWR.swords:
         upgrade_sword()
-    elif item in WWR.shields:
+    elif item_id in WWR.shields:
         upgrade_shield()
-    elif item in WWR.shards:
-        give_triforce_shard(item & 0xF)
-    elif item in WWR.wallets:
+    elif item_id in WWR.shards:
+        give_triforce_shard(item_id & 0xF)
+    elif item_id in WWR.wallets:
         upgrade_wallet()
-    elif item in WWR.bows:
+    elif item_id in WWR.bows:
         upgrade_bow()
-    elif item in WWR.songs:
-        give_song(item)
-    elif item in WWR.pearls:
-        give_pearl(item)
-    elif item in WWR.pictos:
+    elif item_id in WWR.songs:
+        give_song(item_id)
+    elif item_id in WWR.pearls:
+        give_pearl(item_id)
+    elif item_id in WWR.pictos:
         upgrade_picto()
-    elif item in WWR.delivery_bag_items:
-        give_delivery_bag_item(item)
-    elif item in WWR.drc_dungeon_items:
-        give_drc_item(item)
-    elif item in WWR.fw_dungeon_items:
-        give_fw_item(item)
-    elif item in WWR.totg_dungeon_items:
-        give_totg_item(item)
-    elif item in WWR.ff_dungeon_items:
-        give_ff_item(item)
-    elif item in WWR.et_dungeon_items:
-        give_et_item(item)
-    elif item in WWR.wt_dungeon_items:
-        give_wt_item(item)
-    elif item in WWR.charts:
-        give_map_by_id(item)
-    elif item == 0x08:
+    elif item_id in WWR.delivery_bag_items:
+        give_delivery_bag_item(item_id)
+    elif item_id in WWR.drc_dungeon_items:
+        give_drc_item(item_id)
+    elif item_id in WWR.fw_dungeon_items:
+        give_fw_item(item_id)
+    elif item_id in WWR.totg_dungeon_items:
+        give_totg_item(item_id)
+    elif item_id in WWR.ff_dungeon_items:
+        give_ff_item(item_id)
+    elif item_id in WWR.et_dungeon_items:
+        give_et_item(item_id)
+    elif item_id in WWR.wt_dungeon_items:
+        give_wt_item(item_id)
+    elif item_id in WWR.charts:
+        give_map_by_id(item_id)
+    elif item_id in WWR.quivers:
+        upgrade_quiver()
+    elif item_id in WWR.bomb_bags:
+        upgrade_bomb_bag()
+    elif item_id in WWR.tingle_statues:
+        give_tingle_statue(item_id)
+    elif item_id == 0x08:
         give_heart_container()
-    elif item == 0x07:
+    elif item_id == 0x07:
         give_heart_pieces(1)
-    elif item == 0x50:
+    elif item_id == 0x50:
         give_bottle()
-    elif item == 0x28:
+    elif item_id == 0x28:
         give_power_bracelets()
-    elif item == 0x43:
+    elif item_id == 0x43:
         give_heros_charm()
     else:
         pass
@@ -163,11 +169,51 @@ def give_rupees(amount: int):
     dme.write_word(0x803CA768, amount)
 
 
+def upgrade_progressive_consumable(max_address, curr_amount_address):
+    curr_max = dme.read_byte(max_address)
+    if curr_max == 30:
+        dme.write_byte(max_address, 60)
+        dme.write_byte(curr_amount_address, 60)
+    elif curr_max == 60:
+        dme.write_byte(max_address, 99)
+        dme.write_byte(curr_amount_address, 99)
+    elif curr_max == 99:
+        return
+    else:
+        raise RuntimeWarning(f"Unexpected Value {curr_max} for address {max_address}")
+
+
+def downgrade_progressive_consumable(max_address, curr_amount_address):
+    curr_max = dme.read_byte(max_address)
+    if curr_max == 99:
+        dme.write_byte(max_address, 60)
+        dme.write_byte(curr_amount_address, 60)
+    elif curr_max == 60:
+        dme.write_byte(max_address, 30)
+        dme.write_byte(curr_amount_address, 30)
+    elif curr_max == 30:
+        return
+    else:
+        raise RuntimeWarning(f"Unexpected Value {curr_max} for address {max_address}")
+
+def upgrade_quiver():
+    upgrade_progressive_consumable(0x803C4C77, 0x803C4C71)
+
+def downgrade_quiver():
+    downgrade_progressive_consumable(0x803C4C77, 0x803C4C71)
+
+def upgrade_bomb_bag():
+    upgrade_progressive_consumable(0x803C4C78, 0x803C4C72)
+
+def downgrade_bomb_bag():
+    downgrade_progressive_consumable(0x803C4C78, 0x803C4C72)
+
+
 def upgrade_sword():
     swords_list = [0x38, 0x39, 0x3A, 0x3E]
     curr_val = dme.read_byte(0x803C4C16)
     next_sword = 0  # Undershoot by one so no logic changes
-    if curr_val == 0x83:
+    if curr_val == 0x38:
         next_sword = 1
     elif curr_val == 0x39:
         next_sword = 2
@@ -488,6 +534,21 @@ def give_heart_container():
 def give_heart_pieces(amount: int):
     #Actual Location is 803CA77E with a Width of 2
     dme.write_byte(0x803CA77F, amount)
+
+def give_tingle_statue(item_id: int):
+    toggle_tingle_statue(item_id, True)
+
+def take_tingle_statue(item_id: int):
+    toggle_tingle_statue(item_id, False)
+
+def toggle_tingle_statue(item_id: int, enable: bool):
+    statue_mapping = WWR.statue_mapping[item_id]
+    curr_flag_val = dme.read_byte(statue_mapping[0])
+    masked_val = curr_flag_val & statue_mapping[1]
+    if not bool(masked_val) and enable:
+       dme.write_byte(statue_mapping[0], (curr_flag_val ^ statue_mapping[1]))
+    elif bool(masked_val) and not enable:
+        dme.write_byte(statue_mapping[0], (curr_flag_val ^ statue_mapping[1]))
 
 
 def check_valid_state():

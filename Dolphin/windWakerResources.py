@@ -382,6 +382,22 @@ charts = [
     0XFD, # "Triforce Chart 2":
     0XFE  # "Triforce Chart 1":
 ]
+tingle_statues = [
+    0xA3,   # Dragon Tingle Statue
+    0XA4,   # Forbidden Tingle Statue
+    0XA5,   # Goddess Tingle Statue
+    0XA6,   # Earth Tingle Statue
+    0XA7    # Wind Tingle Statue
+]
+quivers = [
+    0xAF,  # 60 Quiver
+    0xB0   # 99 Quiver
+]
+bomb_bags = [
+    0xAD,  # 60 Bomb Bag
+    0xAE  # 99 Bomb Bag
+]
+
 logical_items = {
     0x20: False,  # Telescope
     0x78: False,  # Sail
@@ -620,6 +636,13 @@ chart_mapping = {
     0XFC:[0x803C4CDC ,0x00000004], # "Triforce Chart 3":
     0XFD:[0x803C4CDC ,0x00000002], # "Triforce Chart 2":
     0XFE:[0x803C4CDC ,0x00000001], # "Triforce Chart 1":
+}
+statue_mapping = {
+    0xA3: [0x803C5296, 0x04],  # Dragon Tingle Statue
+    0XA4: [0x803C5296, 0x08],  # Forbidden Tingle Statue
+    0XA5: [0x803C5296, 0x10],  # Goddess Tingle Statue
+    0XA6: [0x803C5296, 0x20],  # Earth Tingle Statue
+    0XA7: [0x803C5296, 0x40]   # Wind Tingle Statue
 }
 """
   Bottle item IDs:

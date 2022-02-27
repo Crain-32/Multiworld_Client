@@ -165,7 +165,7 @@ def downgrade_wallet():
 
 def give_rupees(amount: int):
     if random_rupoors and bool(random.getrandbits(1)):
-            amount *= -1
+            amount = ((amount ^ 0xFFFFFFFF) + 1 )
     dme.write_word(0x803CA768, amount)
 
 

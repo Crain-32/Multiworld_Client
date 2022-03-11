@@ -15,7 +15,7 @@ may seem more refined than others, and that is to be expected.
 ### FAQ ###
 - Yes, nothing works! Welcome to the early stages of development.
 - I'm using Python 3.10
-- Only Windows works, due to Py Dolphin Memory Engine being Windows Only.
+- Windows/Linux only, due to an underlying dependency
 
 ### Current Plans ###
 - Implement the GUI.

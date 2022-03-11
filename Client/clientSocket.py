@@ -81,7 +81,7 @@ async def handle_dolphin():
     while WWI.is_hooked():
         try:
             state = WWI.read_chest_items()
-            if state[0] != 0 and state[1] != 0:
+            if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                 item_dto = ItemDto(world_id, 0, state[1])
                 print_item_dto(item_dto)
                 items_to_send.append(item_dto)
@@ -107,7 +107,7 @@ async def give_item():
             WWI.give_item_by_value(item_dto.itemId)
             items_to_process.pop()
             await asyncio.sleep(0)
-        except Exception as exc:
+        except RuntimeError as exc:
             print(exc)
             del exc
 

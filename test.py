@@ -10,7 +10,7 @@ from Model.itemDto import ItemDto
 address = "twwmultiplayer.com"
 port = 8080
 world_id = 2
-game_room = "test"
+game_room = "testing"
 
 
 async def test():
@@ -22,7 +22,7 @@ async def test():
         print(websocket.id)
         await websocket.send(f.subscribe(f"/topic/item/{game_room}"))
         print("Subscribed")
-        test_dto = ItemDto(world_id, 0, 0xB8)
+        test_dto = ItemDto(world_id, 0, 0x23)
         await websocket.send(f.send_json(f"/app/item/{game_room}", json.dumps(test_dto.as_dict())))
         foo = await websocket.recv()
         print(foo)

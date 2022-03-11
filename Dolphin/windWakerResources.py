@@ -154,10 +154,10 @@ item_id_dict = {
     "Hurricane Spin": 0XAA,           # Not Researched
     "1000 Rupee Wallet": 0XAB,        # Supported
     "5000 Rupee Wallet": 0XAC,        # Supported
-    "60 Bomb Bomb Bag": 0XAD,         # Not Researched
-    "99 Bomb Bomb Bag": 0XAE,         # Not Researched
-    "60 Arrow Quiver": 0XAF,          # Not Researched
-    "99 Arrow Quiver": 0XB0,          # Not Researched
+    "60 Bomb Bomb Bag": 0XAD,         # Supported
+    "99 Bomb Bomb Bag": 0XAE,         # Supported
+    "60 Arrow Quiver": 0XAF,          # Supported
+    "99 Arrow Quiver": 0XB0,          # Supported
     "Magic Meter Upgrade": 0XB2,      # Need additional Handling
     "50 Rupees, reward for finding 1 Tingle Statue": 0XB3,       # Not going to Support
     "100 Rupees, reward for finding 2 Tingle Statues": 0XB4,     # Not going to Support
@@ -226,6 +226,7 @@ item_id_dict = {
     "Triforce Chart 3": 0XFC,        # Supported
     "Triforce Chart 2": 0XFD,        # Supported
     "Triforce Chart 1": 0XFE,        # Supported
+    "INVALID ID": 0xFF               # Just in Case.
 }
 inventory_handling = [
     0x20,  # Telescope
@@ -244,21 +245,12 @@ inventory_handling = [
     0x2F,  # Hookshot
     0x33   # Skull Hammer
 ]
+
 delivery_bag_items = [
     0x99,  # Note to Mom
     0x9A,  # Maggie's Letter
     0x9B,  # Moblin's Letter
     0x9C   # Cabana Deed
-]
-rupees = [
-    0x01,  # Green
-    0x02,  # Blue
-    0x03,  # Yellow
-    0x04,  # Red
-    0x05,  # Purple
-    0x06,  # Orange
-    0x0F,  # Silver
-    0xB8   # TREVOR
 ]
 rupee_map = {
     0x01: 0x00000001, # Green
@@ -270,157 +262,84 @@ rupee_map = {
     0x0F: 0x000000C8, # Silver
     0xB8: 0x000001F4,  # TREVOR
 }
-curr_swords = 1
-swords = [
-    0x38,  # Hero's
-    0x39,  # Master Sword
-    0x3A,  # Half Power
-    0x3E,  # Full Power
-]
-curr_shields = 0
-shields = [
-    0x3B,  # Hero's Shield
-    0x3C   # Mirror Shield
-]
-shards = [
-    0x61,  # Triforce Shard 1 - 8
-    0x62,  # 2
-    0x63,  # 3
-    0x64,  # 4
-    0x65,  # 5
-    0x66,  # 6
-    0x67,  # 7
-    0x68   # 8
-]
-curr_bow = 0
-bows = [
-    0x27,  # Hero's
-    0x35,  # Fire/Ice
-    0x36   # Light Arrows
-]
-wallets = [
-    0XAB,  # 1000
-    0XAC   # 5000
-]
-songs = [
-    0x6D,  # Wind's Requiem
-    0x6E,  # Ballad of Gales
-    0x6F,  # Command Melody
-    0x70,  # Earth God's Lyric
-    0x71,  # Wind God's Aria
-    0x72   # Song of Passing
-]
+rupees = [key for key in rupee_map.keys()]
+
+# Format is item_id: [[progressive_item_id_list], reference_address, flag_address]
+progressive_items_map = {
+    0x38: [[0xFF, 0x38, 0x39, 0x3A, 0x3E], 0x803C4C16, 0x803C4CBC],   # Hero's
+    0x39: [[0xFF, 0x38, 0x39, 0x3A, 0x3E], 0x803C4C16, 0x803C4CBC],   # Master Sword
+    0x3A: [[0xFF, 0x38, 0x39, 0x3A, 0x3E], 0x803C4C16, 0x803C4CBC],   # Half Power
+    0x3E: [[0xFF, 0x38, 0x39, 0x3A, 0x3E], 0x803C4C16, 0x803C4CBC],   # Full Power
+    0x3B: [[0xFF, 0x3B, 0x3C], 0x803C4C17, 0x803C4CBD],   # Hero's Shield
+    0x3C: [[0xFF, 0x3B, 0x3C], 0x803C4C17, 0x803C4CBD],   # Mirror Shield
+    0x23: [[0xFF, 0x23, 0x26], 0x803C4C4C, 0x803C4C61],   # Picto Box
+    0x26: [[0xFF, 0x23, 0x26], 0x803C4C4C, 0x803C4C61],   # Deluxe Picto Box
+    0x27: [[0xFF, 0x27, 0x35, 0x36], 0x803C4C50, 0x803C4C65],   # Hero's
+    0x35: [[0xFF, 0x27, 0x35, 0x36], 0x803C4C50, 0x803C4C65],   # Fire/Ice
+    0x36: [[0xFF, 0x27, 0x35, 0x36], 0x803C4C50, 0x803C4C65]    # Light Arrows
+}
+progressive_items = [key for key in progressive_items_map.keys()]
+
+# Format is item_id: [max_amount_location, current_amount_location]
+progressive_consumables_map = {
+    0xAF: [0x803C4C77, 0x803C4C71],   # 60 Quiver
+    0xB0: [0x803C4C77, 0x803C4C71],   # 99 Quiver
+    0xAD: [0x803C4C78, 0x803C4C72],   # 60 Bomb Bag
+    0xAE: [0x803C4C78, 0x803C4C72]   # 99 Bomb Bag
+
+}
+progressive_consumables = [key for key in progressive_consumables_map.keys()]
+
+shards_statues_wallets_and_songs_map = {
+    0x61: [0x803C4CC6, 0],  # Triforce Shard 1 - 8
+    0x62: [0x803C4CC6, 1],  # 2
+    0x63: [0x803C4CC6, 2],  # 3
+    0x64: [0x803C4CC6, 3],  # 4
+    0x65: [0x803C4CC6, 4],  # 5
+    0x66: [0x803C4CC6, 5],  # 6
+    0x67: [0x803C4CC6, 6],  # 7
+    0x68: [0x803C4CC6, 7],  # 8
+    0x6D: [0x803C4CC5, 0],  # Wind's Requiem
+    0x6E: [0x803C4CC5, 1],  # Ballad of Gales
+    0x6F: [0x803C4CC5, 2],  # Command Melody
+    0x70: [0x803C4CC5, 3],  # Earth God's Lyri
+    0x71: [0x803C4CC5, 4],  # Wind God's Aria
+    0x72: [0x803C4CC5, 5],  # Song of Passing
+    0xA3: [0x803C5296, 2],  # Dragon Tingle Statue
+    0XA4: [0x803C5296, 3],  # Forbidden Tingle Statue
+    0XA5: [0x803C5296, 4],  # Goddess Tingle Statue
+    0XA6: [0x803C5296, 5],  # Earth Tingle Statue
+    0XA7: [0x803C5296, 6],  # Wind Tingle Statue
+    0xAB: [0x803C4C1A, 0],  # 1000 Rupee Wallet
+    0xAC: [0x803C4C1A, 1]  # 5000 Rupee Wallet
+}
+shards_statues_wallets_and_songs = [key for key in shards_statues_wallets_and_songs_map.keys()]
+
+single_value_with_flag_map = {
+    0x20: [],  # Telescope
+    0x78: [],  # Sail
+    0x22: [],  # Wind Waker
+    0x25: [],  # Grappling Hook
+    0x24: [],  # Spoils Bag
+    0x21: [],  # Tingle Tuner
+    0x29: [],  # Iron Boots
+    0x2A: [],  # Magic Armor
+    0x2C: [],  # Bait Bag
+    0x2D: [],  # Boomerang
+    0x34: [],  # Deku Leaf
+    0x31: [],  # Bombs
+    0x30: [],  # Delivery Bag
+    0x2F: [],  # Hookshot
+    0x33: []  # Skull Hammer
+}
+
 pearls = [
     0x69,  # Nayru's Pearl
     0x6A,  # Din's Pearl
     0x6B   # Farore's Pearl
 ]
-pictos = [
-    0x23,  # Picto Box
-    0x26   # Deluxe Picto Box
-]
-charts = [
-    0XC2, # "Submarine Chart":
-    0XC3, # "Beedle's Chart":
-    0XC4, # "Platform Chart":
-    0XC5, # "Light Ring Chart":
-    0XC6, # "Secret Cave Chart":
-    0XC7, # "Sea Hearts Chart":
-    0XC8, # "Island Hearts Chart":
-    0XC9, # "Great Fairy Chart":
-    0XCA, # "Octo Chart":
-    0XCB, # "IN-credible Chart":
-    0XCC, # "Treasure Chart 7":
-    0XCD, # "Treasure Chart 27":
-    0XCE, # "Treasure Chart 21":
-    0XCF, # "Treasure Chart 13":
-    0XD0, # "Treasure Chart 32":
-    0XD1, # "Treasure Chart 19":
-    0XD2, # "Treasure Chart 41":
-    0XD3, # "Treasure Chart 26":
-    0XD4, # "Treasure Chart 8":
-    0XD5, # "Treasure Chart 37":
-    0XD6, # "Treasure Chart 25":
-    0XD7, # "Treasure Chart 17":
-    0XD8, # "Treasure Chart 36":
-    0XD9, # "Treasure Chart 22":
-    0XDA, # "Treasure Chart 9":
-    0XDB, # "Ghost Ship Chart":
-    0XDC, # "Tingle's Chart":
-    0XDD, # "Treasure Chart 14":
-    0XDE, # "Treasure Chart 10":
-    0XDF, # "Treasure Chart 40":
-    0XE0, # "Treasure Chart 3":
-    0XE1, # "Treasure Chart 4":
-    0XE2, # "Treasure Chart 28":
-    0XE3, # "Treasure Chart 16":
-    0XE4, # "Treasure Chart 18":
-    0XE5, # "Treasure Chart 34":
-    0XE6, # "Treasure Chart 29":
-    0XE7, # "Treasure Chart 1":
-    0XE8, # "Treasure Chart 35":
-    0XE9, # "Treasure Chart 12":
-    0XEA, # "Treasure Chart 6":
-    0XEB, # "Treasure Chart 24":
-    0XEC, # "Treasure Chart 39":
-    0XED, # "Treasure Chart 38":
-    0XEE, # "Treasure Chart 2":
-    0XEF, # "Treasure Chart 33":
-    0XF0, # "Treasure Chart 31":
-    0XF1, # "Treasure Chart 23":
-    0XF2, # "Treasure Chart 5":
-    0XF3, # "Treasure Chart 20":
-    0XF4, # "Treasure Chart 30":
-    0XF5, # "Treasure Chart 15":
-    0XF6, # "Treasure Chart 11":
-    0XF7, # "Triforce Chart 8":
-    0XF8, # "Triforce Chart 7":
-    0XF9, # "Triforce Chart 6":
-    0XFA, # "Triforce Chart 5":
-    0XFB, # "Triforce Chart 4":
-    0XFC, # "Triforce Chart 3":
-    0XFD, # "Triforce Chart 2":
-    0XFE  # "Triforce Chart 1":
-]
-tingle_statues = [
-    0xA3,   # Dragon Tingle Statue
-    0XA4,   # Forbidden Tingle Statue
-    0XA5,   # Goddess Tingle Statue
-    0XA6,   # Earth Tingle Statue
-    0XA7    # Wind Tingle Statue
-]
-quivers = [
-    0xAF,  # 60 Quiver
-    0xB0   # 99 Quiver
-]
-bomb_bags = [
-    0xAD,  # 60 Bomb Bag
-    0xAE  # 99 Bomb Bag
-]
 
-logical_items = {
-    0x20: False,  # Telescope
-    0x78: False,  # Sail
-    0x22: False,  # Wind Waker
-    0x25: False,  # Grappling Hook
-    0x21: False,  # Tingle Tuner
-    0x29: False,  # Iron Boots
-    0x2A: False,  # Magic Armor
-    0x2D: False,  # Boomerang
-    0x34: False,  # Deku Leaf
-    0x31: False,  # Bombs
-    0x2F: False,  # Hookshot
-    0x33: False,  # Skull Hammer
-    0x61: False,  # Triforce Shard 1 - 8
-    0x62: False,
-    0x63: False,
-    0x64: False,
-    0x65: False,
-    0x66: False,
-    0x67: False,
-    0x68: False,
-    0x28: False   # Power Bracelets
-}
+
 
 map_byte = 0xFF
 curr_bottles = 0
@@ -509,17 +428,6 @@ player_inventory = {
     0x30: 0x803C4C56, # Delivery Bag
     0x2F: 0x803C4C57, # Hookshot
     0x33: 0x803C4C58  # Skull Hammer
-}
-
-useful_address = {
-    "Add Rupees": 0x803CA768
-}
-
-misc_memory_location = {
-    "current_b_button": 0x803C4C16,
-    "current_shield": 0x803C4C17,
-    "power_bracelet_status": 0x803C4C18,
-    "current_wallet": 0x803C4C1A
 }
 
 single_bit_own_flag = {
@@ -637,13 +545,7 @@ chart_mapping = {
     0XFD:[0x803C4CDC ,0x00000002], # "Triforce Chart 2":
     0XFE:[0x803C4CDC ,0x00000001], # "Triforce Chart 1":
 }
-statue_mapping = {
-    0xA3: [0x803C5296, 0x04],  # Dragon Tingle Statue
-    0XA4: [0x803C5296, 0x08],  # Forbidden Tingle Statue
-    0XA5: [0x803C5296, 0x10],  # Goddess Tingle Statue
-    0XA6: [0x803C5296, 0x20],  # Earth Tingle Statue
-    0XA7: [0x803C5296, 0x40]   # Wind Tingle Statue
-}
+charts = [key for key in chart_mapping.keys()]
 """
   Bottle item IDs:
     50 - Empty Bottle

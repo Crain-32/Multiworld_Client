@@ -399,9 +399,9 @@ def toggle_bit_flag(address: int, offset: int, enable: bool):
     bit_offset = 1 << offset
     masked_val = curr_val & bit_offset
     if not bool(masked_val) and enable:
-       dme.write_byte(address, (curr_flag_val ^ bit_offset))
+       dme.write_byte(address, (curr_val ^ bit_offset))
     elif bool(masked_val) and not enable:
-        dme.write_byte(address, (curr_flag_val ^ bit_offset))
+        dme.write_byte(address, (curr_val ^ bit_offset))
 
 
 

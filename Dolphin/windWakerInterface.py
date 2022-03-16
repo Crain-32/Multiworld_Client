@@ -275,10 +275,10 @@ def take_magic_upgade():
     dme.write_byte(0x803C4C1B, 0x10)
 
 def give_hurricane_spin():
-    dme.write_byte(0x803C5295, 1)
+    toggle_bit_flag(0x803C5295, 0, True)
 
 def take_hurricane_spin():
-    dme.write_byte(0x803C5295, 0)
+    toggle_bit_flag(0x803C5295, 0, False)
 
 def give_heros_charm():
     toggle_bit_flag(0x803C4CC0, 1, True)

@@ -98,6 +98,10 @@ def give_item_by_value(item_id: int):
         give_power_bracelets()
     elif item_id == 0x43:
         give_heros_charm()
+    elif item_id == 0xB2:
+        give_magic_upgade()
+    elif item_id == 0xAA:
+        give_hurricane_spin()
     else:
         pass
 
@@ -159,7 +163,7 @@ def downgrade_wallet():
 
 def give_rupees(amount: int):
     if random_rupoors and bool(random.getrandbits(1)):
-            amount = ((amount ^ 0xFFFFFFFF) + 1 )
+        amount = ((amount ^ 0xFFFFFFFF) + 1)
     dme.write_word(0x803CA768, amount)
 
 def write_byte_and_toggle_flag(address: int, value: int, flag_address: int, flag_offset: int, enable: bool):
@@ -263,6 +267,18 @@ def take_pearl(item: int):
     if curr_val == 0x7:
         toggle_bit_flag(0x803C524A, 6, False)
 
+def give_magic_upgade():
+    dme.write_byte(0x803C4C1B, 0x20)
+    dme.write_byte(0x803C4C1C, 0x20)
+
+def take_magic_upgade():
+    dme.write_byte(0x803C4C1B, 0x10)
+
+def give_hurricane_spin():
+    toggle_bit_flag(0x803C5295, 0, True)
+
+def take_hurricane_spin():
+    toggle_bit_flag(0x803C5295, 0, False)
 
 def give_heros_charm():
     toggle_bit_flag(0x803C4CC0, 1, True)

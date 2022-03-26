@@ -15,7 +15,7 @@ def base_frame_template(command: str) -> str:
 
 class StompFrameManager:
 
-    def __init__(self, serverConfig: ServerConfig) -> None:
+    def __init__(self, serverConfig: Optional[ServerConfig]) -> None:
         self.serverConfig = serverConfig
         self.subscription_num = 0
         self.subscriptions = dict()

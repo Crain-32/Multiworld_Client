@@ -1,9 +1,8 @@
 import asyncio
-
+from typing import Coroutine, Any, Optional
 import dolphin_memory_engine as dme
 from Dolphin.windWakerResources import stage_id_list as stage_map
 from Model.config import Config
-
 
 
 stage_flag_list = [[0 for inner_index in range(0x23)] for index in range(0x10)]
@@ -28,7 +27,7 @@ scan_item_flags = Config.get_config().Scan_Item_Flags
 scan_dungeon_rooms = Config.get_config().Scan_Dungeon_Rooms
 
 
-async def watch_changes():
+async def watch_changes() -> Optional[Coroutine[Any, Any, None]]:
     curr_stage_id = dme.read_byte(0x803C53A4)
     if curr_stage_id not in range(0xF):
         return
@@ -57,7 +56,7 @@ async def watch_changes():
     await asyncio.sleep(1)
 
 
-def handle_bits_in_byte_val(curr_stage_id, index, difference, event_type):
+def handle_bits_in_byte_val(curr_stage_id, index, difference, event_type) -> None:
     bit_index = 7
     while difference != 0:
         if difference & 1 == 1:
@@ -73,12 +72,12 @@ def handle_bits_in_byte_val(curr_stage_id, index, difference, event_type):
         difference = difference >> 1
 
 
-def print_bits_helper(curr_stage_id, index, bit_index, stage_str, room_num):
+def print_bits_helper(curr_stage_id, index, bit_index, stage_str, room_num) -> None:
     print(f"{stage_map[curr_stage_id]} flag at byte {index} for " +
           f"bit {bit_index} in Stage:{stage_str} and Room:{room_num}")
 
 
-def get_user_input(input_type):
+def get_user_input(input_type) -> str:
     print("Flag type shortcuts are A | C | E Or type in the Location matching the Tracker")
     result = input(f"Press enter to Autofill to {autofill_options[input_type]}")
     if len(result) == 0:
@@ -92,7 +91,7 @@ def get_user_input(input_type):
     return result
 
 
-def write_to_file(stage_id, stage_str, byte_index, bit_index, flag_info, room_num):
+def write_to_file(stage_id, stage_str, byte_index, bit_index, flag_info, room_num) -> None:
     with open("flag_info.txt", 'a') as output_file:
         output_file.write(f"Stage ID:{stage_map[stage_id]}, Byte Offset: {byte_index}, Bit Offset: {bit_index} " +
                           f"Stage Name: {stage_str}, Room Number: {room_num}, Flag Info: {flag_info}\n")

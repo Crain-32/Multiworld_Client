@@ -1,21 +1,21 @@
 import random
-
 import dolphin_memory_engine as dme
-
+from typing import List
 import Dolphin.windWakerResources as WWR
 from Model.config import Config
 
 random_rupoors = Config.get_config().Random_Rupoors
 
-def hook():
+
+def hook() -> None:
     dme.hook()
 
 
-def assert_hook():
+def assert_hook() -> None:
     dme.assert_hooked()
 
 
-def is_hooked():
+def is_hooked() -> bool:
     return dme.is_hooked()
 
 
@@ -23,35 +23,35 @@ def write_byte(address, value: int) -> None:
     dme.write_byte(address, value)
 
 
-def read_byte(address):
+def read_byte(address) -> int:
     return dme.read_byte(address)
 
 
-def read_word(address):
+def read_word(address) -> int:
     return dme.read_word(address)
 
 
-def write_word(address, value):
+def write_word(address, value) -> None:
     return dme.write_word(address, value)
 
 
-def write_float(address, value) -> None:
+def write_float(address, value: float) -> None:
     dme.write_float(address, value)
 
 
-def read_float(address):
+def read_float(address) -> float:
     return dme.read_float(address)
 
 
-def read_chest_items():
+def read_chest_items() -> List[int]:
     return [(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))]
 
 
-def clear_chest_items():
+def clear_chest_items() -> List[None]:
     return [write_word(0x803FED40, 0x0000), write_word(0x803FED44, 0x0000)]
 
 
-def give_item_by_value(item_id: int):
+def give_item_by_value(item_id: int) -> None:
     if item_id in WWR.inventory_handling:
         give_inventory_item_by_value(item_id)
 
@@ -106,71 +106,71 @@ def give_item_by_value(item_id: int):
         pass
 
 
-def give_inventory_item_by_value(item: int):
+def give_inventory_item_by_value(item: int) -> None:
     write_byte(WWR.player_inventory[item], item)
     item_name = WWR.item_name_dict[item]
     if item_name in WWR.single_bit_own_flag.keys():
         write_byte(WWR.single_bit_own_flag[item], 0x01)
 
 
-def remove_inventory_item_by_value(item: int):
+def remove_inventory_item_by_value(item: int) -> None:
     write_byte(WWR.player_inventory[item], 0xFF)
     item_name = WWR.item_name_dict[item]
     if item_name in WWR.single_bit_own_flag.keys():
         write_byte(WWR.single_bit_own_flag[item], 0x00)
 
 
-def give_item_by_name(item: str):
+def give_item_by_name(item: str) -> None:
     give_inventory_item_by_value(WWR.item_id_dict[item])
 
 
-def give_power_bracelets():
+def give_power_bracelets() -> None:
     dme.write_byte(0x803C4C18, 0x28)
     dme.write_byte(0x803C4CBE, 0x01)
 
 
-def remove_power_bracelets():
+def remove_power_bracelets() -> None:
     dme.write_byte(0x803C4C18, 0xFF)
     dme.write_byte(0x803C4CBE, 0x00)
 
 
-def give_map_by_id(item_id: int):
+def give_map_by_id(item_id: int) -> None:
     mapping = WWR.chart_mapping[item_id]
     curr_val = dme.read_word(mapping[0])
     dme.write_word(mapping[0], (curr_val | mapping[1]))
 
 
-def take_map_by_id(item_id: int):
+def take_map_by_id(item_id: int) -> None:
     mapping = WWR.chart_mapping[item_id]
     mask = 0xFFFFFFFF
     curr_val = dme.read_word(mapping[0])
     dme.write_word(mapping[0], (curr_val & (mask ^ mapping[1])))
 
 
-def upgrade_wallet():
+def upgrade_wallet() -> None:
     curr_val = dme.read_byte(0x803C4C1A)
     if curr_val == 2:
         pass
     dme.write_byte(0x803C4C1A, curr_val + 1)
 
 
-def downgrade_wallet():
+def downgrade_wallet() -> None:
     curr_val = dme.read_byte(0x803C4C1A)
     if curr_val == 0:
         pass
     dme.write_byte(0x803C4C1A, curr_val - 1)
 
 
-def give_rupees(amount: int):
+def give_rupees(amount: int) -> None:
     if random_rupoors and bool(random.getrandbits(1)):
         amount = ((amount ^ 0xFFFFFFFF) + 1)
     dme.write_word(0x803CA768, amount)
 
-def write_byte_and_toggle_flag(address: int, value: int, flag_address: int, flag_offset: int, enable: bool):
+def write_byte_and_toggle_flag(address: int, value: int, flag_address: int, flag_offset: int, enable: bool) -> None:
     dme.write_byte(address, value)
     toggle_bit_flag(flag_address, flag_offset, enable)
 
-def upgrade_progressive_consumable(max_address, curr_amount_address):
+def upgrade_progressive_consumable(max_address, curr_amount_address) -> None:
     curr_max = dme.read_byte(max_address)
     if curr_max == 30:
         dme.write_byte(max_address, 60)
@@ -184,7 +184,7 @@ def upgrade_progressive_consumable(max_address, curr_amount_address):
         raise RuntimeWarning(f"Unexpected Value {curr_max} for address {max_address}")
 
 
-def downgrade_progressive_consumable(max_address, curr_amount_address):
+def downgrade_progressive_consumable(max_address, curr_amount_address) -> None:
     curr_max = dme.read_byte(max_address)
     if curr_max == 99:
         dme.write_byte(max_address, 60)
@@ -198,52 +198,52 @@ def downgrade_progressive_consumable(max_address, curr_amount_address):
         raise RuntimeWarning(f"Unexpected Value {curr_max} for address {max_address}")
 
 
-def give_triforce_shard(shard_num: int):
+def give_triforce_shard(shard_num: int) -> None:
     toggle_bit_flag(0x803C4CC6, (shard_num - 1), True)
 
-def remove_triforce_shard(shard_num: int):
+def remove_triforce_shard(shard_num: int) -> None:
     toggle_bit_flag(0x803C4CC6, (shard_num - 1), False)
 
 
-def give_delivery_bag_item(item_id: int):
+def give_delivery_bag_item(item_id: int) -> None:
     open_index = free_index(0x803C4C8E, 9)
     if open_index < 0:
         print(f"Error Adding {item_id} to the delivery bag")
         return
     dme.write_byte((0x803C4C8E + open_index), item_id)
 
-def take_delivery_bag_item(item_id: int):
+def take_delivery_bag_item(item_id: int) -> None:
     target_index = find_val_in_list(0x803C4C8E, 9, item_id)
     if target_index < 0:
         return
     dme.write_byte((0x803C4C8E + target_index), 0xFF)
 
 
-def give_bottle():
+def give_bottle() -> None:
     open_index = free_index(0x803C4C52, 4)
     if open_index < 0:
         return
     dme.write_byte((0x803C4C52 + open_index), 0x50)
 
 
-def remove_bottle():
+def remove_bottle() -> None:
     open_index = free_index(0x803C4C52, 4)
     if open_index <= 0:
         return
     dme.write_byte((0x803C4C52 + (open_index - 1)), 0xFF)
 
 
-def free_index(starting_address: int, amount: int):
+def free_index(starting_address: int, amount: int) -> int:
     return find_val_in_list(starting_address, amount, 0xFF)
 
-def find_val_in_list(starting_address:int, amount: int, target_val: int):
+def find_val_in_list(starting_address: int, amount: int, target_val: int) -> int:
     for index, value in enumerate(dme.read_bytes(starting_address, amount)):
         if value == target_val:
             return index
     return -1
 
 
-def give_pearl(item: int):
+def give_pearl(item: int) -> None:
     curr_val = dme.read_byte(0x803C4CC7)
     pearl_index = 0
     if item == 0x6A:
@@ -255,7 +255,7 @@ def give_pearl(item: int):
     if curr_val == 0x7:
         toggle_bit_flag(0x803C524A, 6, True)
 
-def take_pearl(item: int):
+def take_pearl(item: int) -> None:
     curr_val = dme.read_byte(0x803C4CC7)
     pearl_index = 0
     if item == 0x6A:
@@ -267,26 +267,26 @@ def take_pearl(item: int):
     if curr_val == 0x7:
         toggle_bit_flag(0x803C524A, 6, False)
 
-def give_magic_upgade():
+def give_magic_upgade() -> None:
     dme.write_byte(0x803C4C1B, 0x20)
     dme.write_byte(0x803C4C1C, 0x20)
 
-def take_magic_upgade():
+def take_magic_upgade() -> None:
     dme.write_byte(0x803C4C1B, 0x10)
 
-def give_hurricane_spin():
+def give_hurricane_spin() -> None:
     toggle_bit_flag(0x803C5295, 0, True)
 
-def take_hurricane_spin():
+def take_hurricane_spin() -> None:
     toggle_bit_flag(0x803C5295, 0, False)
 
-def give_heros_charm():
+def give_heros_charm() -> None:
     toggle_bit_flag(0x803C4CC0, 1, True)
 
-def take_heros_charm():
+def take_heros_charm() -> None:
     toggle_bit_flag(0x803C4CC0, 1, False)
 
-def give_small_key_by_stage_id(stage_id: int):
+def give_small_key_by_stage_id(stage_id: int) -> None:
     curr_stage_id = dme.read_byte(0x803C53A4)
     if curr_stage_id != stage_id:
         stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
@@ -295,7 +295,7 @@ def give_small_key_by_stage_id(stage_id: int):
     else:
         dme.write_bytes(0x803CA77C, b'\x00\x01')
 
-def take_small_key_by_stage_id(stage_id: int):
+def take_small_key_by_stage_id(stage_id: int) -> None:
     curr_stage_id = dme.read_byte(0x803C53A4)
     if curr_stage_id != stage_id:
         stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
@@ -306,25 +306,25 @@ def take_small_key_by_stage_id(stage_id: int):
         dme.write_bytes(0x803CA77C, b'\xFF\xFF')
 
 
-def toggle_dungeon_map(stage_id: int):
+def toggle_dungeon_map(stage_id: int) -> None:
     toggle_dungeon_flag(stage_id, 0)
 
-def toggle_dungeon_compass(stage_id: int):
+def toggle_dungeon_compass(stage_id: int) -> None:
     toggle_dungeon_flag(stage_id, 1)
 
-def toggle_dungeon_bk(stage_id: int):
+def toggle_dungeon_bk(stage_id: int) -> None:
     toggle_dungeon_flag(stage_id, 2)
 
-def toggle_dungeon_flag(stage_id: int, offset: int):
+def toggle_dungeon_flag(stage_id: int, offset: int) -> None:
     curr_stage_id = dme.read_byte(0x803C53A4)
     if curr_stage_id != stage_id:
         stage_mem_loc = WWR.stage_id_memory_locations[stage_id]
         toggle_bit_flag(stage_mem_loc + 0x21, offset, True)
     else:
-        stage_mem_loc = WWR.stage_id_memory_locations[0x10] # Currently, Loaded Stage Location
+        stage_mem_loc = WWR.stage_id_memory_locations[0x10]  # Currently, Loaded Stage Location
         toggle_bit_flag(stage_mem_loc + 0x21, offset, True)
 
-def give_drc_item(item_id: int):
+def give_drc_item(item_id: int) -> None:
     if item_id == 0x13:
         give_small_key_by_stage_id(3)
     elif item_id == 0x14:
@@ -336,7 +336,7 @@ def give_drc_item(item_id: int):
     else:
         return
 
-def give_fw_item(item_id: int):
+def give_fw_item(item_id: int) -> None:
     if item_id == 0x1D:
         give_small_key_by_stage_id(4)
     elif item_id == 0x40:
@@ -348,7 +348,7 @@ def give_fw_item(item_id: int):
     else:
         return
 
-def give_totg_item(item_id: int):
+def give_totg_item(item_id: int) -> None:
     if item_id == 0x5B:
         give_small_key_by_stage_id(5)
     elif item_id == 0x5C:
@@ -361,7 +361,7 @@ def give_totg_item(item_id: int):
         return
 
 
-def give_ff_item(item_id: int):
+def give_ff_item(item_id: int) -> None:
     if item_id == 0x5F:
         toggle_dungeon_map(2)
     elif item_id == 0x60:
@@ -371,7 +371,7 @@ def give_ff_item(item_id: int):
 
 
 
-def give_et_item(item_id: int):
+def give_et_item(item_id: int) -> None:
     if item_id == 0x73:
         give_small_key_by_stage_id(6)
     elif item_id == 0x74:
@@ -384,7 +384,7 @@ def give_et_item(item_id: int):
         return
 
 
-def give_wt_item(item_id: int):
+def give_wt_item(item_id: int) -> None:
     if item_id == 0x77:
         give_small_key_by_stage_id(7)
     elif item_id == 0x81:
@@ -396,32 +396,32 @@ def give_wt_item(item_id: int):
     else:
         return
 
-def give_heart_container():
+def give_heart_container() -> None:
     give_heart_pieces(4)
 
-def give_heart_pieces(amount: int):
+def give_heart_pieces(amount: int) -> None:
     #Actual Location is 803CA77E with a Width of 2
     dme.write_byte(0x803CA77F, amount)
 
 
-def toggle_generic_progressive_item(progressive_list: list[int], source_address: int, flag_address: int, enable: bool):
+def toggle_generic_progressive_item(progressive_list: List[int], source_address: int, flag_address: int, enable: bool) -> None:
     curr_val = dme.read_byte(source_address)
     for index, value in enumerate(progressive_list):
         if value == curr_val and index != len(progressive_list) - 1:
             write_byte_and_toggle_flag(source_address, progressive_list[index + 1], flag_address, (index + 1), enable)
 
-def toggle_bit_flag(address: int, offset: int, enable: bool):
+def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
     curr_val = dme.read_byte(address)
     bit_offset = 1 << offset
     masked_val = curr_val & bit_offset
     if not bool(masked_val) and enable:
-       dme.write_byte(address, (curr_val ^ bit_offset))
+        dme.write_byte(address, (curr_val ^ bit_offset))
     elif bool(masked_val) and not enable:
         dme.write_byte(address, (curr_val ^ bit_offset))
 
 
 
-def check_valid_state():
+def check_valid_state() -> bool:
     curr_val = dme.read_bytes(0x803C9D3C, 8)
     return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
 

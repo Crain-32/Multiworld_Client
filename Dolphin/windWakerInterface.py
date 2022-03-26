@@ -23,7 +23,7 @@ def write_byte(address, value: int) -> None:
     dme.write_byte(address, value)
 
 
-def read_byte(address) -> None:
+def read_byte(address) -> int:
     return dme.read_byte(address)
 
 
@@ -421,7 +421,7 @@ def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
 
 
 
-def check_valid_state() -> None:
+def check_valid_state() -> bool:
     curr_val = dme.read_bytes(0x803C9D3C, 8)
     return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
 

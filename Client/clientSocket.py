@@ -25,7 +25,7 @@ event_scanning = Config.get_config().Scanner_Enabled
 disable_multiplayer = Config.get_config().Disable_Multiplayer
 
 
-async def start_connections(server_config: ServerConfig, set_up_dto: Optional[SetUpDto], clientOutput: Optional[QListWidget]) -> None:
+async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
     asyncio.create_task(connect_dolphin())
     if not disable_multiplayer:
         await client(server_config)

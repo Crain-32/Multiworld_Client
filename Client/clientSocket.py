@@ -24,13 +24,13 @@ event_scanning = Config.get_config().Scanner_Enabled
 disable_multiplayer = Config.get_config().Disable_Multiplayer
 
 
-async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget):
+async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
     asyncio.create_task(connect_dolphin())
     if not disable_multiplayer:
         await client(server_config)
 
 
-async def client(server_config: ServerConfig):
+async def client(server_config: ServerConfig) -> None:
     frame_manager = StompFrameManager(server_config)
     try:
         async with websockets.connect("ws://" + server_config.get_uri()) as client_websocket:
@@ -52,13 +52,13 @@ async def client(server_config: ServerConfig):
         print("Problem with Server connection, please check the status with the Server host.")
 
 
-async def listen_to_server(client_connection):
+async def listen_to_server(client_connection) -> None:
     async for message in client_connection:
         a = asyncio.create_task(handle_message(message))
         await asyncio.sleep(0)
 
 
-async def handle_message(message):
+async def handle_message(message) -> None:
     if message[:7] == "MESSAGE":
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
@@ -66,7 +66,7 @@ async def handle_message(message):
             items_to_process.append(item_dto)
 
 
-async def connect_dolphin():
+async def connect_dolphin() -> None:
     while not WWI.is_hooked():
         WWI.hook()
         if WWI.is_hooked():
@@ -76,7 +76,7 @@ async def connect_dolphin():
     await handle_dolphin()
 
 
-async def handle_dolphin():
+async def handle_dolphin() -> None:
     print("Connected To Dolphin")
     while WWI.is_hooked():
         try:
@@ -96,7 +96,7 @@ async def handle_dolphin():
     asyncio.create_task(connect_dolphin())
 
 
-async def give_item():
+async def give_item() -> None:
     print_item_dto(items_to_process[0])
     while len(items_to_process) > 0:
         item_dto = items_to_process[-1]
@@ -112,5 +112,5 @@ async def give_item():
             del exc
 
 
-def print_item_dto(itemDto: ItemDto):
+def print_item_dto(itemDto: ItemDto) -> None:
     print(f"{WWR.item_name_dict[itemDto.itemId]} was found in world {itemDto.sourcePlayerWorldId}")

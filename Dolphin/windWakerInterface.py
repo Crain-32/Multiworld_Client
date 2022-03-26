@@ -15,7 +15,7 @@ def assert_hook() -> None:
     dme.assert_hooked()
 
 
-def is_hooked() -> None:
+def is_hooked() -> bool:
     return dme.is_hooked()
 
 

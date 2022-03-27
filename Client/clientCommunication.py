@@ -6,8 +6,7 @@ import json
 from typing import List
 
 import websockets
-import Dolphin.windWakerInterface as WWI
-import Dolphin.windWakerResources as WWR
+from .dolphinGameHandler import connect_dolphin
 
 from PySide6.QtWidgets import QListWidget
 from Client.stompframemanager import StompFrameManager
@@ -26,7 +25,7 @@ disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
 
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
-    asyncio.create_task(connect_dolphin())
+    asyncio.create_task(connect_dolphin(world_id))
     if not disable_multiplayer:
         await client(server_config)
 
@@ -66,52 +65,3 @@ async def handle_message(message) -> None:
         if item_dto.sourcePlayerWorldId != world_id:
             items_to_process.append(item_dto)
 
-
-async def connect_dolphin() -> None:
-    while not WWI.is_hooked():
-        WWI.hook()
-        if WWI.is_hooked():
-            break
-        await asyncio.sleep(15)
-        print("Dolphin was not found, trying again in 15 seconds.")
-    await handle_dolphin()
-
-
-async def handle_dolphin() -> None:
-    print("Connected To Dolphin")
-    while WWI.is_hooked():
-        try:
-            state = WWI.read_chest_items()
-            if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
-                item_dto = ItemDto(world_id, 0, state[1])
-                print_item_dto(item_dto)
-                items_to_send.append(item_dto)
-                WWI.clear_chest_items()
-        except RuntimeError as rne:
-            del rne
-        finally:
-            if len(items_to_process) > 0:
-                asyncio.create_task(give_item())
-        await asyncio.sleep(0)
-    print("Disconnected from Dolphin, attempting to reconnect.....")
-    asyncio.create_task(connect_dolphin())
-
-
-async def give_item() -> None:
-    print_item_dto(items_to_process[0])
-    while len(items_to_process) > 0:
-        item_dto = items_to_process[-1]
-        try:
-            if WWI.check_valid_state():
-                await asyncio.sleep(3)
-                continue
-            WWI.give_item_by_value(item_dto.itemId)
-            items_to_process.pop()
-            await asyncio.sleep(0)
-        except RuntimeError as exc:
-            print(exc)
-            del exc
-
-
-def print_item_dto(itemDto: ItemDto) -> None:
-    print(f"{WWR.item_name_dict[itemDto.itemId]} was found in world {itemDto.sourcePlayerWorldId}")

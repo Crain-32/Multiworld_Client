@@ -5,7 +5,7 @@ from PySide6.QtWidgets import *
 from View.uiMultiworldClient import uiMultiworldClient
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
-import Client.clientSocket as clientFunctions
+import Client.clientCommunication as clientFunctions
 
 
 class MultiworldClientWindow(QMainWindow):

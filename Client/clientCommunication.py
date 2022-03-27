@@ -1,28 +1,28 @@
 """
-Handles Requests/Responses to the Back-end.
+Handles Requests/Responses to back-end.
 """
 import asyncio
 import json
+from typing import List
 
 import websockets
-from PySide6.QtWidgets import QListWidget
-
 import Dolphin.windWakerInterface as WWI
 import Dolphin.windWakerResources as WWR
+
+from PySide6.QtWidgets import QListWidget
 from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 from Model.config import Config
-from typing import Optional
 
-items_to_process = list()
-items_to_send = list()
-dolphin_busy = False
-world_id = Config.get_config().get_world_id()
-game_room = Config.get_config().get_game_room()
-event_scanning = Config.get_config().Scanner_Enabled
-disable_multiplayer = Config.get_config().Disable_Multiplayer
+items_to_process: List[ItemDto] = list()
+items_to_send: List[ItemDto] = list()
+dolphin_busy: bool = False
+world_id: int = Config.get_config().get_world_id()
+game_room: str = Config.get_config().get_game_room()
+event_scanning: bool = Config.get_config().Scanner_Enabled
+disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
 
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:

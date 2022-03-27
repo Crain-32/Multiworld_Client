@@ -2,7 +2,7 @@
 import asyncio
 
 from Model.serverConfig import ServerConfig
-import Client.clientSocket as clientFunctions
+import Client.clientCommunication as clientFunctions
 from Model.config import Config
 
 print("Using Development version 0.0.2.4")

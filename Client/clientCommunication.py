@@ -1,5 +1,5 @@
 """
-Handles Requests/Responses to back-end.
+Handles Requests/Responses to the Back-end.
 """
 import asyncio
 import json

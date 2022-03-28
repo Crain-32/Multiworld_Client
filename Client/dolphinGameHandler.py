@@ -4,7 +4,7 @@ Handles requests to dolphin.
 import asyncio
 from asyncio import Task
 
-from typing import Dict, List, Coroutine, Any
+from typing import Dict, List
 import Dolphin.windWakerInterface as WWI
 
 from Client.abstractGameHandler import AbstractGameHandler
@@ -71,16 +71,24 @@ class DolphinGameHandler(AbstractGameHandler):
             await asyncio.sleep(0)
         print("Disconnected from Dolphin, attempting to reconnect.....")
 
+    def get_item_to_send(self) -> List[ItemDto]:
+        return self._items_to_send
 
-async def connect_dolphin(world_id: int) -> Task:
-    print("Connecting to Dolphin")
-    while not WWI.is_hooked():
-        WWI.hook()
-        if WWI.is_hooked():
-            break
-        await asyncio.sleep(15)
-        print("Dolphin was not found, trying again in 15 seconds.")
-    return asyncio.create_task(DolphinGameHandler(world_id).handle_dolphin())
+    def remove_item_to_send(self, item_dto:ItemDto):
+        self._items_to_send.remove(item_dto)
+
+    def push_item_to_process(self, item_dto: ItemDto) -> None:
+        self._items_to_process.append(item_dto)
+
+    async def connect_dolphin(self) -> Task:
+        print("Connecting to Dolphin")
+        while not WWI.is_hooked():
+            WWI.hook()
+            if WWI.is_hooked():
+                break
+            await asyncio.sleep(15)
+            print("Dolphin was not found, trying again in 15 seconds.")
+        return asyncio.create_task(self.handle_dolphin())
 
 
 def print_item_dto(itemDto: ItemDto) -> None:

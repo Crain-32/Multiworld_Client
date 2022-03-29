@@ -3,10 +3,9 @@ Handles Requests/Responses to the Back-end.
 """
 import asyncio
 import json
-from typing import List
 
 import websockets
-from .dolphinGameHandler import DolphinGameHandler
+from .gameHandler import GameHandler
 
 from PySide6.QtWidgets import QListWidget
 from Client.stompframemanager import StompFrameManager
@@ -19,10 +18,11 @@ world_id: int = Config.get_config().get_world_id()
 game_room: str = Config.get_config().get_game_room()
 event_scanning: bool = Config.get_config().Scanner_Enabled
 disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
-dolphin_game_handler: DolphinGameHandler = DolphinGameHandler(world_id)
+game_handler: GameHandler = GameHandler(world_id)
+
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
-    asyncio.create_task(dolphin_game_handler.connect_dolphin())
+    asyncio.create_task(game_handler.connect())
     if not disable_multiplayer:
         await client(server_config)
 
@@ -39,9 +39,9 @@ async def client(server_config: ServerConfig) -> None:
                 asyncio.create_task(listen_to_server(client_websocket))
                 print(f"Successfully connected to the Server")
                 while True:
-                    for itemDto in dolphin_game_handler.get_item_to_send():
+                    for itemDto in game_handler.get_item_to_send():
                         await client_websocket.send(frame_manager.send_json(f"/app/item/{game_room}", json.dumps(itemDto.as_dict())))
-                        dolphin_game_handler.remove_item_to_send(itemDto)
+                        game_handler.remove_item_to_send(itemDto)
                     await asyncio.sleep(0)
             else:
                 print("Failed to Subscribe to Item Queue, like a bad config.txt")
@@ -60,5 +60,5 @@ async def handle_message(message) -> None:
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
         if item_dto.sourcePlayerWorldId != world_id:
-            dolphin_game_handler.push_item_to_process(item_dto)
+            game_handler.push_item_to_process(item_dto)
 

@@ -421,7 +421,7 @@ def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
 
 
 
-def check_valid_state() -> bool:
+def is_title_screen() -> bool:
     curr_val = dme.read_bytes(0x803C9D3C, 8)
     return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
 

@@ -3,11 +3,9 @@ Handles Requests/Responses to the Back-end.
 """
 import asyncio
 import json
-from typing import List
 
 import websockets
-import Dolphin.windWakerInterface as WWI
-import Dolphin.windWakerResources as WWR
+from .gameHandler import GameHandler
 
 from PySide6.QtWidgets import QListWidget
 from Client.stompframemanager import StompFrameManager
@@ -16,17 +14,15 @@ from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 from Model.config import Config
 
-items_to_process: List[ItemDto] = list()
-items_to_send: List[ItemDto] = list()
-dolphin_busy: bool = False
 world_id: int = Config.get_config().get_world_id()
 game_room: str = Config.get_config().get_game_room()
 event_scanning: bool = Config.get_config().Scanner_Enabled
 disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
+game_handler: GameHandler = GameHandler(world_id)
 
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
-    asyncio.create_task(connect_dolphin())
+    asyncio.create_task(game_handler.connect())
     if not disable_multiplayer:
         await client(server_config)
 
@@ -43,9 +39,9 @@ async def client(server_config: ServerConfig) -> None:
                 asyncio.create_task(listen_to_server(client_websocket))
                 print(f"Successfully connected to the Server")
                 while True:
-                    for itemDto in items_to_send:
+                    for itemDto in game_handler.get_item_to_send():
                         await client_websocket.send(frame_manager.send_json(f"/app/item/{game_room}", json.dumps(itemDto.as_dict())))
-                        items_to_send.remove(itemDto)
+                        game_handler.remove_item_to_send(itemDto)
                     await asyncio.sleep(0)
             else:
                 print("Failed to Subscribe to Item Queue, like a bad config.txt")
@@ -64,54 +60,5 @@ async def handle_message(message) -> None:
         contents = message.split("\n")
         item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
         if item_dto.sourcePlayerWorldId != world_id:
-            items_to_process.append(item_dto)
+            game_handler.push_item_to_process(item_dto)
 
-
-async def connect_dolphin() -> None:
-    while not WWI.is_hooked():
-        WWI.hook()
-        if WWI.is_hooked():
-            break
-        await asyncio.sleep(15)
-        print("Dolphin was not found, trying again in 15 seconds.")
-    await handle_dolphin()
-
-
-async def handle_dolphin() -> None:
-    print("Connected To Dolphin")
-    while WWI.is_hooked():
-        try:
-            state = WWI.read_chest_items()
-            if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
-                item_dto = ItemDto(world_id, 0, state[1])
-                print_item_dto(item_dto)
-                items_to_send.append(item_dto)
-                WWI.clear_chest_items()
-        except RuntimeError as rne:
-            del rne
-        finally:
-            if len(items_to_process) > 0:
-                asyncio.create_task(give_item())
-        await asyncio.sleep(0)
-    print("Disconnected from Dolphin, attempting to reconnect.....")
-    asyncio.create_task(connect_dolphin())
-
-
-async def give_item() -> None:
-    print_item_dto(items_to_process[0])
-    while len(items_to_process) > 0:
-        item_dto = items_to_process[-1]
-        try:
-            if WWI.check_valid_state():
-                await asyncio.sleep(3)
-                continue
-            WWI.give_item_by_value(item_dto.itemId)
-            items_to_process.pop()
-            await asyncio.sleep(0)
-        except RuntimeError as exc:
-            print(exc)
-            del exc
-
-
-def print_item_dto(itemDto: ItemDto) -> None:
-    print(f"{WWR.item_name_dict[itemDto.itemId]} was found in world {itemDto.sourcePlayerWorldId}")

@@ -27,7 +27,7 @@ class ServerWorker(QObject):
         set_up_dto = SetUpDto(1, self.config._Game_Room, None, False) # 1 = world amount, just 1 for testing to match with number assigned to input box
         try:
             print("Into Listener")
-            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto))
+            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.send_message))
             
         except RuntimeWarning:
             self.send_message("Failed to Create Room")
@@ -56,7 +56,7 @@ class MultiworldClientWindow(QMainWindow):
     @Slot(str)
     def log(self, message: str):
         self.ui.dialogLog.addItem(message)
-        self.ui.dialogLog.scrollToBottm()
+        self.ui.dialogLog.scrollToBottom()
 
     def load_config(self):
         self.config = Config.get_config()
@@ -79,7 +79,6 @@ class MultiworldClientWindow(QMainWindow):
 
     def create_room(self):
         self.update_config()
-        print("Setting Fields")
 
         self.ServerThread = QThread()
         self.ServerMaker = ServerWorker()

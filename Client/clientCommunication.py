@@ -9,7 +9,7 @@ import websockets
 from util.clientExceptions import ServerDisconnectWarning
 from .clientGameConnection import ClientGameConnection
 
-from PySide6.QtWidgets import QListWidget
+from PySide6.QtCore import Slot
 from util.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
@@ -23,7 +23,7 @@ disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
 game_handler: ClientGameConnection = ClientGameConnection(world_id)
 
 
-async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:
+async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, gui_log: Slot(str)) -> None:
     asyncio.create_task(game_handler.connect())
     if not disable_multiplayer:
         await client(server_config)

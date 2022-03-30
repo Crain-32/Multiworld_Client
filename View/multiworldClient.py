@@ -80,14 +80,18 @@ class MultiworldClientWindow(QMainWindow):
     def create_room(self):
         self.update_config()
         print("Setting Fields")
-        server_config = ServerConfig(self.ui.serverIpInput.text().strip(), int(self.ui.serverPortInput.text().strip()),
-                                     int(self.ui.worldIdInput.text()), 'admin', 'adminPass')
-        set_up_dto = SetUpDto(int(self.ui.maxPlayersInput.text()), self.ui.gameRoomNameInput.text(), None, False)
-        try:
-            print("Into Listener")
-            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.ui.dialogLog))
-        except RuntimeWarning:
-            self.ui.dialogLog.addItem("Failed to Create Room")
+
+        self.ServerThread = QThread()
+        self.ServerMaker = ServerWorker()
+        self.ServerMaker.moveToThread(self.ServerThread)
+        self.ServerThread.started.connect(self.ServerMaker.run)
+        
+
+        self.ServerMaker.message.connect(self.log)
+        self.ServerThread.start()
+        
+        self.ui.serverButton.setEnabled(False)
+        self.ui.disconnectButton.show()
 
     def join_room(self):
         pass # TODO joining room stuff

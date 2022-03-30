@@ -34,12 +34,6 @@ class Config:
             Config._ConfigInstance = self
             self.parse_config_file()
 
-    def server(self):
-        return self._config_parser.sections()
-
-    def game(self):
-        return self._config_parser.get('GAME')
-
     def parse_config_file(self):
         self._ServerAddress = self._config_parser.get('SERVER', 'server')
         self._Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))

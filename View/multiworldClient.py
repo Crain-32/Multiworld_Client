@@ -53,6 +53,11 @@ class MultiworldClientWindow(QMainWindow):
         self.load_config()
         self.show()
 
+    @Slot(str)
+    def log(self, message: str):
+        self.ui.dialogLog.addItem(message)
+        self.ui.dialogLog.scrollToBottm()
+
     def load_config(self):
         self.config = Config.get_config()
 

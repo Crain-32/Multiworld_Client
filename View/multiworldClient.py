@@ -7,6 +7,8 @@ from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 import Client.clientCommunication as clientFunctions
 
+from Model.config import Config
+
 
 class MultiworldClientWindow(QMainWindow):
 
@@ -22,7 +24,17 @@ class MultiworldClientWindow(QMainWindow):
 
         self.ui.modeSelector.currentTextChanged.connect(self.show_button)
 
+        self.load_config()
         self.show()
+
+    def load_config(self):
+        self.config = Config.get_config()
+
+        self.ui.serverIpInput.setText(self.config._ServerAddress)
+        self.ui.serverPortInput.setText(str(self.config._Port))
+        self.ui.gameRoomNameInput.setText(self.config._Game_Room)
+        self.ui.worldIdInput.setText(str(self.config._World_id))
+        self.ui.maxPlayersInput.setText("1") #testing
 
     def create_room(self):
         print("Setting Fields")

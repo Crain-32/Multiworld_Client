@@ -1,58 +1,59 @@
-import sys
+from configparser import ConfigParser
+from os import path
+
 
 class Config:
     _ConfigInstance = None
-    _ServerAddress = "localhost"
-    _Port = 8080
-    _World_id = 0
-    _Game_Room = ""
-    Scanner_Enabled = False
-    Scan_Treasure = False
-    Scan_Event_Flags = False
-    Scan_Item_Flags = False
-    Scan_Dungeon_Rooms = False
-    Disable_Multiplayer = False
-    Random_Rupoors = False
+    _config_parser = ConfigParser()
+    _ServerAddress: str = "localhost"
+    _Port: int = 8080
+    _World_id: int = 0
+    _Game_Room: str = ""
+    _root_dir: str = "."
+    Scanner_Enabled: bool = False
+    Scan_Treasure: bool = False
+    Scan_Event_Flags: bool = False
+    Scan_Item_Flags: bool = False
+    Scan_Dungeon_Rooms: bool = False
+    Disable_Multiplayer: bool = False
+    Random_Rupoors: bool = False
 
     @staticmethod
-    def get_config():
+    def get_config(root_dir: str = "."):
         if Config._ConfigInstance is None:
-            Config()
+            Config(root_dir)
         return Config._ConfigInstance
 
-    def __init__(self):
+    def __init__(self, root_dir: str = "."):
+        self._root_dir = root_dir
+        self._config_parser.read(path.join(root_dir, "config.ini"))
+
         if Config._ConfigInstance is not None:
             raise Exception("Cannot have multiple Configs")
         else:
             Config._ConfigInstance = self
-            self.read_config_file()
+            self.parse_config_file()
 
-    def read_config_file(self):
-        with open(sys.argv[0][:-7] + "/config.txt") as config_file:
-            for line in config_file:
-                contents = line[:-1].split(":")
-                if contents[0] == "server":
-                    self._ServerAddress = contents[1].strip()
-                elif contents[0] == "world_id":
-                    self._World_id = int(contents[1])
-                elif contents[0] == "port":
-                    self._Port = int(contents[1])
-                elif contents[0] == "gameroom_name":
-                    self._Game_Room = contents[1]
-                elif contents[0] == "scan_flags":
-                    self.Scanner_Enabled = bool(contents[1])
-                elif contents[0] == "scan_treasure":
-                    self.Scan_Treasure = bool(contents[1])
-                elif contents[0] == "scan_events":
-                    self.Scan_Event_Flags = bool(contents[1])
-                elif contents[0] == "scan_item_pickup":
-                    self.Scan_Item_Flags = bool(contents[1])
-                elif contents[0] == "scan_dungeon_rooms":
-                    self.Scan_Dungeon_Rooms = bool(contents[1])
-                elif contents[0] == "disable_multiplayer":
-                    self.Disable_Multiplayer = bool(contents[1])
-                elif contents[0] == "random_rupoors":
-                     self.Random_Rupoors = bool(contents[1])
+    def server(self):
+        return self._config_parser.sections()
+
+    def game(self):
+        return self._config_parser.get('GAME')
+
+    def parse_config_file(self):
+        self._ServerAddress = self._config_parser.get('SERVER', 'server')
+        self._Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))
+
+        self._World_id = int(self._config_parser.get('GAME', 'world_id',fallback=0))
+        self._Game_Room = self._config_parser.get('GAME', 'gameroom_name')
+
+        self.Scanner_Enabled = bool(self._config_parser.get('GAME', 'scan_flags', fallback=False))
+        self.Scan_Treasure = bool(self._config_parser.get('GAME', 'scan_treasure', fallback=False))
+        self.Scan_Event_Flags = bool(self._config_parser.get('GAME', 'scan_events', fallback=False))
+        self.Scan_Item_Flags = bool(self._config_parser.get('GAME', 'scan_item_pickup', fallback=False))
+        self.Scan_Dungeon_Rooms = bool(self._config_parser.get('GAME', 'scan_dungeon_rooms', fallback=False))
+        self.Disable_Multiplayer = bool(self._config_parser.get('GAME', 'disable_multiplayer', fallback=False))
+        self.Random_Rupoors = bool(self._config_parser.get('GAME', 'random_rupoors', fallback=False))
 
     def get_address(self):
         return self._ServerAddress
@@ -65,4 +66,3 @@ class Config:
 
     def get_game_room(self):
         return self._Game_Room
-

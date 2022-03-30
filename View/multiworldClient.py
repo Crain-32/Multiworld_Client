@@ -16,9 +16,11 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.serverButton.clicked.connect(self.create_room)
         self.ui.joinButton.clicked.connect(self.join_room)
-        self.ui.serverButton.hide() # By default the option is set to join, not setup
+        self.show_button() # Update button to only show the right one of the two to reflect the default value of modeSelector
         self.ui.disconnectButton.clicked.connect(self.disconnect)
         self.ui.disconnectButton.hide()
+
+        self.ui.modeSelector.currentTextChanged.connect(self.show_button)
 
         self.show()
 
@@ -38,3 +40,13 @@ class MultiworldClientWindow(QMainWindow):
 
     def disconnect(self):
         pass # TODO proper thread ending and server disconnect
+
+    def show_button(self):
+        # Used to display the correct button when the Mode Selector dropdown value changes
+        mode = self.ui.modeSelector.currentText()
+        if mode == "Connect to Room":
+            self.ui.joinButton.show()
+            self.ui.serverButton.hide()
+        elif mode == "Set-up Room":
+            self.ui.joinButton.hide()
+            self.ui.serverButton.show()

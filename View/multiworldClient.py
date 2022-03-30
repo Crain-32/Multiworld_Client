@@ -15,6 +15,11 @@ class MultiworldClientWindow(QMainWindow):
         self.ui = uiMultiworldClient()
         self.ui.setupUi(self)
         self.ui.serverButton.clicked.connect(self.create_room)
+        self.ui.joinButton.clicked.connect(self.join_room)
+        self.ui.serverButton.hide() # By default the option is set to join, not setup
+        self.ui.disconnectButton.clicked.connect(self.disconnect)
+        self.ui.disconnectButton.hide()
+
         self.show()
 
     def create_room(self):
@@ -27,3 +32,9 @@ class MultiworldClientWindow(QMainWindow):
             asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.ui.dialogLog))
         except RuntimeWarning:
             self.ui.dialogLog.addItem("Failed to Create Room")
+
+    def join_room(self):
+        pass # TODO joining room stuff
+
+    def disconnect(self):
+        pass # TODO proper thread ending and server disconnect

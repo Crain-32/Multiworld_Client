@@ -36,7 +36,18 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.worldIdInput.setText(str(self.config._World_id))
         self.ui.maxPlayersInput.setText("1") #testing
 
+    def update_config(self):
+        if self.config._ServerAddress != self.ui.serverIpInput.text():
+            self.config._ServerAddress = self.ui.serverIpInput.text().strip()
+        if self.config._Port != int(self.ui.serverPortInput.text()):
+            self.config._Port = int(self.ui.serverPortInput.text().strip())
+        if self.config._Game_Room != self.ui.gameRoomNameInput.text():
+            self.config._Game_Room = self.ui.gameRoomNameInput.text().strip()
+        if self.config._World_id != int(self.ui.worldIdInput.text()):
+            self.config._World_id = int(self.ui.worldIdInput.text().strip())
+
     def create_room(self):
+        self.update_config()
         print("Setting Fields")
         server_config = ServerConfig(self.ui.serverIpInput.text().strip(), int(self.ui.serverPortInput.text().strip()),
                                      int(self.ui.worldIdInput.text()), 'admin', 'adminPass')

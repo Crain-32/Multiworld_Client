@@ -2,9 +2,9 @@ import asyncio
 from asyncio import Task
 from typing import List
 
-from Client.dolphinGameHandler import DolphinGameHandler
+from Dolphin.dolphinGameHandler import DolphinGameHandler
 from Model.itemDto import ItemDto
-from Client.abstractGameHandler import AbstractGameHandler
+from util.abstractGameHandler import AbstractGameHandler
 import Dolphin.windWakerResources as WWR
 
 

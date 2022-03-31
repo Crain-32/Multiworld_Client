@@ -8,7 +8,7 @@ import websockets
 from .clientGameConnection import ClientGameConnection
 
 from PySide6.QtWidgets import QListWidget
-from Client.stompframemanager import StompFrameManager
+from util.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto

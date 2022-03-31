@@ -1,13 +1,11 @@
 """
 Handles requests to dolphin.
 """
-import asyncio
-from asyncio import Task
 
 from typing import Dict, List
 import Dolphin.windWakerInterface as WWI
 
-from Client.abstractGameHandler import AbstractGameHandler
+from util.abstractGameHandler import AbstractGameHandler
 
 
 class DolphinGameHandler(AbstractGameHandler):

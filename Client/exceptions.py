@@ -2,7 +2,7 @@ class CouldNotGiveItemException (Exception):
     """Give item failure"""
 
 
-class DuplicateItemException (Exception):
+class DuplicateItemWarning (UserWarning):
     """Duplicate item"""
 
 
@@ -10,10 +10,10 @@ class EventToggleException (Exception):
     """Event toggle failure"""
 
 
-class GameHandlerDisconnectWarning (Exception):
+class GameHandlerDisconnectWarning (UserWarning):
     """Game Handler Disconnected"""
 
 
-class ServerDisconnectWarning (Exception):
+class ServerDisconnectWarning (UserWarning):
     """Server Disconnected"""
 

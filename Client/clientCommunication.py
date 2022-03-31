@@ -5,7 +5,7 @@ import asyncio
 import json
 
 import websockets
-from .gameHandler import GameHandler
+from .clientGameConnection import ClientGameConnection
 
 from PySide6.QtWidgets import QListWidget
 from Client.stompframemanager import StompFrameManager
@@ -18,7 +18,7 @@ world_id: int = Config.get_config().get_world_id()
 game_room: str = Config.get_config().get_game_room()
 event_scanning: bool = Config.get_config().Scanner_Enabled
 disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
-game_handler: GameHandler = GameHandler(world_id)
+game_handler: ClientGameConnection = ClientGameConnection(world_id)
 
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, clientOutput: QListWidget) -> None:

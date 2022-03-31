@@ -14,13 +14,13 @@ class DolphinGameHandler(AbstractGameHandler):
     def __init__(self, world_id: int):
         _world_id = world_id
 
-    def connect(self):
+    async def connect(self):
         WWI.hook()
 
-    def is_connected(self) -> bool:
+    async def is_connected(self) -> bool:
         return WWI.is_hooked()
 
-    def give_item(self, item_id: int) -> bool:
+    async def give_item(self, item_id: int) -> bool:
         try:
             if WWI.is_title_screen():
                 return False
@@ -31,14 +31,14 @@ class DolphinGameHandler(AbstractGameHandler):
             del exc
             return False
 
-    def toggle_event(self, event_type: str, event_index: int, enable: bool) -> None:
+    async def toggle_event(self, event_type: str, event_index: int, enable: bool) -> None:
         pass
 
-    def get_items(self) -> Dict[int, int]:
+    async def get_items(self) -> Dict[int, int]:
         pass
 
-    def read_chest_items(self) -> List[int]:
+    async def get_queued_items(self) -> List[int]:
         return WWI.read_chest_items()
 
-    def clear_chest_items(self):
+    async def clear_queued_items(self):
         WWI.clear_chest_items()

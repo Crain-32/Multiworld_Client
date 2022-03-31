@@ -8,7 +8,7 @@ from Client.abstractGameHandler import AbstractGameHandler
 import Dolphin.windWakerResources as WWR
 
 
-class GameHandler:
+class ClientGameConnection:
     _items_to_process: List[ItemDto] = list()
     _items_to_send: List[ItemDto] = list()
     _world_id: int = 0
@@ -23,7 +23,7 @@ class GameHandler:
             item_dto = self._items_to_process[-1]
             print_item_dto(item_dto)
             try:
-                if not self._console_handler.give_item(item_dto.itemId):
+                if not await self._console_handler.give_item(item_dto.itemId):
                     await asyncio.sleep(3)
                     continue
                 self._items_to_process.pop()
@@ -34,14 +34,14 @@ class GameHandler:
 
     async def handle(self) -> None:
         print("Connected To Console")
-        while self._console_handler.is_connected():  # Thread set interval instead of a while loop would be better
+        while await self._console_handler.is_connected():  # Thread set interval instead of a while loop would be better
             try:
-                state = self._console_handler.read_chest_items()
+                state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                     item_dto = ItemDto(self._world_id, 0, state[1])  # World ID should be set in client
                     print_item_dto(item_dto)
                     self._items_to_send.append(item_dto)
-                    self._console_handler.clear_chest_items()
+                    await self._console_handler.clear_queued_items()
             except RuntimeError as rne:
                 del rne
             finally:
@@ -52,9 +52,9 @@ class GameHandler:
 
     async def connect(self) -> Task:
         print("Connecting to Console")
-        while not self._console_handler.is_connected():
-            self._console_handler.connect()
-            if self._console_handler.is_connected():
+        while not await self._console_handler.is_connected():
+            await self._console_handler.connect()
+            if await self._console_handler.is_connected():
                 break
             await asyncio.sleep(15)
             print("Console was not found, trying again in 15 seconds.")

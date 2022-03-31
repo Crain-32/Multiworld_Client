@@ -5,6 +5,8 @@ import asyncio
 import json
 
 import websockets
+
+from util.clientExceptions import ServerDisconnectWarning
 from .clientGameConnection import ClientGameConnection
 
 from PySide6.QtWidgets import QListWidget
@@ -44,7 +46,9 @@ async def client(server_config: ServerConfig) -> None:
                         game_handler.remove_item_to_send(itemDto)
                     await asyncio.sleep(0)
             else:
-                print("Failed to Subscribe to Item Queue, like a bad config.txt")
+                raise ServerDisconnectWarning()
+    except ServerDisconnectWarning as sdw:
+        print("Failed to Subscribe to the Item Queue. Bad Server URL?")
     except Exception as e:
         print("Problem with Server connection, please check the status with the Server host.")
 

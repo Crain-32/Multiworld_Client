@@ -13,7 +13,8 @@ class EventToggleException (Exception):
 class GameHandlerDisconnectWarning (UserWarning):
     """Game Handler Disconnected"""
 
-
-class ServerDisconnectWarning (UserWarning):
+# This does say warning,but keep it as Exception (Crain!)
+# We always want to catch this, and it's easier to do that as an Exception.
+class ServerDisconnectWarning (Exception):
     """Server Disconnected"""
 

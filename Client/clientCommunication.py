@@ -22,15 +22,15 @@ event_scanning: bool = Config.get_config().Scanner_Enabled
 disable_multiplayer: bool = Config.get_config().Disable_Multiplayer
 game_handler: ClientGameConnection = ClientGameConnection(world_id)
 
-global logger
+global gui_logger
 async def log(message: str) -> None:
-    global logger
-    assert isinstance(logger, Signal)
-    logger.emit(message)
+    global gui_logger
+    assert isinstance(gui_logger, Signal)
+    gui_logger.emit(message)
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, gui_log: Signal(str)) -> None:
-    global logger
-    logger = gui_log
+    global gui_logger
+    gui_logger = gui_log
     asyncio.create_task(game_handler.connect())
     if not disable_multiplayer:
         await client(server_config)

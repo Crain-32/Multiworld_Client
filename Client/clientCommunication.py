@@ -31,7 +31,7 @@ async def log(message: str) -> None:
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, gui_logger_signal_source: Signal(str)) -> None:
     global gui_logger_signal
     gui_logger_signal = gui_logger_signal_source
-    asyncio.create_task(game_handler.connect())
+    asyncio.create_task(game_handler.connect(gui_logger_signal))
     if not disable_multiplayer:
         await client(server_config)
 

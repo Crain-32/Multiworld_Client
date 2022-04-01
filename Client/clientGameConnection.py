@@ -66,8 +66,10 @@ class ClientGameConnection:
         return asyncio.create_task(self.handle())
 
     async def log(self, message: str) -> None:
-        assert isinstance(self.gui_logger_signal, Signal)
-        self.gui_logger_signal.emit(message)
+        if isinstance(self.gui_logger_signal, Signal):
+            self.gui_logger_signal.emit(message)
+        else:
+            print(message)
 
     def get_item_to_send(self) -> List[ItemDto]:
         return self._items_to_send

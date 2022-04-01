@@ -25,8 +25,10 @@ game_handler: ClientGameConnection = ClientGameConnection(world_id)
 global gui_logger_signal
 async def log(message: str) -> None:
     global gui_logger_signal
-    assert isinstance(gui_logger_signal, Signal)
-    gui_logger_signal.emit(message)
+    if isinstance(gui_logger_signal, Signal):
+        gui_logger_signal.emit(message)
+    else:
+        print(message)
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, gui_logger_signal_source: Signal(str)) -> None:
     global gui_logger_signal

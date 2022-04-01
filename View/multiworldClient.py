@@ -11,12 +11,12 @@ import Client.clientCommunication as clientFunctions
 from Model.config import Config
 
 
-class ServerWorker(QObject):
+class JoinServerWorker(QObject):
     
     message = Signal(str) # to communicate with parent (gui) thread
 
     def __init__(self) -> None:
-        super(ServerWorker, self).__init__()
+        super(JoinServerWorker, self).__init__()
         self.config = Config.get_config()
 
 
@@ -79,21 +79,21 @@ class MultiworldClientWindow(QMainWindow):
             self.config._World_id = int(self.ui.worldIdInput.text().strip())
 
     def create_room(self) -> None:
+        pass # TODO actual room setup, needs server-side implementation first
+
+    def join_room(self) -> None:
         self.update_config()
 
-        self.ServerMaker = ServerWorker()
-        self.ServerMaker.moveToThread(self.ServerThread)
-        self.ServerThread.started.connect(self.ServerMaker.run)
+        self.ServerJoiner = JoinServerWorker()
+        self.ServerJoiner.moveToThread(self.ServerThread)
+        self.ServerThread.started.connect(self.ServerJoiner.run)
         
 
-        self.ServerMaker.message.connect(self.log)
+        self.ServerJoiner.message.connect(self.log)
         self.ServerThread.start()
         
         self.ui.serverButton.setEnabled(False)
         self.ui.disconnectButton.show()
-
-    def join_room(self) -> None:
-        pass # TODO joining room stuff
 
     def disconnect(self) -> None:
         if self.ServerThread.isRunning():

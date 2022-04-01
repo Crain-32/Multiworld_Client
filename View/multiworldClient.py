@@ -49,6 +49,8 @@ class MultiworldClientWindow(QMainWindow):
 
         self.ui.modeSelector.currentTextChanged.connect(self.show_button)
 
+        self.ServerThread = QThread()
+
         self.load_config()
         self.show()
 
@@ -79,7 +81,6 @@ class MultiworldClientWindow(QMainWindow):
     def create_room(self):
         self.update_config()
 
-        self.ServerThread = QThread()
         self.ServerMaker = ServerWorker()
         self.ServerMaker.moveToThread(self.ServerThread)
         self.ServerThread.started.connect(self.ServerMaker.run)

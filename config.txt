@@ -1,7 +1,0 @@
-server:twwmultiplayer.com
-port:8080
-world_id:1
-max_players:255
-gameroom_name:
-random_rupoors:
-Blank means "No":Not blank means "Yes"

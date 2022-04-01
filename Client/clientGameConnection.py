@@ -25,7 +25,7 @@ class ClientGameConnection:
     async def process_items(self) -> None:
         while len(self._items_to_process) > 0:
             item_dto = self._items_to_process[-1]
-            self.print_item_dto(item_dto)
+            await self.print_item_dto(item_dto)
             try:
                 if not await self._console_handler.give_item(item_dto.itemId):
                     await asyncio.sleep(3)
@@ -43,7 +43,7 @@ class ClientGameConnection:
                 state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                     item_dto = ItemDto(self._world_id, 0, state[1])  # World ID should be set in client
-                    self.print_item_dto(item_dto)
+                    await self.print_item_dto(item_dto)
                     self._items_to_send.append(item_dto)
                     await self._console_handler.clear_queued_items()
             except RuntimeError as rne:

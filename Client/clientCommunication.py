@@ -40,13 +40,13 @@ async def client(server_config: ServerConfig) -> None:
     frame_manager = StompFrameManager(server_config)
     try:
         async with websockets.connect("ws://" + server_config.get_uri()) as client_websocket:
-            log(f"Attempting to Connect to {game_room}.........")
+            await log(f"Attempting to Connect to {game_room}.........")
             await client_websocket.send(frame_manager.connect(server_config.server_ip))
             foo = await client_websocket.recv()
             if not foo.startswith("ERROR"):
                 await client_websocket.send(frame_manager.subscribe(f"/topic/item/{game_room}"))
                 asyncio.create_task(listen_to_server(client_websocket))
-                log(f"Successfully connected to the Server")
+                await log(f"Successfully connected to the Server")
                 while True:
                     for itemDto in game_handler.get_item_to_send():
                         await client_websocket.send(frame_manager.send_json(f"/app/item/{game_room}", json.dumps(itemDto.as_dict())))
@@ -58,17 +58,17 @@ async def client(server_config: ServerConfig) -> None:
                 try:
                     await client_websocket.send(frame_manager.disconnect(""))
                     await client_websocket.close()
-                    log("Successfully disconnected from server!")
+                    await log("Successfully disconnected from server!")
                     QThread.currentThread().quit() # Tells thread to fully end
                 except Exception as e:
-                    log(f"Error disconnecting from server:\n{e}")
+                    await log(f"Error disconnecting from server:\n{e}")
                 
             else:
                 raise ServerDisconnectWarning()
     except ServerDisconnectWarning as sdw:
-        log("Failed to Subscribe to the Item Queue. Bad Server URL?")
+        await log("Failed to Subscribe to the Item Queue. Bad Server URL?")
     except Exception as e:
-        log("Problem with Server connection, please check the status with the Server host.")
+        await log("Problem with Server connection, please check the status with the Server host.")
 
 
 async def listen_to_server(client_connection) -> None:

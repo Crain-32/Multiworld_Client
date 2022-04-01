@@ -96,7 +96,10 @@ class MultiworldClientWindow(QMainWindow):
         pass # TODO joining room stuff
 
     def disconnect(self):
-        pass # TODO proper thread ending and server disconnect
+        if self.ServerThread.isRunning():
+            self.ServerThread.requestInterruption()
+            self.ServerThread.wait()
+        self.ui.disconnectButton.hide()
 
     def show_button(self):
         # Used to display the correct button when the Mode Selector dropdown value changes

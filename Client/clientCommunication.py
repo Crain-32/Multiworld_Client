@@ -9,7 +9,7 @@ import websockets
 from util.clientExceptions import ServerDisconnectWarning
 from .clientGameConnection import ClientGameConnection
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QThread
 from util.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
@@ -51,7 +51,18 @@ async def client(server_config: ServerConfig) -> None:
                     for itemDto in game_handler.get_item_to_send():
                         await client_websocket.send(frame_manager.send_json(f"/app/item/{game_room}", json.dumps(itemDto.as_dict())))
                         game_handler.remove_item_to_send(itemDto)
+                    if QThread.currentThread().isInterruptionRequested():
+                        break
                     await asyncio.sleep(0)
+                # Only gotten to once the loop is broken
+                try:
+                    await client_websocket.send(frame_manager.disconnect(""))
+                    await client_websocket.close()
+                    print("Successfully disconnected from server!")
+                    QThread.currentThread().quit() # Tells thread to fully end
+                except Exception as e:
+                    print(f"Error disconnecting from server:\n{e}")
+                
             else:
                 raise ServerDisconnectWarning()
     except ServerDisconnectWarning as sdw:

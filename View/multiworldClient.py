@@ -13,7 +13,7 @@ from Model.config import Config
 
 class ServerWorker(QObject):
     
-    message = Signal(str) # to communicate with parent thread
+    message = Signal(str) # to communicate with parent (gui) thread
 
     def __init__(self):
         super(ServerWorker, self).__init__()
@@ -27,12 +27,11 @@ class ServerWorker(QObject):
         set_up_dto = SetUpDto(1, self.config._Game_Room, None, False) # 1 = world amount, just 1 for testing to match with number assigned to input box
         try:
             print("Into Listener")
-            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.send_message))
+            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.message))
             
         except RuntimeWarning:
             self.send_message("Failed to Create Room")
 
-    @Slot(str)
     def send_message(self, msg: str): # to (maybe) receive messages from the actual connection things, haven't gotten that far yet
         self.message.emit(msg)
 

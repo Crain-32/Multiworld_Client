@@ -15,12 +15,12 @@ class ServerWorker(QObject):
     
     message = Signal(str) # to communicate with parent (gui) thread
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ServerWorker, self).__init__()
         self.config = Config.get_config()
 
 
-    def run(self):
+    def run(self) -> None:
         print("Setting Fields")
         server_config = ServerConfig(self.config._ServerAddress, self.config._Port,
         self.config._World_id, 'admin', 'adminPass')
@@ -32,12 +32,12 @@ class ServerWorker(QObject):
         except RuntimeWarning:
             self.send_message("Failed to Create Room")
 
-    def send_message(self, msg: str): # to (maybe) receive messages from the actual connection things, haven't gotten that far yet
+    def send_message(self, msg: str) -> None: # to (maybe) receive messages from the actual connection things, haven't gotten that far yet
         self.message.emit(msg)
 
 class MultiworldClientWindow(QMainWindow):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(MultiworldClientWindow, self).__init__()
         self.ui = uiMultiworldClient()
         self.ui.setupUi(self)
@@ -55,11 +55,11 @@ class MultiworldClientWindow(QMainWindow):
         self.show()
 
     @Slot(str)
-    def log(self, message: str):
+    def log(self, message: str) -> None:
         self.ui.dialogLog.addItem(message)
         self.ui.dialogLog.scrollToBottom()
 
-    def load_config(self):
+    def load_config(self) -> None:
         self.config = Config.get_config()
 
         self.ui.serverIpInput.setText(self.config._ServerAddress)
@@ -68,7 +68,7 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.worldIdInput.setText(str(self.config._World_id))
         self.ui.maxPlayersInput.setText("1") #testing
 
-    def update_config(self):
+    def update_config(self) -> None:
         if self.config._ServerAddress != self.ui.serverIpInput.text():
             self.config._ServerAddress = self.ui.serverIpInput.text().strip()
         if self.config._Port != int(self.ui.serverPortInput.text()):
@@ -78,7 +78,7 @@ class MultiworldClientWindow(QMainWindow):
         if self.config._World_id != int(self.ui.worldIdInput.text()):
             self.config._World_id = int(self.ui.worldIdInput.text().strip())
 
-    def create_room(self):
+    def create_room(self) -> None:
         self.update_config()
 
         self.ServerMaker = ServerWorker()
@@ -92,16 +92,16 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.serverButton.setEnabled(False)
         self.ui.disconnectButton.show()
 
-    def join_room(self):
+    def join_room(self) -> None:
         pass # TODO joining room stuff
 
-    def disconnect(self):
+    def disconnect(self) -> None:
         if self.ServerThread.isRunning():
             self.ServerThread.requestInterruption()
             self.ServerThread.wait()
         self.ui.disconnectButton.hide()
 
-    def show_button(self):
+    def show_button(self) -> None:
         # Used to display the correct button when the Mode Selector dropdown value changes
         mode = self.ui.modeSelector.currentText()
         if mode == "Connect to Room":

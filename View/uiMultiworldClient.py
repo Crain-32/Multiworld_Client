@@ -88,6 +88,12 @@ class uiMultiworldClient(object):
         self.readyBox.setObjectName(u"readyBox")
         self.readyBox.setGeometry(QRect(200, 280, 90, 20))
         self.readyBox.setLayoutDirection(Qt.RightToLeft)
+        self.joinButton = QPushButton(self.centralwidget)
+        self.joinButton.setObjectName(u"joinButton")
+        self.joinButton.setGeometry(QRect(20, 280, 75, 25))
+        self.disconnectButton = QPushButton(self.centralwidget)
+        self.disconnectButton.setObjectName(u"disconnectButton")
+        self.disconnectButton.setGeometry(QRect(110, 280, 75, 25))
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -110,5 +116,7 @@ class uiMultiworldClient(object):
         self.serverIPLabel.setText(QCoreApplication.translate("MainWindow", u"Server IP", None))
         self.gameRoomNameLabel.setText(QCoreApplication.translate("MainWindow", u"Room Name", None))
         self.readyBox.setText(QCoreApplication.translate("MainWindow", u" Ready to Play", None))
+        self.joinButton.setText(QCoreApplication.translate("MainWindow", u"Join", None))
+        self.disconnectButton.setText(QCoreApplication.translate("MainWindow", u"Disconnect", None))
     # retranslateUi
 

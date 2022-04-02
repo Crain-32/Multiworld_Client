@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-
+import Dolphin.windWakerResources as WWR
 
 @dataclass
 class ItemDto:
@@ -20,3 +20,6 @@ class ItemDto:
 
     def as_dict(self):
         return asdict(self)
+    
+    def get_simple_output(self) -> str:
+        return f"{WWR.item_name_dict[self.itemId]} was found in world {self.sourcePlayerWorldId}"

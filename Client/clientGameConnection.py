@@ -25,7 +25,7 @@ class ClientGameConnection:
     async def process_items(self) -> None:
         while len(self._items_to_process) > 0:
             item_dto = self._items_to_process[-1]
-            await self.print_item_dto(item_dto)
+            await self.log(item_dto.get_simple_output())
             try:
                 if not await self._console_handler.give_item(item_dto.itemId):
                     await asyncio.sleep(3)
@@ -43,7 +43,7 @@ class ClientGameConnection:
                 state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                     item_dto = ItemDto(self._world_id, 0, state[1])  # World ID should be set in client
-                    await self.print_item_dto(item_dto)
+                    await self.log(item_dto.get_simple_output())
                     self._items_to_send.append(item_dto)
                     await self._console_handler.clear_queued_items()
             except RuntimeError as rne:
@@ -79,6 +79,3 @@ class ClientGameConnection:
 
     def push_item_to_process(self, item_dto: ItemDto) -> None:
         self._items_to_process.append(item_dto)
-    
-    async def print_item_dto(self, itemDto: ItemDto) -> None:
-        await self.log(f"{WWR.item_name_dict[itemDto.itemId]} was found in world {itemDto.sourcePlayerWorldId}")

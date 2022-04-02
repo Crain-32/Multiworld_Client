@@ -60,7 +60,7 @@ async def client(server_config: ServerConfig) -> None:
                 try:
                     await client_websocket.send(frame_manager.disconnect(""))
                     await client_websocket.close()
-                    await log("Successfully disconnected from server!")
+                    await log("Successfully disconnected from the Server")
                     QThread.currentThread().quit() # Tells thread to fully end
                 except Exception as e:
                     await log(f"Error disconnecting from server:\n{e}")

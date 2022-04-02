@@ -92,7 +92,7 @@ class MultiworldClientWindow(QMainWindow):
         self.ServerJoiner.message.connect(self.log)
         self.ServerThread.start()
         
-        self.ui.serverButton.setEnabled(False)
+        self.ui.joinButton.setEnabled(False)
         self.ui.disconnectButton.show()
 
     def disconnect(self) -> None:
@@ -100,6 +100,8 @@ class MultiworldClientWindow(QMainWindow):
             self.ServerThread.requestInterruption()
             self.ServerThread.wait()
         self.ui.disconnectButton.hide()
+        self.ui.joinButton.setEnabled(True)
+        self.ui.serverButton.setEnabled(True)
 
     def show_button(self) -> None:
         # Used to display the correct button when the Mode Selector dropdown value changes

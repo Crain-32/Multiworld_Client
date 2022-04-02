@@ -15,7 +15,7 @@ class JoinServerWorker(QObject):
     
     message = Signal(str) # to communicate with parent (gui) thread
 
-    def __init__(self) -> None:
+    def __init__(self):
         super(JoinServerWorker, self).__init__()
         self.config = Config.get_config()
 
@@ -24,7 +24,7 @@ class JoinServerWorker(QObject):
         print("Setting Fields")
         server_config = ServerConfig(self.config._ServerAddress, self.config._Port,
         self.config._World_id, 'admin', 'adminPass')
-        set_up_dto = SetUpDto(1, self.config._Game_Room, None, False) # 1 = world amount, just 1 for testing to match with number assigned to input box
+        set_up_dto = SetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
         try:
             print("Into Listener")
             asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.message))
@@ -66,7 +66,7 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.serverPortInput.setText(str(self.config._Port))
         self.ui.gameRoomNameInput.setText(self.config._Game_Room)
         self.ui.worldIdInput.setText(str(self.config._World_id))
-        self.ui.maxPlayersInput.setText("1") #testing
+        self.ui.maxPlayersInput.setText(str(self.config._Max_Players))
 
     def update_config(self) -> None:
         if self.config._ServerAddress != self.ui.serverIpInput.text():
@@ -77,6 +77,8 @@ class MultiworldClientWindow(QMainWindow):
             self.config._Game_Room = self.ui.gameRoomNameInput.text().strip()
         if self.config._World_id != int(self.ui.worldIdInput.text()):
             self.config._World_id = int(self.ui.worldIdInput.text().strip())
+        if self.config._Max_Players != int(self.ui.maxPlayersInput.text()):
+            self.config_Max_Players = int(self.ui.maxPlayersInput.text().strip())
 
     def create_room(self) -> None:
         pass # TODO actual room setup, needs server-side implementation first

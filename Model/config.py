@@ -9,6 +9,7 @@ class Config:
     _Port: int = 8080
     _World_id: int = 0
     _Game_Room: str = ""
+    _Max_Players: int = 2
     _root_dir: str = "."
     Scanner_Enabled: bool = False
     Scan_Treasure: bool = False
@@ -40,6 +41,7 @@ class Config:
 
         self._World_id = int(self._config_parser.get('GAME', 'world_id',fallback=0))
         self._Game_Room = self._config_parser.get('GAME', 'gameroom_name')
+        self._Max_Players = int(self._config_parser.get('GAME', 'max_players', fallback=2))
 
         self.Scanner_Enabled = bool(self._config_parser.get('GAME', 'scan_flags', fallback=False))
         self.Scan_Treasure = bool(self._config_parser.get('GAME', 'scan_treasure', fallback=False))

@@ -110,3 +110,7 @@ class MultiworldClientWindow(QMainWindow):
         elif mode == "Set-up Room":
             self.ui.joinButton.hide()
             self.ui.serverButton.show()
+
+    def closeEvent(self, event) -> None: # Triggers when the user clicks the 'X' to close the window
+        self.disconnect()
+        event.accept() # Let the window close

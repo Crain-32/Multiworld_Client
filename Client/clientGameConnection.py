@@ -2,10 +2,12 @@ import asyncio
 from asyncio import Task
 from typing import List
 
+from base_logger import logging
+logger = logging.getLogger(__name__)
+
 from Dolphin.dolphinGameHandler import DolphinGameHandler
 from Model.itemDto import ItemDto
 from util.abstractGameHandler import AbstractGameHandler
-import Dolphin.windWakerResources as WWR
 
 from PySide6.QtCore import Signal
 
@@ -33,7 +35,7 @@ class ClientGameConnection:
                 self._items_to_process.pop()
                 await asyncio.sleep(0)
             except RuntimeError as exc:
-                print(exc)
+                logger.error(exc)
                 del exc
 
     async def handle(self) -> None:
@@ -69,7 +71,7 @@ class ClientGameConnection:
         if isinstance(self.gui_logger_signal, Signal):
             self.gui_logger_signal.emit(message)
         else:
-            print(message)
+            logger.info(message)
 
     def get_item_to_send(self) -> List[ItemDto]:
         return self._items_to_send

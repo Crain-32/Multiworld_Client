@@ -1,12 +1,12 @@
 """
 Handles requests to dolphin.
 """
-
 from typing import Dict, List
 import Dolphin.windWakerInterface as WWI
-
 from util.abstractGameHandler import AbstractGameHandler
 
+from base_logger import logging
+logger = logging.getLogger(__name__)
 
 class DolphinGameHandler(AbstractGameHandler):
     def __init__(self, world_id: int):
@@ -25,7 +25,7 @@ class DolphinGameHandler(AbstractGameHandler):
             WWI.give_item_by_value(item_id)
             return True
         except RuntimeError as exc:
-            print(exc)
+            logger.error(exc)
             del exc
             return False
 

@@ -4,6 +4,9 @@ from typing import List
 import Dolphin.windWakerResources as WWR
 from Model.config import Config
 
+from base_logger import logging
+logger = logging.getLogger(__name__)
+
 random_rupoors = Config.get_config().Random_Rupoors
 
 
@@ -208,7 +211,7 @@ def remove_triforce_shard(shard_num: int) -> None:
 def give_delivery_bag_item(item_id: int) -> None:
     open_index = free_index(0x803C4C8E, 9)
     if open_index < 0:
-        print(f"Error Adding {item_id} to the delivery bag")
+        logger.warning(f"Error Adding {item_id} to the delivery bag")
         return
     dme.write_byte((0x803C4C8E + open_index), item_id)
 

@@ -4,6 +4,8 @@ import dolphin_memory_engine as dme
 from Dolphin.windWakerResources import stage_id_list as stage_map
 from Model.config import Config
 
+from base_logger import logging
+logger = logging.getLogger(__name__)
 
 stage_flag_list = [[0 for inner_index in range(0x23)] for index in range(0x10)]
 
@@ -73,12 +75,12 @@ def handle_bits_in_byte_val(curr_stage_id, index, difference, event_type) -> Non
 
 
 def print_bits_helper(curr_stage_id, index, bit_index, stage_str, room_num) -> None:
-    print(f"{stage_map[curr_stage_id]} flag at byte {index} for " +
+    logger.info(f"{stage_map[curr_stage_id]} flag at byte {index} for " +
           f"bit {bit_index} in Stage:{stage_str} and Room:{room_num}")
 
 
 def get_user_input(input_type) -> str:
-    print("Flag type shortcuts are A | C | E Or type in the Location matching the Tracker")
+    logger.info("Flag type shortcuts are A | C | E Or type in the Location matching the Tracker")
     result = input(f"Press enter to Autofill to {autofill_options[input_type]}")
     if len(result) == 0:
         result = autofill_options[input_type]

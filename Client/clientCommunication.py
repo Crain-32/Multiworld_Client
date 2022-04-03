@@ -3,11 +3,10 @@ Handles Requests/Responses to the Back-end.
 """
 import asyncio
 import json
-
 import websockets
 
 from util.clientExceptions import ServerDisconnectWarning
-from .clientGameConnection import ClientGameConnection
+from Client.clientGameConnection import ClientGameConnection
 
 from PySide6.QtCore import Signal, QThread
 from util.stompframemanager import StompFrameManager
@@ -15,6 +14,9 @@ from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 from Model.config import Config
+
+from base_logger import logging
+logger = logging.getLogger(__name__)
 
 world_id: int = Config.get_config().get_world_id()
 game_room: str = Config.get_config().get_game_room()
@@ -28,7 +30,8 @@ async def log(message: str) -> None:
     if isinstance(gui_logger_signal, Signal):
         gui_logger_signal.emit(message)
     else:
-        print(message)
+        logger.info(message)
+
 
 async def start_connections(server_config: ServerConfig, set_up_dto: SetUpDto, gui_logger_signal_source: Signal(str)) -> None:
     global gui_logger_signal

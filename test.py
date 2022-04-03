@@ -3,9 +3,6 @@ import json
 
 import websockets
 
-from base_logger import logging
-logger = logging.getLogger(__name__)
-
 from Client.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 #from Model.config import Config
@@ -21,13 +18,13 @@ async def test():
         f = StompFrameManager(None)
         await websocket.send(f.connect(f"{address}"))
         foo = await websocket.recv()
-        logger.info(foo)
-        logger.info(websocket.id)
+        print(foo)
+        print(websocket.id)
         await websocket.send(f.subscribe(f"/topic/item/{game_room}"))
-        logger.info("Subscribed")
+        print("Subscribed")
         test_dto = ItemDto(world_id, 0, 0x23)
         await websocket.send(f.send_json(f"/app/item/{game_room}", json.dumps(test_dto.as_dict())))
         foo = await websocket.recv()
-        logger.info(foo)
+        print(foo)
 
 asyncio.run(test())

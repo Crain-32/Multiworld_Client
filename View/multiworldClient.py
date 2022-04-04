@@ -6,7 +6,7 @@ from PySide6.QtCore import QThread, QObject, Signal, Slot
 from View.uiMultiworldClient import uiMultiworldClient
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
-from Client.clientCommunication import ClientConnection
+from Client.clientCommunication import ClientCommunication
 
 from Model.config import Config
 
@@ -26,8 +26,8 @@ class JoinServerWorker(QObject):
         set_up_dto = SetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
         try:
             print("Into Listener")
-            clientFunctions = ClientConnection(self.config)
-            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto, self.message))
+            clientFunctions = ClientCommunication(self.config, self.message)
+            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto))
             
         except RuntimeWarning:
             self.send_message("Failed to Create Room")

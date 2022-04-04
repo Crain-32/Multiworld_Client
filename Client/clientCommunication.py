@@ -14,35 +14,28 @@ from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 from Model.config import Config
+from View.guiLogger import GuiLogger
 
 from base_logger import logging
 logger = logging.getLogger(__name__)
 
-class ClientConnection:
+class ClientCommunication(GuiLogger):
     world_id: int
     game_room: str
     event_scanning: bool
     disable_multiplayer: bool
     game_handler: ClientGameConnection
-    gui_logger_signal: Signal
 
-
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, signal: Signal = None):
+        super().__init__(signal)
         self.world_id = config.get_world_id()
         self.game_room = config.get_game_room()
         self.event_scanning = config.Scanner_Enabled
         self.disable_multiplayer = config.Disable_Multiplayer
-        self.game_handler = ClientGameConnection(self.world_id)
-    
-    async def log(self, message: str) -> None:
-        if isinstance(self.gui_logger_signal, Signal):
-            self.gui_logger_signal.emit(message)
-        else:
-            logger.info(message)
+        self.game_handler = ClientGameConnection(self.world_id, self.get_signal())
 
-    async def start_connections(self, server_config: ServerConfig, set_up_dto: SetUpDto, gui_logger_signal_source: Signal) -> None:
-        self.gui_logger_signal = gui_logger_signal_source
-        asyncio.create_task(self.game_handler.connect(self.gui_logger_signal))
+    async def start_connections(self, server_config: ServerConfig, set_up_dto: SetUpDto) -> None:
+        asyncio.create_task(self.game_handler.connect())
         if not self.disable_multiplayer:
             await self.client(server_config)
 

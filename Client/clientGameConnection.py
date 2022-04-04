@@ -9,19 +9,19 @@ from Dolphin.dolphinGameHandler import DolphinGameHandler
 from Model.itemDto import ItemDto
 from util.abstractGameHandler import AbstractGameHandler
 
+from View.guiLogger import GuiLogger
 from PySide6.QtCore import Signal
 
 
-class ClientGameConnection:
+class ClientGameConnection(GuiLogger):
     _items_to_process: List[ItemDto] = list()
     _items_to_send: List[ItemDto] = list()
     _world_id: int = 0
 
     _console_handler: AbstractGameHandler
 
-    gui_logger_signal: Signal
-
-    def __init__(self, world_id: int):
+    def __init__(self, world_id: int, signal: Signal = None):
+        super().__init__(signal)
         self._console_handler = DolphinGameHandler(world_id)
 
     async def process_items(self) -> None:
@@ -56,8 +56,7 @@ class ClientGameConnection:
             await asyncio.sleep(0)
         await self.log("Disconnected from Console, attempting to reconnect.....")
 
-    async def connect(self, gui_logger_signal: Signal) -> Task:
-        self.gui_logger_signal = gui_logger_signal
+    async def connect(self) -> Task:
         await self.log("Connecting to Console")
         while not await self._console_handler.is_connected():
             await self._console_handler.connect()
@@ -66,12 +65,6 @@ class ClientGameConnection:
             await asyncio.sleep(15)
             await self.log("Console was not found, trying again in 15 seconds.")
         return asyncio.create_task(self.handle())
-
-    async def log(self, message: str) -> None:
-        if isinstance(self.gui_logger_signal, Signal):
-            self.gui_logger_signal.emit(message)
-        else:
-            logger.info(message)
 
     def get_item_to_send(self) -> List[ItemDto]:
         return self._items_to_send

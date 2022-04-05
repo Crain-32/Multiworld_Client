@@ -9,11 +9,11 @@ from Dolphin.dolphinGameHandler import DolphinGameHandler
 from Model.itemDto import ItemDto
 from util.abstractGameHandler import AbstractGameHandler
 
-from View.guiLogger import GuiLogger
+from View.guiWriter import GuiWriter
 from PySide6.QtCore import Signal
 
 
-class ClientGameConnection(GuiLogger):
+class ClientGameConnection(GuiWriter):
     _items_to_process: List[ItemDto] = list()
     _items_to_send: List[ItemDto] = list()
     _world_id: int = 0
@@ -23,11 +23,12 @@ class ClientGameConnection(GuiLogger):
     def __init__(self, world_id: int, signal: Signal = None):
         super().__init__(signal)
         self._console_handler = DolphinGameHandler(world_id)
+        self._world_id = world_id
 
     async def process_items(self) -> None:
         while len(self._items_to_process) > 0:
             item_dto = self._items_to_process[-1]
-            await self.log(item_dto.get_simple_output())
+            await self.write(item_dto.get_simple_output())
             try:
                 if not await self._console_handler.give_item(item_dto.itemId):
                     await asyncio.sleep(3)
@@ -39,13 +40,13 @@ class ClientGameConnection(GuiLogger):
                 del exc
 
     async def handle(self) -> None:
-        await self.log("Connected To Console")
+        await self.write("Connected To Console")
         while await self._console_handler.is_connected():  # Thread set interval instead of a while loop would be better
             try:
                 state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                     item_dto = ItemDto(self._world_id, 0, state[1])  # World ID should be set in client
-                    await self.log(item_dto.get_simple_output())
+                    await self.write(item_dto.get_simple_output())
                     self._items_to_send.append(item_dto)
                     await self._console_handler.clear_queued_items()
             except RuntimeError as rne:
@@ -54,16 +55,16 @@ class ClientGameConnection(GuiLogger):
                 if len(self._items_to_process) > 0:
                     asyncio.create_task(self.process_items())
             await asyncio.sleep(0)
-        await self.log("Disconnected from Console, attempting to reconnect.....")
+        await self.write("Disconnected from Console, attempting to reconnect.....")
 
     async def connect(self) -> Task:
-        await self.log("Connecting to Console")
+        await self.write("Connecting to Console")
         while not await self._console_handler.is_connected():
             await self._console_handler.connect()
             if await self._console_handler.is_connected():
                 break
             await asyncio.sleep(15)
-            await self.log("Console was not found, trying again in 15 seconds.")
+            await self.write("Console was not found, trying again in 15 seconds.")
         return asyncio.create_task(self.handle())
 
     def get_item_to_send(self) -> List[ItemDto]:

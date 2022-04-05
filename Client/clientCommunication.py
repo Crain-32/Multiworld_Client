@@ -14,12 +14,12 @@ from Model.itemDto import ItemDto
 from Model.serverConfig import ServerConfig
 from Model.setUpDto import SetUpDto
 from Model.config import Config
-from View.guiLogger import GuiLogger
+from View.guiWriter import GuiWriter
 
 from base_logger import logging
 logger = logging.getLogger(__name__)
 
-class ClientCommunication(GuiLogger):
+class ClientCommunication(GuiWriter):
     world_id: int
     game_room: str
     event_scanning: bool
@@ -44,13 +44,13 @@ class ClientCommunication(GuiLogger):
         frame_manager = StompFrameManager(server_config)
         try:
             async with websockets.connect("ws://" + server_config.get_uri()) as client_websocket:
-                await self.log(f"Attempting to Connect to {self.game_room}.........")
+                await self.write(f"Attempting to Connect to {self.game_room}.........")
                 await client_websocket.send(frame_manager.connect(server_config.server_ip))
                 foo = await client_websocket.recv()
                 if not foo.startswith("ERROR"):
                     await client_websocket.send(frame_manager.subscribe(f"/topic/item/{self.game_room}"))
                     asyncio.create_task(self.listen_to_server(client_websocket))
-                    await self.log(f"Successfully connected to the Server")
+                    await self.write(f"Successfully connected to the Server")
                     while True:
                         for itemDto in self.game_handler.get_item_to_send():
                             await client_websocket.send(frame_manager.send_json(f"/app/item/{self.game_room}", json.dumps(itemDto.as_dict())))
@@ -62,17 +62,17 @@ class ClientCommunication(GuiLogger):
                     try:
                         await client_websocket.send(frame_manager.disconnect(""))
                         await client_websocket.close()
-                        await self.log("Successfully disconnected from the Server")
+                        await self.write("Successfully disconnected from the Server")
                         QThread.currentThread().quit() # Tells thread to fully end
                     except Exception as e:
-                        await self.log(f"Error disconnecting from server:\n{e}")
+                        await self.write(f"Error disconnecting from server:\n{e}")
                     
                 else:
                     raise ServerDisconnectWarning()
         except ServerDisconnectWarning as sdw:
-            await self.log("Failed to Subscribe to the Item Queue. Bad Server URL?")
+            await self.write("Failed to Subscribe to the Item Queue. Bad Server URL?")
         except Exception as e:
-            await self.log("Problem with Server connection, please check the status with the Server host.")
+            await self.write("Problem with Server connection, please check the status with the Server host.")
 
 
     async def listen_to_server(self, client_connection) -> None:

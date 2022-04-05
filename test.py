@@ -3,7 +3,7 @@ import json
 
 import websockets
 
-from Client.stompframemanager import StompFrameManager
+from util.stompframemanager import StompFrameManager
 from Model.itemDto import ItemDto
 #from Model.config import Config
 

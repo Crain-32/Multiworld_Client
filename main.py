@@ -3,7 +3,7 @@ import os
 import sys
 
 from Model.serverConfig import ServerConfig
-import Client.clientCommunication as clientFunctions
+from Client.clientCommunication import ClientCommunication
 from Model.config import Config
 
 from base_logger import logging
@@ -18,7 +18,8 @@ config_info = Config.get_config(sys.argv[0][:-7] or ROOT_DIR)
 
 server_config = ServerConfig(config_info.get_address(), config_info.get_port(),
                              config_info.get_world_id(), 'user', 'password')
+clientFunctions = ClientCommunication(config_info)
 try:
-    asyncio.run(clientFunctions.start_connections(server_config, None, None))
+    asyncio.run(clientFunctions.start_connections(server_config, None))
 except RuntimeWarning:
     logger.error("Failed to Create Room")

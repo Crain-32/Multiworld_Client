@@ -3,3 +3,5 @@
 /workspace.xml
 /.idea/
 __pycache__/
+debug.log
+.vscode/launch.json

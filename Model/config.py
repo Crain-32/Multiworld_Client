@@ -36,7 +36,7 @@ class Config:
             self.parse_config_file()
 
     def parse_config_file(self):
-        self._ServerAddress = self._config_parser.get('SERVER', 'server')
+        self._ServerAddress = self._config_parser.get('SERVER', 'server', fallback="http://twwmultiplayer.com")
         self._Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))
 
         self._World_id = int(self._config_parser.get('GAME', 'world_id',fallback=0))

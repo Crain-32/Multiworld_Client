@@ -1,6 +1,10 @@
 from dataclasses import dataclass, asdict
 import Dolphin.windWakerResources as WWR
 
+output_strs =  ["World {source} found World {target}'s {item}!",
+                "{item} was found by World {source} for World {target}!",
+                "World {target}'s {item} was found by World {source}!"]
+
 @dataclass
 class ItemDto:
     sourcePlayerWorldId: int
@@ -21,5 +25,5 @@ class ItemDto:
     def as_dict(self):
         return asdict(self)
     
-    def get_simple_output(self) -> str:
-        return f"{WWR.item_name_dict[self.itemId]} was found in World {self.sourcePlayerWorldId}"
+    def make_output_str(self, output_str: str) -> str:
+        return output_str.format(source=self.sourcePlayerWorldId, target=self.targetPlayerWorldId, item=WWR.item_name_dict[self.itemId])

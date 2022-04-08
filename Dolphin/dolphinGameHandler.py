@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class DolphinGameHandler(AbstractGameHandler):
     def __init__(self, world_id: int):
-        _world_id = world_id
+        self._world_id = world_id
 
     async def connect(self):
         WWI.hook()

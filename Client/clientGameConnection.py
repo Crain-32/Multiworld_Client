@@ -11,7 +11,8 @@ from util.abstractGameHandler import AbstractGameHandler
 
 from View.guiWriter import GuiWriter
 from PySide6.QtCore import Signal
-
+from random import Random
+from Model.itemDto import output_strs
 
 class ClientGameConnection(GuiWriter):
     _items_to_process: List[ItemDto] = list()
@@ -24,11 +25,13 @@ class ClientGameConnection(GuiWriter):
         super().__init__(signal)
         self._console_handler = DolphinGameHandler(world_id)
         self._world_id = world_id
+        self._random = Random()
 
     async def process_items(self) -> None:
         while len(self._items_to_process) > 0:
             item_dto = self._items_to_process[-1]
-            await self.write(item_dto.get_simple_output())
+            chosen_str = self._random.choice(output_strs)
+            await self.write(item_dto.make_output_str(chosen_str))
             try:
                 if not await self._console_handler.give_item(item_dto.itemId):
                     await asyncio.sleep(3)
@@ -46,7 +49,8 @@ class ClientGameConnection(GuiWriter):
                 state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
                     item_dto = ItemDto(self._world_id, state[0], state[1])  # World ID should be set in client
-                    await self.write(item_dto.get_simple_output())
+                    chosen_str = self._random.choice(output_strs)
+                    await self.write(item_dto.make_output_str(chosen_str))
                     self._items_to_send.append(item_dto)
                     await self._console_handler.clear_queued_items()
             except RuntimeError as rne:

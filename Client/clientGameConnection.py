@@ -40,12 +40,12 @@ class ClientGameConnection(GuiWriter):
                 del exc
 
     async def handle(self) -> None:
-        await self.write("Connected To Console")
+        await self.write("Connected to Dolphin")
         while await self._console_handler.is_connected():  # Thread set interval instead of a while loop would be better
             try:
                 state = await self._console_handler.get_queued_items()
                 if state[0] != 0 and state[1] != 0 and state[1] != 0xFF:
-                    item_dto = ItemDto(self._world_id, 0, state[1])  # World ID should be set in client
+                    item_dto = ItemDto(self._world_id, state[0], state[1])  # World ID should be set in client
                     await self.write(item_dto.get_simple_output())
                     self._items_to_send.append(item_dto)
                     await self._console_handler.clear_queued_items()
@@ -55,7 +55,7 @@ class ClientGameConnection(GuiWriter):
                 if len(self._items_to_process) > 0:
                     asyncio.create_task(self.process_items())
             await asyncio.sleep(0)
-        await self.write("Disconnected from Console, attempting to reconnect.....")
+        await self.write("Unexpected Disconnect from Dolphin, attempting to reconnect.....")
 
     async def connect(self) -> Task:
         await self.write("Connecting to Console")
@@ -64,7 +64,7 @@ class ClientGameConnection(GuiWriter):
             if await self._console_handler.is_connected():
                 break
             await asyncio.sleep(15)
-            await self.write("Console was not found, trying again in 15 seconds.")
+            await self.write("Dolphin was not found, trying again in 15 seconds.")
         return asyncio.create_task(self.handle())
 
     def get_item_to_send(self) -> List[ItemDto]:

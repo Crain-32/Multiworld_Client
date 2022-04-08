@@ -1,10 +1,14 @@
 class CouldNotGiveItemException (Exception):
     """Give item failure"""
 
+class CouldNotTakeItemException(Exception):
+    """Take item failure"""
+
+class InvalidItemException(Exception):
+    """Item Id Failure"""
 
 class DuplicateItemWarning (UserWarning):
     """Duplicate item"""
-
 
 class EventToggleException (Exception):
     """Event toggle failure"""

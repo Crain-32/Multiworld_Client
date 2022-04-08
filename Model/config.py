@@ -10,7 +10,7 @@ class Config:
     _World_id: int = 0
     _Game_Room: str = ""
     _Max_Players: int = 2
-    _root_dir: str = "."
+    root_dir: str = "."
     Scanner_Enabled: bool = False
     Scan_Treasure: bool = False
     Scan_Event_Flags: bool = False
@@ -26,7 +26,7 @@ class Config:
         return Config._ConfigInstance
 
     def __init__(self, root_dir: str = "."):
-        self._root_dir = root_dir
+        self.root_dir = root_dir
         self._config_parser.read(path.join(root_dir, "config.ini"))
 
         if Config._ConfigInstance is not None:

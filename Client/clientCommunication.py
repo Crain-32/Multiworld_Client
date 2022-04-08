@@ -32,7 +32,7 @@ class ClientCommunication(GuiWriter):
         self.game_room = config.get_game_room()
         self.event_scanning = config.Scanner_Enabled
         self.disable_multiplayer = config.Disable_Multiplayer
-        self.game_handler = ClientGameConnection(self.world_id, self.get_signal())
+        self.game_handler = ClientGameConnection(self.world_id, self.get_signal(), config)
 
     async def start_connections(self, server_config: ServerConfig, set_up_dto: SetUpDto) -> None:
         asyncio.create_task(self.game_handler.connect())
@@ -66,7 +66,7 @@ class ClientCommunication(GuiWriter):
                         QThread.currentThread().quit() # Tells thread to fully end
                     except Exception as e:
                         await self.write(f"Error disconnecting from server:\n{e}")
-                    
+
                 else:
                     raise ServerDisconnectWarning()
         except ServerDisconnectWarning as sdw:

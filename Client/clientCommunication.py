@@ -85,6 +85,6 @@ class ClientCommunication(GuiWriter):
         if message[:7] == "MESSAGE":
             contents = message.split("\n")
             item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
-            if item_dto.sourcePlayerWorldId != self.world_id:
+            if item_dto.targetPlayerWorldId == self.world_id:
                 self.game_handler.push_item_to_process(item_dto)
 

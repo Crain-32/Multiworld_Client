@@ -13,32 +13,22 @@ class PlayerInventory:
         self.item_id_item_name_dict = dict()
 
     def create_inventory(self, base_inventory: list[dict[str, dict[str, int|list[int]] ] ]):
-        print(base_inventory)
         progressive_items = list(filter((lambda prog: list(prog.keys())[0].startswith("Progressive") ), base_inventory))
         other_items = list(filter((lambda other: not list(other.keys())[0].startswith("Progressive") ), base_inventory))
-        list(map(print, progressive_items))
-        print("Split")
-        list(map(print, other_items))
         junk_item_ids = list(range(1, 255))
-        print ("Before Progressive")
         for item in progressive_items:
-            print(item)
             for name_str, info in item.items():
-                print(f"{name_str} with {info}")
                 for item_id in info["item_ids"]:
                     junk_item_ids.remove(item_id)
                     self.item_id_item_name_dict[item_id] = name_str
                 inventory_item = InventoryItem(item_name=name_str, curr_amount=0, max_amount=info["max_amount"])
                 self.item_name_inventory_item_dict[name_str] = inventory_item
-        print("Before Other")
         for item in other_items:
             for name_str, info in item.items():
-                print(f"{name_str} with {info}")
                 junk_item_ids.remove(info["item_id"])
                 self.item_id_item_name_dict[info["item_id"]] = name_str
                 inventory_item = InventoryItem(item_name=name_str, curr_amount=0, max_amount=info["max_amount"])
                 self.item_name_inventory_item_dict[name_str] = inventory_item
-        print("Before Junk")
         for junk_id in junk_item_ids:
             self.item_id_item_name_dict[junk_id] = "Junk"
         inventory_item = InventoryItem(item_name="Junk", curr_amount = 0, max_amount=-1)

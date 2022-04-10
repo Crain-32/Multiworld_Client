@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List
-
+from Model.itemDto import ItemDto
 
 class AbstractGameHandler(ABC):
 
@@ -25,7 +25,7 @@ class AbstractGameHandler(ABC):
         pass
 
     @abstractmethod
-    async def get_queued_items(self) -> List[int]:
+    async def get_queued_items(self) -> ItemDto:
         pass
 
     @abstractmethod

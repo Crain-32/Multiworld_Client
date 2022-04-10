@@ -1,6 +1,6 @@
 import random
 import dolphin_memory_engine as dme
-from typing import List
+from typing import List, Tuple
 import Dolphin.windWakerResources as WWR
 from Model.config import Config
 
@@ -45,9 +45,9 @@ def write_float(address, value: float) -> None:
 def read_float(address) -> float:
     return dme.read_float(address)
 
-
-def read_chest_items() -> List[int]:
-    return [(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))]
+#Target World ID, Item ID
+def read_chest_items() -> tuple[int, ...]:
+    return tuple([(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))])
 
 
 def clear_chest_items() -> List[None]:
@@ -105,6 +105,58 @@ def give_item_by_value(item_id: int) -> None:
         give_magic_upgade()
     elif item_id == 0xAA:
         give_hurricane_spin()
+    else:
+        pass
+
+
+def remove_item_by_value(item_id: int) -> None:
+    if item_id in WWR.inventory_handling:
+        remove_inventory_item_by_value(item_id)
+
+    elif item_id in WWR.progressive_items:
+        map_list = WWR.progressive_items_map[item_id]
+        toggle_generic_progressive_item(map_list[0], map_list[1], map_list[2], False)
+
+    elif item_id in WWR.shards_statues_wallets_and_songs:
+        map_list = WWR.shards_statues_wallets_and_songs_map[item_id]
+        toggle_bit_flag(map_list[0], map_list[1], False)
+
+    elif item_id in WWR.progressive_consumables:
+        map_list = WWR.progressive_consumables_map[item_id]
+        downgrade_progressive_consumable(map_list[0], map_list[1])
+
+    elif item_id in WWR.pearls:
+        take_pearl(item_id)
+    elif item_id in WWR.delivery_bag_items:
+        take_delivery_bag_item(item_id)
+    elif item_id in WWR.drc_dungeon_items:
+        take_drc_item(item_id)
+    elif item_id in WWR.fw_dungeon_items:
+        take_fw_item(item_id)
+    elif item_id in WWR.totg_dungeon_items:
+        take_totg_item(item_id)
+    elif item_id in WWR.ff_dungeon_items:
+        take_ff_item(item_id)
+    elif item_id in WWR.et_dungeon_items:
+        take_et_item(item_id)
+    elif item_id in WWR.wt_dungeon_items:
+        take_wt_item(item_id)
+    elif item_id in WWR.charts:
+        take_map_by_id(item_id)
+    elif item_id == 0x08:
+        take_heart_container()
+    elif item_id == 0x07:
+        take_heart_pieces(1)
+    elif item_id == 0x50:
+        take_bottle()
+    elif item_id == 0x28:
+        take_power_bracelets()
+    elif item_id == 0x43:
+        take_heros_charm()
+    elif item_id == 0xB2:
+        take_magic_upgade()
+    elif item_id == 0xAA:
+        take_hurricane_spin()
     else:
         pass
 

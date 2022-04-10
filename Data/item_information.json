@@ -1,0 +1,533 @@
+[
+  {
+    "Heart Container": {
+      "item_id": 8,
+      "max_amount": 6
+    }
+  }, {
+    "Telescope": {
+      "item_id": 16,
+      "max_amount": 1
+    }
+  }, {
+    "Tingle Tuner": {
+      "item_id": 17,
+      "max_amount": 1
+    }
+  }, {
+    "Wind Waker": {
+      "item_id": 18,
+      "max_amount": 1
+    }
+  }, {
+    "Progressive Picto Box": {
+      "item_ids": [35, 38],
+      "max_amount": 2
+    }
+  }, {
+    "Spoils Bag": {
+      "item_id": 36,
+      "max_amount": 1
+    }
+  }, {
+    "Grappling Hook": {
+      "item_id": 37,
+      "max_amount": 1
+    }
+  }, {
+    "Progressive Bow": {
+      "item_ids": [39, 53, 54],
+      "max_amount": 3
+    }
+  }, {
+    "Progressive Sword": {
+      "item_ids": [56, 57, 58, 62],
+      "max_amount": 4
+    }
+  }, {
+    "Progressive Shield": {
+      "item_ids": [60, 61],
+      "max_amount": 2
+    }
+  }, {
+    "Hero's Charm": {
+      "item_id": 67,
+      "max_amount": 1
+    }
+  }, {
+    "Empty Bottle": {
+      "item_id": 80,
+      "max_amount": 4
+    }
+  }, {
+    "Triforce Shard 1": {
+      "item_id": 97,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 2": {
+      "item_id": 98,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 3": {
+      "item_id": 99,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 4": {
+      "item_id": 100,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 5": {
+      "item_id": 101,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 6": {
+      "item_id": 102,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 7": {
+      "item_id": 103,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Shard 8": {
+      "item_id": 104,
+      "max_amount": 1
+    }
+  }, {
+    "Nayru's Pearl": {
+      "item_id": 105,
+      "max_amount": 1
+    }
+  }, {
+    "Din's Pearl": {
+      "item_id": 106,
+      "max_amount": 1
+    }
+  }, {
+    "Farore's Pearl": {
+      "item_id": 107,
+      "max_amount": 1
+    }
+  }, {
+    "Wind's Requiem": {
+      "item_id": 109,
+      "max_amount": 1
+    }
+  }, {
+    "Ballad of Gales": {
+      "item_id": 110,
+      "max_amount": 1
+    }
+  }, {
+    "Command Melody": {
+      "item_id": 111,
+      "max_amount": 1
+    }
+  }, {
+    "Earth God's Lyric": {
+      "item_id": 112,
+      "max_amount": 1
+    }
+  }, {
+    "Wind God's Aria": {
+      "item_id": 113,
+      "max_amount": 1
+    }
+  }, {
+    "Song of Passing": {
+      "item_id": 114,
+      "max_amount": 1
+    }
+  }, {
+    "Boat's Sail": {
+      "item_id": 120,
+      "max_amount": 1
+    }
+  }, {
+    "Note to Mom": {
+      "item_id": 153,
+      "max_amount": 1
+    }
+  }, {
+    "Maggie's Letter": {
+      "item_id": 154,
+      "max_amount": 1
+    }
+  }, {
+    "Moblin's Letter": {
+      "item_id": 155,
+      "max_amount": 1
+    }
+  }, {
+    "Cabana Deed": {
+      "item_id": 156,
+      "max_amount": 1
+    }
+  }, {
+    "Fill-Up Coupon": {
+      "item_id": 158,
+      "max_amount": 1
+    }
+  }, {
+    "Dragon Tingle Statue": {
+      "item_id": 163,
+      "max_amount": 1
+    }
+  }, {
+    "Forbidden Tingle Statue": {
+      "item_id": 164,
+      "max_amount": 1
+    }
+  }, {
+    "Goddess Tingle Statue": {
+      "item_id": 165,
+      "max_amount": 1
+    }
+  }, {
+    "Earth Tingle Statue": {
+      "item_id": 166,
+      "max_amount": 1
+    }
+  }, {
+    "Wind Tingle Statue": {
+      "item_id": 167,
+      "max_amount": 1
+    }
+  }, {
+    "Hurricane Spin": {
+      "item_id": 170,
+      "max_amount": 1
+    }
+  }, {
+    "Progressive Wallet": {
+      "item_ids": [171, 172],
+      "max_amount": 2
+    }
+  }, {
+    "Progressive Bomb Bag": {
+      "item_ids": [173, 174],
+      "max_amount": 2
+    }
+  }, {
+    "Progressive Quiver": {
+      "item_ids": [175, 176],
+      "max_amount": 2
+    }
+  }, {
+    "Double Magic": {
+      "item_id": 178,
+      "max_amount": 1
+    }
+  }, {
+    "Submarine Chart": {
+      "item_id": 194,
+      "max_amount": 1
+    }
+  }, {
+    "Beedle's Chart": {
+      "item_id": 195,
+      "max_amount": 1
+    }
+  }, {
+    "Platform Chart": {
+      "item_id": 196,
+      "max_amount": 1
+    }
+  }, {
+    "Light Ring Chart": {
+      "item_id": 197,
+      "max_amount": 1
+    }
+  }, {
+    "Secret Cave Chart": {
+      "item_id": 198,
+      "max_amount": 1
+    }
+  }, {
+    "Sea Hearts Chart": {
+      "item_id": 199,
+      "max_amount": 1
+    }
+  }, {
+    "Island hearts Chart": {
+      "item_id": 200,
+      "max_amount": 1
+    }
+  }, {
+    "Great Fairy Chart": {
+      "item_id": 201,
+      "max_amount": 1
+    }
+  }, {
+    "Octo Chart": {
+      "item_id": 202,
+      "max_amount": 1
+    }
+  }, {
+    "IN-credible Chart": {
+      "item_id": 203,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 7": {
+      "item_id": 204,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 27": {
+      "item_id": 205,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 21": {
+      "item_id": 206,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 13": {
+      "item_id": 207,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 32": {
+      "item_id": 208,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 19": {
+      "item_id": 209,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 41": {
+      "item_id": 210,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 26": {
+      "item_id": 211,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 8": {
+      "item_id": 212,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 37": {
+      "item_id": 213,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 25": {
+      "item_id": 214,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 17": {
+      "item_id": 215,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 36": {
+      "item_id": 216,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 22": {
+      "item_id": 217,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 9": {
+      "item_id": 218,
+      "max_amount": 1
+    }
+  }, {
+    "Ghost Ship Chart": {
+      "item_id": 219,
+      "max_amount": 1
+    }
+  }, {
+    "Tingle's Chart": {
+      "item_id": 220,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 14": {
+      "item_id": 221,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 10": {
+      "item_id": 222,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 40": {
+      "item_id": 223,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 3": {
+      "item_id": 224,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 4": {
+      "item_id": 225,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 28": {
+      "item_id": 226,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 16": {
+      "item_id": 227,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 18": {
+      "item_id": 228,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 34": {
+      "item_id": 229,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 29": {
+      "item_id": 230,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 1": {
+      "item_id": 231,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 35": {
+      "item_id": 232,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 12": {
+      "item_id": 233,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 6": {
+      "item_id": 234,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 24": {
+      "item_id": 235,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 39": {
+      "item_id": 236,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 38": {
+      "item_id": 237,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 2": {
+      "item_id": 238,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 33": {
+      "item_id": 239,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 31": {
+      "item_id": 240,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 23": {
+      "item_id": 241,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 5": {
+      "item_id": 242,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 20": {
+      "item_id": 243,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 30": {
+      "item_id": 244,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 15": {
+      "item_id": 245,
+      "max_amount": 1
+    }
+  }, {
+    "Treasure Chart 11": {
+      "item_id": 246,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 8": {
+      "item_id": 247,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 7": {
+      "item_id": 248,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 6": {
+      "item_id": 249,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 5": {
+      "item_id": 250,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 4": {
+      "item_id": 251,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 3": {
+      "item_id": 252,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 2": {
+      "item_id": 253,
+      "max_amount": 1
+    }
+  }, {
+    "Triforce Chart 1": {
+      "item_id": 254,
+      "max_amount": 1
+    }
+  }
+]

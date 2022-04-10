@@ -1,61 +1,95 @@
-from types import MethodType
-from typing import List, Dict
+from unittest.mock import AsyncMock, MagicMock
+from pytest_mock import MockerFixture
 
 import pytest
+
 from Client.clientGameConnection import ClientGameConnection
-from util.abstractGameHandler import AbstractGameHandler
 from Model.itemDto import ItemDto
-
-
-class MockedAbstractGameHandler(AbstractGameHandler):
-
-    async def is_connected(self) -> bool:
-        pass
-
-    async def give_item(self, item_id: int) -> bool:
-        return True
-
-    async def toggle_event(self, event_type: str, event_index: int, enable: bool) -> None:
-        pass
-
-    async def get_items(self) -> Dict[int, int]:
-        pass
-
-    async def get_queued_items(self) -> List[int]:
-        pass
-
-    async def clear_queued_items(self) -> None:
-        pass
-
-    async def connect(self) -> None:
-        pass
-
-
-def mock_init(self: ClientGameConnection, world_id: int):
-    self._console_handler = MockedAbstractGameHandler()
-    self.log = MethodType(nonce_async, ClientGameConnection)
-
-
-async def nonce_async(*args, **kwargs):
-    print('nonce_async')
-    return
-
-
-def nonce(*args, **kwargs):
-    return
 
 
 class TestClientGameConnection:
     _world_id = 1
 
+    @pytest.fixture
+    def client_game_connection_fixture(self, mocker: MockerFixture):
+        mocker.patch('View.guiWriter.GuiWriter.write')
+        mocker.patch('Client.clientGameConnection.PlayerInventory')
+        console_handler = mocker.patch('Client.clientGameConnection.DolphinGameHandler')
+        mocker.patch('Client.clientGameConnection.Random')
+        mocker.patch('Client.clientGameConnection.ItemDto')
+        asyncio = mocker.patch('Client.clientGameConnection.asyncio')
+        asyncio.sleep = AsyncMock()
+        asyncio.create_task = AsyncMock()
+        return {
+            "console_handler": console_handler
+        }
+
     @pytest.mark.asyncio
-    async def test_process_items(self, monkeypatch):
-        monkeypatch.setattr(ClientGameConnection, name='__init__', value=mock_init)
-        monkeypatch.setattr(ItemDto, name='get_simple_output', value=nonce)
+    async def test_process_items(self, client_game_connection_fixture):
+        console_handler_instance = client_game_connection_fixture["console_handler"].return_value
+        console_handler_instance.give_item = AsyncMock()
 
         client_game_connection = ClientGameConnection(self._world_id)
+
         client_game_connection._items_to_process = [ItemDto(0, 0, 0)]
 
+        assert len(client_game_connection._items_to_process) == 1
         await client_game_connection.process_items()
 
         assert len(client_game_connection._items_to_process) == 0
+
+    class TestConnect:
+        _world_id = 1
+
+        @pytest.mark.asyncio
+        async def test_is_connected(self, client_game_connection_fixture, mocker: MockerFixture):
+            console_handler_instance = client_game_connection_fixture["console_handler"].return_value
+            console_handler_instance.is_connected = AsyncMock(side_effet=True)
+
+            client_game_connection = ClientGameConnection(self._world_id)
+            handle_mock = mocker.patch.object(client_game_connection, 'handle')
+
+            await client_game_connection.connect()
+
+            console_handler_instance.is_connected.assert_awaited_once()
+            handle_mock.assert_called_once()
+
+        @pytest.mark.asyncio
+        async def test_is_connected_retry(self, client_game_connection_fixture, mocker: MockerFixture):
+            console_handler_instance = client_game_connection_fixture["console_handler"].return_value
+
+            console_handler_instance.is_connected = AsyncMock(side_effect=[False, False, True])
+
+            console_handler_instance.connect = AsyncMock(side_effect=[False, True])
+            client_game_connection = ClientGameConnection(self._world_id)
+            handle_mock = mocker.patch.object(client_game_connection, 'handle')
+
+            await client_game_connection.connect()
+
+            assert console_handler_instance.is_connected.await_count == 3
+            assert console_handler_instance.connect.await_count == 1
+            handle_mock.assert_called_once()
+
+    def test_get_item_to_send(self, client_game_connection_fixture):
+        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection._items_to_send = [ItemDto(0, 0, 0)]
+
+        result = client_game_connection.get_item_to_send()
+
+        assert result == [ItemDto(0, 0, 0)]
+
+    def test_remove_item_to_send(self, client_game_connection_fixture):
+        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection._items_to_send = [ItemDto(5, 5, 5), ItemDto(10, 10, 10)]
+
+        client_game_connection.remove_item_to_send(ItemDto(5, 5, 5))
+
+        assert client_game_connection._items_to_send == [ItemDto(10, 10, 10)]
+
+    def test_push_item_to_process(self, client_game_connection_fixture):
+        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection._items_to_process = [ItemDto(0, 0, 0)]
+
+        client_game_connection.push_item_to_process(ItemDto(5, 5, 5))
+
+        assert client_game_connection._items_to_process == [ItemDto(0, 0, 0), ItemDto(5, 5, 5)]

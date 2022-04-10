@@ -10,6 +10,7 @@ from Model.itemDto import ItemDto
 from base_logger import logging
 logger = logging.getLogger(__name__)
 
+
 class DolphinGameHandler(AbstractGameHandler):
     def __init__(self, world_id: int, inventory: PlayerInventory):
         self._world_id = world_id

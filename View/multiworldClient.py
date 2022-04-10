@@ -26,8 +26,8 @@ class JoinServerWorker(QObject):
         set_up_dto = SetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
         try:
             print("Into Listener")
-            clientFunctions = ClientCommunication(self.config, self.message)
-            asyncio.run(clientFunctions.start_connections(server_config, set_up_dto))
+            client_functions = ClientCommunication(self.message)
+            asyncio.run(client_functions.start_connections(server_config, set_up_dto))
             
         except RuntimeWarning:
             self.send_message("Failed to Create Room")

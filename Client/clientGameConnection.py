@@ -1,10 +1,8 @@
 import asyncio
-from asyncio import Task
 from typing import List
 import json
-from base_logger import logging
-logger = logging.getLogger(__name__)
-
+from Client.types import ItemInfo
+from Model.config import Config
 from Dolphin.dolphinGameHandler import DolphinGameHandler
 from Model.itemDto import ItemDto
 from util.abstractGameHandler import AbstractGameHandler
@@ -13,6 +11,10 @@ from PySide6.QtCore import Signal
 from random import Random
 from Model.itemDto import output_strs
 from util.playerInventory import PlayerInventory
+from base_logger import logging
+
+logger = logging.getLogger(__name__)
+
 
 class ClientGameConnection(GuiWriter):
     _items_to_process: List[ItemDto] = list()
@@ -21,10 +23,12 @@ class ClientGameConnection(GuiWriter):
 
     _console_handler: AbstractGameHandler
 
-    def __init__(self, world_id: int, signal: Signal = None, config = None):
+    def __init__(self, world_id: int, signal: Signal = None):
         super().__init__(signal)
+        config = Config.get_config()
+
         with open(config.root_dir + "/Data/item_information.json") as item_info_file:
-            item_info = json.load(item_info_file)
+            item_info: ItemInfo = json.load(item_info_file)
         inventory = PlayerInventory()
         inventory.create_inventory(item_info)
         self._console_handler = DolphinGameHandler(world_id, inventory)
@@ -64,7 +68,7 @@ class ClientGameConnection(GuiWriter):
             await asyncio.sleep(0)
         await self.write("Unexpected Disconnect from Dolphin, attempting to reconnect.....")
 
-    async def connect(self) -> Task:
+    async def connect(self) -> asyncio.Task:
         await self.write("Connecting to Console")
         while not await self._console_handler.is_connected():
             await self._console_handler.connect()
@@ -77,7 +81,7 @@ class ClientGameConnection(GuiWriter):
     def get_item_to_send(self) -> List[ItemDto]:
         return self._items_to_send
 
-    def remove_item_to_send(self, item_dto:ItemDto):
+    def remove_item_to_send(self, item_dto: ItemDto) -> None:
         self._items_to_send.remove(item_dto)
 
     def push_item_to_process(self, item_dto: ItemDto) -> None:

@@ -1,9 +1,5 @@
-import asyncio
 import os
-import sys
 
-from Model.serverConfig import ServerConfig
-from Client.clientCommunication import ClientCommunication
 from Model.config import Config
 
 from base_logger import logging

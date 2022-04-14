@@ -6,16 +6,16 @@ output_strs =  ["World {source} found World {target}'s {item}!",
                 "World {target}'s {item} was found by World {source}!"]
 
 @dataclass
-class ItemDto:
+class MultiworldDto:
     sourcePlayerWorldId: int
     targetPlayerWorldId: int
     itemId: int
 
     @staticmethod
     def from_dict(dictionary):
-        return ItemDto(dictionary['sourcePlayerWorldId'],
-                       dictionary['targetPlayerWorldId'],
-                       dictionary['itemId'])
+        return MultiworldDto(dictionary['sourcePlayerWorldId'],
+                             dictionary['targetPlayerWorldId'],
+                             dictionary['itemId'])
 
     def __init__(self, sourcePlayerWorldId: int, targetPlayerWorldId: int, itemId: int):
         self.sourcePlayerWorldId = sourcePlayerWorldId

@@ -102,7 +102,7 @@ def give_item_by_value(item_id: int) -> None:
     elif item_id == 0x43:
         give_heros_charm()
     elif item_id == 0xB2:
-        give_magic_upgade()
+        give_magic_upgrade()
     elif item_id == 0xAA:
         give_hurricane_spin()
     else:
@@ -144,9 +144,11 @@ def remove_item_by_value(item_id: int) -> None:
     elif item_id in WWR.charts:
         take_map_by_id(item_id)
     elif item_id == 0x08:
-        take_heart_container()
+        # take_heart_container()
+        return
     elif item_id == 0x07:
-        take_heart_pieces(1)
+        # take_heart_pieces(1)
+        return
     elif item_id == 0x50:
         take_bottle()
     elif item_id == 0x28:
@@ -154,7 +156,7 @@ def remove_item_by_value(item_id: int) -> None:
     elif item_id == 0x43:
         take_heros_charm()
     elif item_id == 0xB2:
-        take_magic_upgade()
+        take_magic_upgrade()
     elif item_id == 0xAA:
         take_hurricane_spin()
     else:
@@ -184,7 +186,7 @@ def give_power_bracelets() -> None:
     dme.write_byte(0x803C4CBE, 0x01)
 
 
-def remove_power_bracelets() -> None:
+def take_power_bracelets() -> None:
     dme.write_byte(0x803C4C18, 0xFF)
     dme.write_byte(0x803C4CBE, 0x00)
 
@@ -281,7 +283,7 @@ def give_bottle() -> None:
     dme.write_byte((0x803C4C52 + open_index), 0x50)
 
 
-def remove_bottle() -> None:
+def take_bottle() -> None:
     open_index = free_index(0x803C4C52, 4)
     if open_index <= 0:
         return
@@ -322,11 +324,11 @@ def take_pearl(item: int) -> None:
     if curr_val == 0x7:
         toggle_bit_flag(0x803C524A, 6, False)
 
-def give_magic_upgade() -> None:
+def give_magic_upgrade() -> None:
     dme.write_byte(0x803C4C1B, 0x20)
     dme.write_byte(0x803C4C1C, 0x20)
 
-def take_magic_upgade() -> None:
+def take_magic_upgrade() -> None:
     dme.write_byte(0x803C4C1B, 0x10)
 
 def give_hurricane_spin() -> None:
@@ -391,9 +393,33 @@ def give_drc_item(item_id: int) -> None:
     else:
         return
 
+def take_drc_item(item_id: int) -> None:
+    if item_id == 0x13:
+        take_small_key_by_stage_id(3)
+    elif item_id == 0x14:
+        toggle_dungeon_bk(3)
+    elif item_id == 0x1B:
+        toggle_dungeon_map(3)
+    elif item_id == 0x1C:
+        toggle_dungeon_compass(3)
+    else:
+        return
+
 def give_fw_item(item_id: int) -> None:
     if item_id == 0x1D:
         give_small_key_by_stage_id(4)
+    elif item_id == 0x40:
+        toggle_dungeon_bk(4)
+    elif item_id == 0x41:
+        toggle_dungeon_map(4)
+    elif item_id == 0x5A:
+        toggle_dungeon_compass(4)
+    else:
+        return
+
+def take_fw_item(item_id: int) -> None:
+    if item_id == 0x1D:
+        take_small_key_by_stage_id(4)
     elif item_id == 0x40:
         toggle_dungeon_bk(4)
     elif item_id == 0x41:
@@ -415,6 +441,18 @@ def give_totg_item(item_id: int) -> None:
     else:
         return
 
+def take_totg_item(item_id: int) -> None:
+    if item_id == 0x5B:
+        take_small_key_by_stage_id(5)
+    elif item_id == 0x5C:
+        toggle_dungeon_bk(5)
+    elif item_id == 0x5D:
+        toggle_dungeon_map(5)
+    elif item_id == 0x5E:
+        toggle_dungeon_compass(5)
+    else:
+        return
+
 
 def give_ff_item(item_id: int) -> None:
     if item_id == 0x5F:
@@ -425,10 +463,29 @@ def give_ff_item(item_id: int) -> None:
         return
 
 
+def take_ff_item(item_id: int) -> None:
+    if item_id == 0x5F:
+        toggle_dungeon_map(2)
+    elif item_id == 0x60:
+        toggle_dungeon_compass(2)
+    else:
+        return
 
 def give_et_item(item_id: int) -> None:
     if item_id == 0x73:
         give_small_key_by_stage_id(6)
+    elif item_id == 0x74:
+        toggle_dungeon_bk(6)
+    elif item_id == 0x75:
+        toggle_dungeon_map(6)
+    elif item_id == 0x76:
+        toggle_dungeon_compass(6)
+    else:
+        return
+
+def take_et_item(item_id: int) -> None:
+    if item_id == 0x73:
+        take_small_key_by_stage_id(6)
     elif item_id == 0x74:
         toggle_dungeon_bk(6)
     elif item_id == 0x75:
@@ -451,6 +508,20 @@ def give_wt_item(item_id: int) -> None:
     else:
         return
 
+
+def take_wt_item(item_id: int) -> None:
+    if item_id == 0x77:
+        take_small_key_by_stage_id(7)
+    elif item_id == 0x81:
+        toggle_dungeon_bk(7)
+    elif item_id == 0x84:
+        toggle_dungeon_map(7)
+    elif item_id == 0x85:
+        toggle_dungeon_compass(7)
+    else:
+        return
+
+
 def give_heart_container() -> None:
     give_heart_pieces(4)
 
@@ -466,6 +537,7 @@ def toggle_generic_progressive_item(progressive_list: List[int], source_address:
             write_byte_and_toggle_flag(source_address, progressive_list[index + 1], flag_address, (index + 1), enable)
 
 def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
+    logger.debug(f"From Address: {address}, with Bit offset {offset}, set to {enable}")
     curr_val = dme.read_byte(address)
     bit_offset = 1 << offset
     masked_val = curr_val & bit_offset

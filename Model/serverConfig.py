@@ -6,6 +6,7 @@ class ServerConfig:
     server_ip: str
     server_port: int
     worldId: int
+    game_mode: str
     userName: str
     password: str
 

@@ -5,7 +5,7 @@ from PySide6.QtCore import QThread, QObject, Signal, Slot
 
 from View.uiMultiworldClient import uiMultiworldClient
 from Model.serverConfig import ServerConfig
-from Model.setUpDto import SetUpDto
+from Model.multiplayerSetUpDto import MultiplayerSetUpDto
 from Client.clientCommunication import ClientCommunication
 
 from Model.config import Config
@@ -20,12 +20,10 @@ class JoinServerWorker(QObject):
         self.config = Config.get_config()
 
     def run(self) -> None:
-        print("Setting Fields")
         server_config = ServerConfig(self.config._ServerAddress, self.config._Port,
-        self.config._World_id, 'admin', 'adminPass')
-        set_up_dto = SetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
+                                     self.config._World_id, self.config.Game_Mode, 'admin', 'adminPass')
+        set_up_dto = MultiplayerSetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
         try:
-            print("Into Listener")
             clientFunctions = ClientCommunication(self.config, self.message)
             asyncio.run(clientFunctions.start_connections(server_config, set_up_dto))
             
@@ -39,16 +37,19 @@ class MultiworldClientWindow(QMainWindow):
 
     def __init__(self) -> None:
         super(MultiworldClientWindow, self).__init__()
+        self.config = None
+        self.ServerJoiner = None
         self.ui = uiMultiworldClient()
         self.ui.setupUi(self)
         self.ui.serverButton.clicked.connect(self.create_room)
         self.ui.joinButton.clicked.connect(self.join_room)
         self.show_button() # Update button to only show the right one of the two to reflect the default value of modeSelector
+        self.game_mode_options_toggle()
         self.ui.disconnectButton.clicked.connect(self.disconnect)
         self.ui.disconnectButton.hide()
 
-        self.ui.modeSelector.currentTextChanged.connect(self.show_button)
-
+        self.ui.connectionSelection.currentTextChanged.connect(self.show_button)
+        self.ui.modeSelector.currentTextChanged.connect(self.game_mode_options_toggle)
         self.ServerThread = QThread()
 
         self.load_config()
@@ -67,6 +68,10 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.gameRoomNameInput.setText(self.config._Game_Room)
         self.ui.worldIdInput.setText(str(self.config._World_id))
         self.ui.maxPlayersInput.setText(str(self.config._Max_Players))
+        if self.config.Game_Mode == "Multiworld":
+            self.ui.modeSelector.setCurrentIndex(0)
+        else:
+            self.ui.modeSelector.setCurrentIndex(1)
 
     def update_config(self) -> None:
         if self.config._ServerAddress != self.ui.serverIpInput.text():
@@ -79,6 +84,10 @@ class MultiworldClientWindow(QMainWindow):
             self.config._World_id = int(self.ui.worldIdInput.text().strip())
         if self.config._Max_Players != int(self.ui.maxPlayersInput.text()):
             self.config_Max_Players = int(self.ui.maxPlayersInput.text().strip())
+        if self.config.Game_Mode != self.ui.modeSelector.currentText():
+            self.config.Game_Mode = self.ui.modeSelector.currentText().strip()
+        if self.config._Player_Name != self.ui.playerName.text():
+            self.config._Player_Name = self.ui.playerName.text().strip()
 
     def create_room(self) -> None:
         pass # TODO actual room setup, needs server-side implementation first
@@ -89,7 +98,6 @@ class MultiworldClientWindow(QMainWindow):
         self.ServerJoiner = JoinServerWorker()
         self.ServerJoiner.moveToThread(self.ServerThread)
         self.ServerThread.started.connect(self.ServerJoiner.run)
-        
 
         self.ServerJoiner.message.connect(self.log)
         self.ServerThread.start()
@@ -107,13 +115,26 @@ class MultiworldClientWindow(QMainWindow):
 
     def show_button(self) -> None:
         # Used to display the correct button when the Mode Selector dropdown value changes
-        mode = self.ui.modeSelector.currentText()
-        if mode == "Connect to Room":
+        mode = self.ui.connectionSelection.currentText()
+        if mode == "Join Room":
             self.ui.joinButton.show()
             self.ui.serverButton.hide()
         elif mode == "Set-up Room":
             self.ui.joinButton.hide()
             self.ui.serverButton.show()
+
+    def game_mode_options_toggle(self) -> None:
+        # Used to disable "Max Players" and "World Id" when on Coop, and "Player Name" when on Multiworld
+        mode = self.ui.modeSelector.currentText()
+        if mode == "Multiworld":
+            self.ui.worldIdInput.setEnabled(True)
+            self.ui.maxPlayersInput.setEnabled(True)
+            self.ui.playerName.setEnabled(False)
+        elif mode == "Coop":
+            self.ui.worldIdInput.setEnabled(False)
+            self.ui.maxPlayersInput.setEnabled(False)
+            self.ui.playerName.setEnabled(True)
+
 
     def closeEvent(self, event) -> None: # Triggers when the user clicks the 'X' to close the window
         self.disconnect()

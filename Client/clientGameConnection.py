@@ -27,8 +27,6 @@ class ClientGameConnection(GuiWriter):
 
     def __init__(self, world_id: int, signal: Signal = None, config: Config = None):
         super().__init__(signal)
-        config = Config.get_config()
-
         with open(config.root_dir + "/Data/item_information.json") as item_info_file:
             item_info: ItemInfo = json.load(item_info_file)
         inventory = PlayerInventory()

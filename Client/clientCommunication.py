@@ -32,9 +32,8 @@ class ClientCommunication(GuiWriter):
     game_handler: ClientGameConnection
     game_mode_message_handler: Callable
 
-    def __init__(self, signal: Signal = None):
+    def __init__(self, config: Config, signal: Signal = None):
         super().__init__(signal)
-        config = Config.get_config()
         self.world_id = config.get_world_id()
         self.game_room = config.get_game_room()
         self.player_name = config.get_player_name()

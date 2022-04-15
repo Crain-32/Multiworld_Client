@@ -302,7 +302,7 @@ shards_statues_wallets_and_songs_map = {
     0x6D: [0x803C4CC5, 0],  # Wind's Requiem
     0x6E: [0x803C4CC5, 1],  # Ballad of Gales
     0x6F: [0x803C4CC5, 2],  # Command Melody
-    0x70: [0x803C4CC5, 3],  # Earth God's Lyri
+    0x70: [0x803C4CC5, 3],  # Earth God's Lyrics
     0x71: [0x803C4CC5, 4],  # Wind God's Aria
     0x72: [0x803C4CC5, 5],  # Song of Passing
     0xA3: [0x803C5296, 2],  # Dragon Tingle Statue

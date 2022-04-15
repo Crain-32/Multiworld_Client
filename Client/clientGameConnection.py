@@ -8,22 +8,26 @@ from Model.itemDto import ItemDto
 from util.abstractGameHandler import AbstractGameHandler
 from View.guiWriter import GuiWriter
 from PySide6.QtCore import Signal
-from random import Random
-from Model.itemDto import output_strs
+from Model.multiworldDto import output_strs
+from Model.config import Config
+from Model.multiworldDto import MultiworldDto
+from Model.coopDto import CoopDto
 from util.playerInventory import PlayerInventory
 from base_logger import logging
 
 logger = logging.getLogger(__name__)
 
+from util.abstractGameHandler import AbstractGameHandler
+from Dolphin.dolphinGameHandler import DolphinGameHandler
 
 class ClientGameConnection(GuiWriter):
-    _items_to_process: List[ItemDto] = list()
-    _items_to_send: List[ItemDto] = list()
+    _items_to_process: List[MultiworldDto] = list()
+    _items_to_send: List[MultiworldDto] = list()
     _world_id: int = 0
 
     _console_handler: AbstractGameHandler
 
-    def __init__(self, world_id: int, signal: Signal = None):
+    def __init__(self, world_id: int, signal: Signal = None, config: Config = None):
         super().__init__(signal)
         config = Config.get_config()
 
@@ -31,7 +35,7 @@ class ClientGameConnection(GuiWriter):
             item_info: ItemInfo = json.load(item_info_file)
         inventory = PlayerInventory()
         inventory.create_inventory(item_info)
-        self._console_handler = DolphinGameHandler(world_id, inventory)
+        self._console_handler = DolphinGameHandler(world_id, inventory, config.Game_Mode, config.get_player_name())
         self._world_id = world_id
         self._random = Random()
 
@@ -42,10 +46,10 @@ class ClientGameConnection(GuiWriter):
             await self.write(item_dto.make_output_str(chosen_str))
             try:
                 if not await self._console_handler.give_item(item_dto.itemId):
-                    await asyncio.sleep(3)
+                    await asyncio.sleep(4)
                     continue
                 self._items_to_process.pop()
-                await asyncio.sleep(0)
+                await asyncio.sleep(.25)
             except RuntimeError as exc:
                 logger.error(exc)
                 del exc
@@ -56,16 +60,18 @@ class ClientGameConnection(GuiWriter):
             try:
                 item_dto = await self._console_handler.get_queued_items()
                 if item_dto is not None:
+                    await self._console_handler.clear_queued_items()
                     chosen_str = self._random.choice(output_strs)
                     await self.write(item_dto.make_output_str(chosen_str))
                     self._items_to_send.append(item_dto)
-                    await self._console_handler.clear_queued_items()
             except RuntimeError as rne:
                 del rne
+            except InvalidItemException as e:
+                await self.write(str(e))
             finally:
                 if len(self._items_to_process) > 0:
                     asyncio.create_task(self.process_items())
-            await asyncio.sleep(0)
+            await asyncio.sleep(.5)
         await self.write("Unexpected Disconnect from Dolphin, attempting to reconnect.....")
 
     async def connect(self) -> asyncio.Task:
@@ -78,11 +84,11 @@ class ClientGameConnection(GuiWriter):
             await self.write("Dolphin was not found, trying again in 15 seconds.")
         return asyncio.create_task(self.handle())
 
-    def get_item_to_send(self) -> List[ItemDto]:
+    def get_item_to_send(self) -> List[MultiworldDto]:
         return self._items_to_send
 
-    def remove_item_to_send(self, item_dto: ItemDto) -> None:
+    def remove_item_to_send(self, item_dto:MultiworldDto):
         self._items_to_send.remove(item_dto)
 
-    def push_item_to_process(self, item_dto: ItemDto) -> None:
+    def push_item_to_process(self, item_dto: MultiworldDto | CoopDto) -> None:
         self._items_to_process.append(item_dto)

@@ -5,12 +5,14 @@ from os import path
 class Config:
     _ConfigInstance = None
     _config_parser = ConfigParser()
-    _ServerAddress: str = "localhost"
+    _ServerAddress: str = "http://localhost"
     _Port: int = 8080
     _World_id: int = 0
     _Game_Room: str = ""
     _Max_Players: int = 2
+    Game_Mode: str = "Multiworld"
     root_dir: str = "."
+    _Player_Name: str = ""
     Scanner_Enabled: bool = False
     Scan_Treasure: bool = False
     Scan_Event_Flags: bool = False
@@ -38,8 +40,9 @@ class Config:
     def parse_config_file(self):
         self._ServerAddress = self._config_parser.get('SERVER', 'server', fallback="http://twwmultiplayer.com")
         self._Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))
+        self.Game_Mode = self._config_parser.get('SERVER', 'gamemode', fallback="Multiworld")
 
-        self._World_id = int(self._config_parser.get('GAME', 'world_id',fallback=0))
+        self._World_id = int(self._config_parser.get('GAME', 'world_id',fallback=1))
         self._Game_Room = self._config_parser.get('GAME', 'gameroom_name')
         self._Max_Players = int(self._config_parser.get('GAME', 'max_players', fallback=2))
 
@@ -62,3 +65,6 @@ class Config:
 
     def get_game_room(self):
         return self._Game_Room
+
+    def get_player_name(self):
+        return self._Player_Name

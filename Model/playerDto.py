@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from .itemDto import ItemDto
+from .multiworldDto import MultiworldDto
 from .serverConfig import ServerConfig
 
 

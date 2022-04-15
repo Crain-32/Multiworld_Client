@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict
 
 
 @dataclass
-class SetUpDto:
+class MultiplayerSetUpDto:
     worldAmount: int
     gameRoomName: str
     gameRoomPassword: str

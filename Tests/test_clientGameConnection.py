@@ -1,14 +1,16 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, mock_open
 from pytest_mock import MockerFixture
 
 import pytest
 
 from Client.clientGameConnection import ClientGameConnection
+from Model.config import Config
 from Model.multiworldDto import MultiworldDto
 
 
 class TestClientGameConnection:
-    _world_id = 1
+    _world_id: int = 1
+    _config: Config = Config.get_config()
 
     @pytest.fixture
     def client_game_connection_fixture(self, mocker: MockerFixture):
@@ -18,6 +20,7 @@ class TestClientGameConnection:
         mocker.patch('Client.clientGameConnection.Random')
         mocker.patch('Client.clientGameConnection.MultiworldDto')
         asyncio = mocker.patch('Client.clientGameConnection.asyncio')
+        mocker.patch('builtins.open', mock_open(read_data="{}"))
         asyncio.sleep = AsyncMock()
         asyncio.create_task = AsyncMock()
         return {
@@ -29,7 +32,7 @@ class TestClientGameConnection:
         console_handler_instance = client_game_connection_fixture["console_handler"].return_value
         console_handler_instance.give_item = AsyncMock()
 
-        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection = ClientGameConnection(self._world_id, config=self._config)
 
         client_game_connection._items_to_process = [MultiworldDto(0, 0, 0)]
 
@@ -40,13 +43,14 @@ class TestClientGameConnection:
 
     class TestConnect:
         _world_id = 1
+        _config: Config = Config.get_config()
 
         @pytest.mark.asyncio
         async def test_is_connected(self, client_game_connection_fixture, mocker: MockerFixture):
             console_handler_instance = client_game_connection_fixture["console_handler"].return_value
             console_handler_instance.is_connected = AsyncMock(side_effet=True)
 
-            client_game_connection = ClientGameConnection(self._world_id)
+            client_game_connection = ClientGameConnection(self._world_id, config=self._config)
             handle_mock = mocker.patch.object(client_game_connection, 'handle')
 
             await client_game_connection.connect()
@@ -61,7 +65,7 @@ class TestClientGameConnection:
             console_handler_instance.is_connected = AsyncMock(side_effect=[False, False, True])
 
             console_handler_instance.connect = AsyncMock(side_effect=[False, True])
-            client_game_connection = ClientGameConnection(self._world_id)
+            client_game_connection = ClientGameConnection(self._world_id, config=self._config)
             handle_mock = mocker.patch.object(client_game_connection, 'handle')
 
             await client_game_connection.connect()
@@ -71,7 +75,7 @@ class TestClientGameConnection:
             handle_mock.assert_called_once()
 
     def test_get_item_to_send(self, client_game_connection_fixture):
-        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection = ClientGameConnection(self._world_id, config=self._config)
         client_game_connection._items_to_send = [MultiworldDto(0, 0, 0)]
 
         result = client_game_connection.get_item_to_send()
@@ -79,7 +83,7 @@ class TestClientGameConnection:
         assert result == [MultiworldDto(0, 0, 0)]
 
     def test_remove_item_to_send(self, client_game_connection_fixture):
-        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection = ClientGameConnection(self._world_id, config=self._config)
         client_game_connection._items_to_send = [MultiworldDto(5, 5, 5), MultiworldDto(10, 10, 10)]
 
         client_game_connection.remove_item_to_send(MultiworldDto(5, 5, 5))
@@ -87,7 +91,7 @@ class TestClientGameConnection:
         assert client_game_connection._items_to_send == [MultiworldDto(10, 10, 10)]
 
     def test_push_item_to_process(self, client_game_connection_fixture):
-        client_game_connection = ClientGameConnection(self._world_id)
+        client_game_connection = ClientGameConnection(self._world_id, config=self._config)
         client_game_connection._items_to_process = [MultiworldDto(0, 0, 0)]
 
         client_game_connection.push_item_to_process(MultiworldDto(5, 5, 5))

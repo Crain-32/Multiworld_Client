@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, call
+
 import pytest
 
 from Model.inventoryItem import InventoryItem
@@ -19,19 +21,35 @@ class TestPlayerInventory:
             with pytest.raises(InvalidItemException):
                 player_inventory.item_id_check(50)
 
-    class TestItemMaxed:
-        def test_item_maxed_false(self):
-            player_inventory = PlayerInventory()
-            player_inventory.item_id_item_name_dict[50] = "item"
-            player_inventory.item_name_inventory_item_dict["item"] = InventoryItem(item_name="item", curr_amount=0
-                                                                                   , max_amount=99)
+    def test_item_maxed(self):
+        player_inventory = PlayerInventory()
+        player_inventory.item_id_item_name_dict[50] = "item"
 
-            assert player_inventory.item_maxed(50) == False
+        inventory_item = InventoryItem(item_name="item", curr_amount=1, max_amount=99)
+        inventory_item.at_max = MagicMock()
+        player_inventory.item_name_inventory_item_dict["item"] = inventory_item
 
-        def test_item_maxed_false(self):
-            player_inventory = PlayerInventory()
-            player_inventory.item_id_item_name_dict[50] = "item"
-            player_inventory.item_name_inventory_item_dict["item"] = InventoryItem(item_name="item", curr_amount=99
-                                                                                   , max_amount=99)
+        player_inventory.item_maxed(50)
 
-            assert player_inventory.item_maxed(50) == True
+        inventory_item.at_max.assert_called_once()
+
+    def test_give_item(self, mocker):
+        player_inventory = PlayerInventory()
+
+        player_inventory.item_id_item_name_dict[50] = "item"
+
+        inventory_item = InventoryItem(item_name="item", curr_amount=1, max_amount=99)
+        inventory_item.add_item = MagicMock()
+        player_inventory.item_name_inventory_item_dict["item"] = inventory_item
+
+        player_inventory.give_item(50)
+
+        inventory_item.add_item.assert_called_once()
+
+    def test_set_starting_items(self):
+        player_inventory = PlayerInventory()
+        player_inventory.give_item = MagicMock()
+
+        player_inventory.set_starting_items([15, 16, 17])
+
+        player_inventory.give_item.assert_has_calls(calls=[call(15), call(16), call(17)])

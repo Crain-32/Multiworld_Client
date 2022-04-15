@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 
-from Client.clientGameConnection import ItemInfo
+from Client.types import ItemInfo
 from Model.inventoryItem import InventoryItem
 from util.clientExceptions import InvalidItemException
 

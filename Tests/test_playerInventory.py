@@ -1,7 +1,9 @@
+import json
 from unittest.mock import MagicMock, call
 
 import pytest
 
+from Client.types import ItemInfo
 from Model.inventoryItem import InventoryItem
 from util.clientExceptions import InvalidItemException
 from util.playerInventory import PlayerInventory
@@ -20,6 +22,41 @@ class TestPlayerInventory:
 
             with pytest.raises(InvalidItemException):
                 player_inventory.item_id_check(50)
+
+    class TestCreateInventory:
+        def test_create_inventory(self):
+            base_inventory: ItemInfo = ItemInfo([{
+                "Progressive Bow": {
+                    "item_ids": [39, 53, 54],
+                    "max_amount": 3
+                }
+            }, {
+                "Earth God's Lyric": {
+                    "item_id": 112,
+                    "max_amount": 1
+                }
+            }])
+
+            player_inventory = PlayerInventory()
+
+            player_inventory.create_inventory(base_inventory)
+
+            assert player_inventory.item_name_inventory_item_dict == \
+                   {
+                       'Progressive Bow': InventoryItem(item_name='Progressive Bow', curr_amount=0, max_amount=3),
+                       "Earth God's Lyric": InventoryItem(item_name="Earth God's Lyric", curr_amount=0, max_amount=1),
+                       'Junk': InventoryItem(item_name='Junk', curr_amount=0, max_amount=-1)
+                   }
+
+            with open('./item_id_item_name_dict_junk.json') as file:
+                d = json.load(file)
+                item_id_item_name_dict_assert = {int(k): v for k, v in d.items()}
+
+            item_id_item_name_dict_assert[39] = "Progressive Bow"
+            item_id_item_name_dict_assert[53] = "Progressive Bow"
+            item_id_item_name_dict_assert[54] = "Progressive Bow"
+            item_id_item_name_dict_assert[112] = "Earth God\'s Lyric"
+            assert player_inventory.item_id_item_name_dict == item_id_item_name_dict_assert
 
     def test_item_maxed(self):
         player_inventory = PlayerInventory()

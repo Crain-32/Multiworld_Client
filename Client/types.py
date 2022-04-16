@@ -1,3 +1,4 @@
 from typing import NewType, List, Dict, Union
 
-ItemInfo = NewType('ItemInfo', List[dict[str,  Dict[str, Union[int | List[int]]]]])
+# This should be broken down more
+ItemInfo = NewType('ItemInfo', List[Dict[str,  Dict[str, Union[int | List[int]]]]])

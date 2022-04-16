@@ -1,4 +1,5 @@
 import json
+import os
 from unittest.mock import MagicMock, call
 
 import pytest
@@ -48,7 +49,7 @@ class TestPlayerInventory:
                        'Junk': InventoryItem(item_name='Junk', curr_amount=0, max_amount=-1)
                    }
 
-            with open('./item_id_item_name_dict_junk.json') as file:
+            with open(f'{os.path.dirname(os.path.realpath(__file__))}/item_id_item_name_dict_junk.json') as file:
                 d = json.load(file)
                 item_id_item_name_dict_assert = {int(k): v for k, v in d.items()}
 

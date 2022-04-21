@@ -1,20 +1,23 @@
 from dataclasses import dataclass
+from typing import List, Dict
+
+from Client.types import ItemInfo
 from Model.inventoryItem import InventoryItem
 from util.clientExceptions import InvalidItemException
 
+
 @dataclass
 class PlayerInventory:
-
-    item_id_item_name_dict: dict[int, str]
-    item_name_inventory_item_dict: dict[str, InventoryItem]
+    item_id_item_name_dict: Dict[int, str]
+    item_name_inventory_item_dict: Dict[str, InventoryItem]
 
     def __init__(self):
         self.item_name_inventory_item_dict = dict()
         self.item_id_item_name_dict = dict()
 
-    def create_inventory(self, base_inventory: list[dict[str, dict[str, int|list[int]] ] ]):
-        progressive_items = list(filter((lambda prog: list(prog.keys())[0].startswith("Progressive") ), base_inventory))
-        other_items = list(filter((lambda other: not list(other.keys())[0].startswith("Progressive") ), base_inventory))
+    def create_inventory(self, base_inventory: ItemInfo):
+        progressive_items = list(filter((lambda prog: list(prog.keys())[0].startswith("Progressive")), base_inventory))
+        other_items = list(filter((lambda other: not list(other.keys())[0].startswith("Progressive")), base_inventory))
         junk_item_ids = list(range(1, 255))
         for item in progressive_items:
             for name_str, info in item.items():
@@ -31,9 +34,8 @@ class PlayerInventory:
                 self.item_name_inventory_item_dict[name_str] = inventory_item
         for junk_id in junk_item_ids:
             self.item_id_item_name_dict[junk_id] = "Junk"
-        inventory_item = InventoryItem(item_name="Junk", curr_amount = 0, max_amount=-1)
+        inventory_item = InventoryItem(item_name="Junk", curr_amount=0, max_amount=-1)
         self.item_name_inventory_item_dict["Junk"] = inventory_item
-
 
     def set_starting_items(self, starting_item_ids: list[int]) -> None:
         for item_id in starting_item_ids:

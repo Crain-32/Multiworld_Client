@@ -14,6 +14,7 @@ from util.playerInventory import PlayerInventory
 
 logger = logging.getLogger(__name__)
 
+
 class DolphinGameHandler(AbstractGameHandler):
     def __init__(self, world_id: int, inventory: PlayerInventory, gamemode: str, player_name: str):
         self._world_id = world_id

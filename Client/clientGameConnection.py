@@ -1,13 +1,8 @@
 import asyncio
 import json
-from asyncio import Task
 from typing import List
-
 from base_logger import logging
 from util.clientExceptions import InvalidItemException
-
-logger = logging.getLogger(__name__)
-
 from random import Random
 from View.guiWriter import GuiWriter
 from PySide6.QtCore import Signal
@@ -18,6 +13,10 @@ from Model.coopDto import CoopDto
 from util.playerInventory import PlayerInventory
 from util.abstractGameHandler import AbstractGameHandler
 from Dolphin.dolphinGameHandler import DolphinGameHandler
+from Client.types import ItemInfo
+
+logger = logging.getLogger(__name__)
+
 
 class ClientGameConnection(GuiWriter):
     _items_to_process: List[MultiworldDto] = list()
@@ -29,7 +28,7 @@ class ClientGameConnection(GuiWriter):
     def __init__(self, world_id: int, signal: Signal = None, config: Config = None):
         super().__init__(signal)
         with open(config.root_dir + "/Data/item_information.json") as item_info_file:
-            item_info = json.load(item_info_file)
+            item_info: ItemInfo = json.load(item_info_file)
         inventory = PlayerInventory()
         inventory.create_inventory(item_info)
         self._console_handler = DolphinGameHandler(world_id, inventory, config.Game_Mode, config.get_player_name())
@@ -71,7 +70,7 @@ class ClientGameConnection(GuiWriter):
             await asyncio.sleep(.5)
         await self.write("Unexpected Disconnect from Dolphin, attempting to reconnect.....")
 
-    async def connect(self) -> Task:
+    async def connect(self) -> asyncio.Task:
         await self.write("Connecting to Console")
         while not await self._console_handler.is_connected():
             await self._console_handler.connect()

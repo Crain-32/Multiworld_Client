@@ -45,8 +45,9 @@ def write_float(address, value: float) -> None:
 def read_float(address) -> float:
     return dme.read_float(address)
 
-#Target World ID, Item ID
-def read_chest_items() -> tuple[int, ...]:
+
+# Target World ID, Item ID
+def read_chest_items() -> Tuple[int, ...]:
     return tuple([(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))])
 
 

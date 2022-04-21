@@ -22,6 +22,7 @@ from View.guiWriter import GuiWriter
 from base_logger import logging
 logger = logging.getLogger(__name__)
 
+
 class ClientCommunication(GuiWriter):
     world_id: int
     game_room: str
@@ -49,7 +50,6 @@ class ClientCommunication(GuiWriter):
         if not self.disable_multiplayer:
             await self.client(server_config)
 
-
     async def client(self, server_config: ServerConfig) -> None:
         frame_manager = StompFrameManager(server_config)
         try:
@@ -73,7 +73,7 @@ class ClientCommunication(GuiWriter):
                         await client_websocket.send(frame_manager.disconnect(""))
                         await client_websocket.close()
                         await self.write("Successfully disconnected from the Server")
-                        QThread.currentThread().quit() # Tells thread to fully end
+                        QThread.currentThread().quit()  # Tells thread to fully end
                     except Exception as e:
                         await self.write(f"Error disconnecting from server:\n{e}")
 
@@ -84,12 +84,10 @@ class ClientCommunication(GuiWriter):
         except Exception as e:
             await self.write("Problem with Server connection, please check the status with the Server host.")
 
-
     async def listen_to_server(self, client_connection) -> None:
         async for message in client_connection:
             a = asyncio.create_task(self.handle_message(message))
             await asyncio.sleep(.15)
-
 
     async def handle_message(self, message) -> None:
         if message[:7] == "MESSAGE":

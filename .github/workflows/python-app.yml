@@ -38,7 +38,7 @@ jobs:
       - name: Bundle Windows App
         run: python build.py
       - name: Upload Windows App
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: wwrando-${{ steps.vars.outputs.version }}-${{ steps.vars.outputs.sha_short }}-windows-${{ steps.archvars.outputs.bitness }}bit
+          name: multiworldclient-${{ steps.vars.outputs.version }}-${{ steps.vars.outputs.sha_short }}-windows-${{ steps.archvars.outputs.bitness }}bit
           path: dist/release_archive_${{ steps.vars.outputs.version }}_${{ steps.archvars.outputs.bitness }}bit/*

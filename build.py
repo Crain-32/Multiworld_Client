@@ -24,7 +24,7 @@ if platform.system() == "Darwin":
 if platform.system() == "Linux":
     platform_name = "linux"
 
-exe_path = os.path.join(".", "dist", "Multiworld_Client", base_name + exe_ext)
+exe_path = os.path.join(".", "dist", "Multiworld Client", base_name + exe_ext)
 if not (os.path.isfile(exe_path) or os.path.isdir(exe_path)):
     raise Exception("Executable not found: %s" % exe_path)
 

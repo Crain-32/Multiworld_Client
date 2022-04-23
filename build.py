@@ -35,5 +35,6 @@ if os.path.exists(release_archive_path) and os.path.isdir(release_archive_path):
 
 os.mkdir(release_archive_path)
 shutil.copyfile("README.md", os.path.join(release_archive_path, "README.txt"))
+shutil.copyfile("config.ini", os.path.join(release_archive_path, "config.ini"))
 
 shutil.move(exe_path, os.path.join(release_archive_path, base_name + exe_ext))

@@ -8,7 +8,6 @@ with open(os.path.join('.', "version.txt"), "r") as f:
 
 base_name = "Multiworld Client"
 
-
 if (struct.calcsize("P") * 8) == 64:
     bitness_suffix = "_64bit"
 else:
@@ -36,6 +35,6 @@ if os.path.exists(release_archive_path) and os.path.isdir(release_archive_path):
 os.mkdir(release_archive_path)
 shutil.copyfile("README.md", os.path.join(release_archive_path, "README.txt"))
 shutil.copyfile("config.ini", os.path.join(release_archive_path, "config.ini"))
-shutil.copytree('Data', 'Data')
+shutil.copytree('Data', os.path.join(release_archive_path, 'data'))
 
 shutil.move(exe_path, os.path.join(release_archive_path, base_name + exe_ext))

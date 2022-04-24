@@ -35,7 +35,24 @@ class Config:
             raise Exception("Cannot have multiple Configs")
         else:
             Config._ConfigInstance = self
+            if not path.exists('config.ini'):
+                self.write_default()
+
             self.parse_config_file()
+
+    def write_default(self):
+        self._config_parser.add_section('SERVER')
+        self._config_parser['SERVER']['server'] = "http://twwmultiplayer.com"
+        self._config_parser['SERVER']['port'] = "8080"
+        self._config_parser['SERVER']['gamemode'] = "Multiworld"
+
+        self._config_parser.add_section('GAME')
+        self._config_parser['GAME']['world_id'] = "1"
+        self._config_parser['GAME']['gameroom_name'] = ""
+        self._config_parser['GAME']['random_rupoors'] = ""
+        self._config_parser['GAME']['max_players'] = "2"
+        with open("config.ini", 'w') as f:
+            self._config_parser.write(f)
 
     def parse_config_file(self):
         self.Server_Address = self._config_parser.get('SERVER', 'server', fallback="http://twwmultiplayer.com")
@@ -43,7 +60,7 @@ class Config:
         self.Game_Mode = self._config_parser.get('SERVER', 'gamemode', fallback="Multiworld")
 
         self.World_id = int(self._config_parser.get('GAME', 'world_id', fallback=1))
-        self.Game_Room = self._config_parser.get('GAME', 'gameroom_name')
+        self.Game_Room = self._config_parser.get('GAME', 'gameroom_name', fallback="")
         self.Max_Players = int(self._config_parser.get('GAME', 'max_players', fallback=2))
         self.Player_Name = self._config_parser.get('GAME', 'player_name', fallback="")
 

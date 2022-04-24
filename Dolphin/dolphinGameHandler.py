@@ -21,9 +21,13 @@ class DolphinGameHandler(AbstractGameHandler):
         self._inventory = inventory
         if gamemode == "Multiworld":
             logger.debug("Set to Multiworld")
+            self.take_item = functools.partial(multiworld_take_item, player_world_id=world_id)
+            self.give_item = functools.partial(multiworld_give_item, player_world_id=world_id)
             self.dto_factory = functools.partial(multiworld_wrapper, world_id)
         else:
             logger.debug("Set to Coop")
+            self.take_item = coop_take_item
+            self.give_item = coop_give_item
             self.dto_factory = functools.partial(coop_item_wrapper, player_name)
 
     async def connect(self):
@@ -32,7 +36,7 @@ class DolphinGameHandler(AbstractGameHandler):
     async def is_connected(self) -> bool:
         return WWI.is_hooked()
 
-    async def give_item(self, item_id: int) -> bool:
+    async def pass_item(self, item_id: int) -> bool:
         try:
             if WWI.is_title_screen():
                 return False
@@ -55,10 +59,12 @@ class DolphinGameHandler(AbstractGameHandler):
         target_world, item_id = WWI.read_chest_items()
         if target_world == 0 and item_id == 0:
             return None
-        elif target_world != self._world_id and not self._inventory.item_maxed(item_id):
+        # If the user shouldn't have the item (Multiworld), remove the item from the player.
+        elif self.take_item(item_id, target_world, self._inventory):
             logger.debug(f"Removing {item_id} targeting World ID {target_world}")
             WWI.remove_item_by_value(item_id)
-        elif target_world == self._world_id and not self._inventory.item_maxed(item_id):
+        # If the player should have this item, then we want to track it in the Inventory
+        elif self.give_item(item_id, target_world, self._inventory):
             logger.debug(f"Giving {item_id} to {target_world}'s Inventory")
             self._inventory.give_item(item_id)
         return self.dto_factory(item_id, target_world)
@@ -78,11 +84,11 @@ def multiworld_wrapper(source_world, item_id, target_world) -> MultiworldDto:
 def coop_give_item(item_id: int, target_world: int, player_inventory: PlayerInventory) -> bool:
     return player_inventory.item_maxed(item_id)
 
-def coop_take_item() -> bool:
+def coop_take_item(*args) -> bool:
     return False
 
-def multiworld_give_item(provided_world_id:int, item_id: int, target_world:int, player_inventory: PlayerInventory) -> bool:
-    return target_world == provided_world_id and not player_inventory.item_maxed(item_id)
+def multiworld_give_item(item_id: int, target_world:int, player_inventory: PlayerInventory, player_world_id:int) -> bool:
+    return target_world == player_world_id and not player_inventory.item_maxed(item_id)
 
-def multiworld_take_item(provided_world_id:int, item_id: int, target_world:int, player_inventory: PlayerInventory) -> bool:
-    return target_world != provided_world_id and not player_inventory.item_maxed(item_id)
+def multiworld_take_item(item_id: int, target_world:int, player_inventory: PlayerInventory, player_world_id:int) -> bool:
+    return target_world != player_world_id and not player_inventory.item_maxed(item_id)

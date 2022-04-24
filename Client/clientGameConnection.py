@@ -41,7 +41,7 @@ class ClientGameConnection(GuiWriter):
             chosen_str = self._random.choice(output_strs)
             await self.write(item_dto.make_output_str(chosen_str))
             try:
-                if not await self._console_handler.give_item(item_dto.itemId):
+                if not await self._console_handler.pass_item(item_dto.itemId):
                     await asyncio.sleep(4)
                     continue
                 self._items_to_process.pop()

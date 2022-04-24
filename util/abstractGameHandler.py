@@ -23,7 +23,7 @@ class AbstractGameHandler(ABC):
         pass
 
     @abstractmethod
-    async def give_item(self, item_id: int) -> bool:
+    async def pass_item(self, item_id: int) -> bool:
         """
         Giving the Item Successfully should result in a True.
         Failure for any reason should be False.

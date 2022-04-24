@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) # This is your Project Root
 
-logger.info("Using Development version 0.1.2.7")
-logger.info("Loading Config...")
+logger.debug("Using Development version 0.3.0")
+logger.debug("Loading Config...")
 config_info = Config.get_config(ROOT_DIR)
 app = QApplication(sys.argv)
 

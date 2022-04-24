@@ -20,9 +20,9 @@ class JoinServerWorker(QObject):
         self.config = Config.get_config()
 
     def run(self) -> None:
-        server_config = ServerConfig(self.config._ServerAddress, self.config._Port,
-                                     self.config._World_id, self.config.Game_Mode, 'admin', 'adminPass')
-        set_up_dto = MultiplayerSetUpDto(self.config._Max_Players, self.config._Game_Room, None, False)
+        server_config = ServerConfig(self.config.Server_Address, self.config.Port,
+                                     self.config.World_id, self.config.Game_Mode, 'admin', 'adminPass')
+        set_up_dto = MultiplayerSetUpDto(self.config.Max_Players, self.config.Game_Room, None, False)
         try:
             clientFunctions = ClientCommunication(self.config, self.message)
             asyncio.run(clientFunctions.start_connections(server_config, set_up_dto))
@@ -63,31 +63,31 @@ class MultiworldClientWindow(QMainWindow):
     def load_config(self) -> None:
         self.config = Config.get_config()
 
-        self.ui.serverIpInput.setText(self.config._ServerAddress)
-        self.ui.serverPortInput.setText(str(self.config._Port))
-        self.ui.gameRoomNameInput.setText(self.config._Game_Room)
-        self.ui.worldIdInput.setText(str(self.config._World_id))
-        self.ui.maxPlayersInput.setText(str(self.config._Max_Players))
+        self.ui.serverIpInput.setText(self.config.Server_Address)
+        self.ui.serverPortInput.setText(str(self.config.Port))
+        self.ui.gameRoomNameInput.setText(self.config.Game_Room)
+        self.ui.worldIdInput.setText(str(self.config.World_id))
+        self.ui.maxPlayersInput.setText(str(self.config.Max_Players))
         if self.config.Game_Mode == "Multiworld":
             self.ui.modeSelector.setCurrentIndex(0)
         else:
             self.ui.modeSelector.setCurrentIndex(1)
 
     def update_config(self) -> None:
-        if self.config._ServerAddress != self.ui.serverIpInput.text():
-            self.config._ServerAddress = self.ui.serverIpInput.text().strip()
-        if self.config._Port != int(self.ui.serverPortInput.text()):
-            self.config._Port = int(self.ui.serverPortInput.text().strip())
-        if self.config._Game_Room != self.ui.gameRoomNameInput.text():
-            self.config._Game_Room = self.ui.gameRoomNameInput.text().strip()
-        if self.config._World_id != int(self.ui.worldIdInput.text()):
-            self.config._World_id = int(self.ui.worldIdInput.text().strip())
-        if self.config._Max_Players != int(self.ui.maxPlayersInput.text()):
-            self.config_Max_Players = int(self.ui.maxPlayersInput.text().strip())
+        if self.config.Server_Address != self.ui.serverIpInput.text():
+            self.config.Server_Address = self.ui.serverIpInput.text().strip()
+        if self.config.Port != int(self.ui.serverPortInput.text()):
+            self.config.Port = int(self.ui.serverPortInput.text().strip())
+        if self.config.Game_Room != self.ui.gameRoomNameInput.text():
+            self.config.Game_Room = self.ui.gameRoomNameInput.text().strip()
+        if self.config.World_id != int(self.ui.worldIdInput.text()):
+            self.config.World_id = int(self.ui.worldIdInput.text().strip())
+        if self.config.Max_Players != int(self.ui.maxPlayersInput.text()):
+            self.config.Max_Players = int(self.ui.maxPlayersInput.text().strip())
         if self.config.Game_Mode != self.ui.modeSelector.currentText():
             self.config.Game_Mode = self.ui.modeSelector.currentText().strip()
-        if self.config._Player_Name != self.ui.playerName.text():
-            self.config._Player_Name = self.ui.playerName.text().strip()
+        if self.config.Player_Name != self.ui.playerName.text():
+            self.config.Player_Name = self.ui.playerName.text().strip()
 
     def create_room(self) -> None:
         pass # TODO actual room setup, needs server-side implementation first

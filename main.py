@@ -16,7 +16,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) # This is your Project Roo
 
 logger.debug("Using Development version 0.3.0")
 logger.debug("Loading Config...")
-config_info = Config.get_config(ROOT_DIR)
+config_info = Config.get_config()
 app = QApplication(sys.argv)
 
 if len(sys.argv) > 1:

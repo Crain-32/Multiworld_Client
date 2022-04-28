@@ -6,3 +6,5 @@ __pycache__/
 debug.log
 .vscode/launch.json
 Tests/.pytest_cache
+/build
+/dist

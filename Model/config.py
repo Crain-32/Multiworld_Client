@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from os import path
+from main_paths import CONFIG_PATH
 
 
 class Config:
@@ -22,28 +23,44 @@ class Config:
     Random_Rupoors: bool
 
     @staticmethod
-    def get_config(root_dir: str = "."):
+    def get_config():
         if Config._ConfigInstance is None:
-            Config(root_dir)
+            Config()
         return Config._ConfigInstance
 
-    def __init__(self, root_dir: str = "."):
-        self.root_dir = root_dir
-        self._config_parser.read(path.join(root_dir, "config.ini"))
+    def __init__(self):
+        self._config_parser.read(CONFIG_PATH)
 
         if Config._ConfigInstance is not None:
             raise Exception("Cannot have multiple Configs")
         else:
             Config._ConfigInstance = self
+            if not path.exists(CONFIG_PATH):
+                self.write_default()
+
             self.parse_config_file()
 
+    def write_default(self):
+        self._config_parser.add_section('SERVER')
+        self._config_parser['SERVER']['server'] = "twwmultiplayer.com"
+        self._config_parser['SERVER']['port'] = "8080"
+        self._config_parser['SERVER']['gamemode'] = "Multiworld"
+
+        self._config_parser.add_section('GAME')
+        self._config_parser['GAME']['world_id'] = "1"
+        self._config_parser['GAME']['gameroom_name'] = ""
+        self._config_parser['GAME']['random_rupoors'] = ""
+        self._config_parser['GAME']['max_players'] = "2"
+        with open(CONFIG_PATH, 'w') as f:
+            self._config_parser.write(f)
+
     def parse_config_file(self):
-        self.Server_Address = self._config_parser.get('SERVER', 'server', fallback="http://twwmultiplayer.com")
+        self.Server_Address = self._config_parser.get('SERVER', 'server', fallback="twwmultiplayer.com")
         self.Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))
         self.Game_Mode = self._config_parser.get('SERVER', 'gamemode', fallback="Multiworld")
 
         self.World_id = int(self._config_parser.get('GAME', 'world_id', fallback=1))
-        self.Game_Room = self._config_parser.get('GAME', 'gameroom_name')
+        self.Game_Room = self._config_parser.get('GAME', 'gameroom_name', fallback="")
         self.Max_Players = int(self._config_parser.get('GAME', 'max_players', fallback=2))
         self.Player_Name = self._config_parser.get('GAME', 'player_name', fallback="")
 

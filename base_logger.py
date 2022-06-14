@@ -2,7 +2,7 @@ import logging as python_logging
 import time
 
 python_logging.basicConfig(
-    level=python_logging.WARNING,
+    level=python_logging.DEBUG,
     format="%(asctime)s [%(threadName)s] [%(name)s] [%(levelname)s]  %(message)s",
     filename="debug.log"
 )

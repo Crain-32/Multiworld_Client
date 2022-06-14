@@ -3,11 +3,10 @@ Handles requests to dolphin.
 """
 import functools
 from asyncio import Task
-from typing import Dict
+from typing import Dict, Union
 
 import Dolphin.windWakerInterface as WWI
-from Model.coopDto import CoopDto
-from Model.multiworldDto import MultiworldDto
+from Model.ServerDto.itemDto import ItemDto
 from base_logger import logging
 from util.abstractGameHandler import AbstractGameHandler
 from util.playerInventory import PlayerInventory
@@ -16,19 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class DolphinGameHandler(AbstractGameHandler):
-    def __init__(self, world_id: int, inventory: PlayerInventory, gamemode: str, player_name: str):
+
+    def __init__(self, world_id: int, inventory: PlayerInventory):
+        logger.debug("Loading Dolphin Game Handler")
         self._world_id = world_id
         self._inventory = inventory
-        if gamemode == "Multiworld":
-            logger.debug("Set to Multiworld")
-            self.take_item = functools.partial(multiworld_take_item, player_world_id=world_id)
-            self.give_item = functools.partial(multiworld_give_item, player_world_id=world_id)
-            self.dto_factory = functools.partial(multiworld_wrapper, world_id)
-        else:
-            logger.debug("Set to Coop")
-            self.take_item = coop_take_item
-            self.give_item = coop_give_item
-            self.dto_factory = functools.partial(coop_item_wrapper, player_name)
+        self.give_item = functools.partial(validate_receivable_item, player_world_id=world_id)
+        self.dto_factory = functools.partial(item_dto_wrapper, world_id)
 
     async def connect(self):
         WWI.hook()
@@ -55,14 +48,10 @@ class DolphinGameHandler(AbstractGameHandler):
     async def get_items(self) -> Dict[int, int]:
         pass
 
-    async def get_queued_items(self) -> MultiworldDto | CoopDto | None:
+    async def get_queued_items(self) -> Union[ItemDto, None]:
         target_world, item_id = WWI.read_chest_items()
         if target_world == 0 and item_id == 0:
             return None
-        # If the user shouldn't have the item (Multiworld), remove the item from the player.
-        elif self.take_item(item_id, target_world, self._inventory):
-            logger.debug(f"Removing {item_id} targeting World ID {target_world}")
-            WWI.remove_item_by_value(item_id)
         # If the player should have this item, then we want to track it in the Inventory
         elif self.give_item(item_id, target_world, self._inventory):
             logger.debug(f"Giving {item_id} to {target_world}'s Inventory")
@@ -75,20 +64,10 @@ class DolphinGameHandler(AbstractGameHandler):
     async def verification_loop(self) -> Task:
         pass
 
-def coop_item_wrapper(player_name, item_id, *args) -> CoopDto:
-    return CoopDto(sourcePlayerName=player_name, itemId=item_id)
 
-def multiworld_wrapper(source_world, item_id, target_world) -> MultiworldDto:
-    return MultiworldDto(sourcePlayerWorldId=source_world, targetPlayerWorldId=target_world, itemId=item_id)
+def item_dto_wrapper(source_world: int, item_id: int, target_world: int) -> ItemDto:
+    return ItemDto(sourcePlayerWorldId=source_world, targetPlayerWorldId=target_world, itemId=item_id)
 
-def coop_give_item(item_id: int, target_world: int, player_inventory: PlayerInventory) -> bool:
-    return player_inventory.item_maxed(item_id)
-
-def coop_take_item(*args) -> bool:
-    return False
-
-def multiworld_give_item(item_id: int, target_world:int, player_inventory: PlayerInventory, player_world_id:int) -> bool:
+def validate_receivable_item(item_id: int, target_world:int, player_inventory: PlayerInventory, player_world_id:int) -> bool:
     return target_world == player_world_id and not player_inventory.item_maxed(item_id)
 
-def multiworld_take_item(item_id: int, target_world:int, player_inventory: PlayerInventory, player_world_id:int) -> bool:
-    return target_world != player_world_id and not player_inventory.item_maxed(item_id)

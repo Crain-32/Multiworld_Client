@@ -1,14 +1,17 @@
 import random
-import dolphin_memory_engine as dme
 from typing import List, Tuple
+
+import dolphin_memory_engine as dme
+
 import Dolphin.windWakerResources as WWR
 from Model.config import Config
-
 from base_logger import logging
+
 logger = logging.getLogger(__name__)
 
 random_rupoors = Config.get_config().Random_Rupoors
-
+world_id_location = Config.get_config().World_Id_Location # This Configuration is not exposed in the UI
+item_id_location = Config.get_config().Item_Id_Location   # This Configuration is not exposed in the UI
 
 def hook() -> None:
     dme.hook()
@@ -48,11 +51,11 @@ def read_float(address) -> float:
 
 # Target World ID, Item ID
 def read_chest_items() -> Tuple[int, ...]:
-    return tuple([(0xFF & read_word(0x803FED40)), (0xFF & read_word(0x803FED44))])
+    return tuple([(0xFF & read_word(world_id_location)), (0xFF & read_word(item_id_location))])
 
 
 def clear_chest_items() -> List[None]:
-    return [write_word(0x803FED40, 0x0000), write_word(0x803FED44, 0x0000)]
+    return [write_word(world_id_location, 0x0000), write_word(item_id_location, 0x0000)]
 
 
 def give_item_by_value(item_id: int) -> None:

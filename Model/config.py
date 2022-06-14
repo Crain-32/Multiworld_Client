@@ -9,10 +9,11 @@ class Config:
     Port: int
     World_id: int
     Game_Room: str
-    Max_Players: int
+    Max_Worlds: int
     Game_Mode: str
     root_dir: str
     Player_Name: str
+    Password: str
     Scanner_Enabled: bool
     Scan_Treasure: bool
     Scan_Event_Flags: bool
@@ -20,6 +21,9 @@ class Config:
     Scan_Dungeon_Rooms: bool
     Disable_Multiplayer: bool
     Random_Rupoors: bool
+
+    World_Id_Location: int
+    Item_Id_Location: int
 
     @staticmethod
     def get_config(root_dir: str = "."):
@@ -41,10 +45,11 @@ class Config:
         self.Server_Address = self._config_parser.get('SERVER', 'server', fallback="http://twwmultiplayer.com")
         self.Port = int(self._config_parser.get('SERVER', 'port', fallback=8080))
         self.Game_Mode = self._config_parser.get('SERVER', 'gamemode', fallback="Multiworld")
+        self.Password = self._config_parser.get('SERVER', 'password', fallback="")
 
         self.World_id = int(self._config_parser.get('GAME', 'world_id', fallback=1))
         self.Game_Room = self._config_parser.get('GAME', 'gameroom_name')
-        self.Max_Players = int(self._config_parser.get('GAME', 'max_players', fallback=2))
+        self.Max_Worlds = int(self._config_parser.get('GAME', 'max_worlds', fallback=2))
         self.Player_Name = self._config_parser.get('GAME', 'player_name', fallback="")
 
         self.Scanner_Enabled = bool(self._config_parser.get('GAME', 'scan_flags', fallback=False))
@@ -55,17 +60,8 @@ class Config:
         self.Disable_Multiplayer = bool(self._config_parser.get('GAME', 'disable_multiplayer', fallback=False))
         self.Random_Rupoors = bool(self._config_parser.get('GAME', 'random_rupoors', fallback=False))
 
-    def get_address(self):
-        return self.Server_Address
+        self.World_Id_Location = int(self._config_parser.get('DOLPHIN', 'world_id_location'))
+        self.Item_Id_Location = int(self._config_parser.get('DOLPHIN', 'item_id_location'))
 
-    def get_port(self):
-        return self.Port
-
-    def get_world_id(self):
-        return self.World_id
-
-    def get_game_room(self):
-        return self.Game_Room
-
-    def get_player_name(self):
-        return self.Player_Name
+    def get_uri(self):
+        return self.Server_Address + ":" + str(self.Port)

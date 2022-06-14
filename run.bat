@@ -1,1 +1,0 @@
-powershell -Command "python ./main.py"

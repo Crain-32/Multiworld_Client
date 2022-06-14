@@ -13,7 +13,6 @@ class DuplicateItemWarning (UserWarning):
 class EventToggleException (Exception):
     """Event toggle failure"""
 
-
 class GameHandlerDisconnectWarning (UserWarning):
     """Game Handler Disconnected"""
 
@@ -22,3 +21,8 @@ class GameHandlerDisconnectWarning (UserWarning):
 class ServerDisconnectWarning (Exception):
     """Server Disconnected"""
 
+class InvalidGameRoomException(Exception):
+    """Server Could not Create the Game Room"""
+
+class InvalidPlayerException(Exception):
+    """Server Could not create the Requested Player"""

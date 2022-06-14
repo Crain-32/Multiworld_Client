@@ -1,8 +1,9 @@
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Dict, List
-from Model.multiworldDto import MultiworldDto
-from Model.coopDto import CoopDto
+from typing import Dict, Union
+
+from Model.ServerDto.itemDto import ItemDto
+
 
 class AbstractGameHandler(ABC):
 
@@ -49,7 +50,7 @@ class AbstractGameHandler(ABC):
         pass
 
     @abstractmethod
-    async def get_queued_items(self) -> MultiworldDto | CoopDto | None:
+    async def get_queued_items(self) -> Union[ItemDto, None] :
         """
         Returns a MultiworldDto created by the Game in the Multiplayer Buffer
         It should return the Dto regardless of World ID.

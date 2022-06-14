@@ -1,0 +1,92 @@
+Notes about the new Approach for Multiplayer Patches
+
+
+Proposal -> Detour all Item Ids in d_item::execItemGet(da_Item_id itemId) into a custom function.
+
+Pros
+ - The Game self-filters all items, removing the "decrement" requirement from the Client
+ - All new Patches for Checks only have to focus on World ID, instead of the Pairing.
+
+Cons | Potential Issues
+ - Forced Delays in the Event chain can delete Items. (See Below for Example)
+ - Buffer State now exists in the Game.
+ - Less Flexibility in the Integration-Chain for Checks, due to the hard location of Item ID migration.
+
+
+Solutions to the above.
+
+Bit Flag set by the Event Chain to "Lock" the Buffer (Client Perspective)
+Example (Chest Storage)
+ 1. User Stores a Chest, setting a Bit Flag.
+ 2. Client swaps to Checking the Bit Flag to know when the World/Item Buffer is ready.
+ 3. Game Continues to load the Item ID value into Buffer during Storage.
+ 4. Bit Flag Cleared after d_item::execItemGet is called, Signalling the Buffer being Ready.
+
+PsuedoCode for Example Flow (Horribly inacurrate to how the Game Handles this)
+
+def give_user_chest_item():
+   item_id = 0x4
+   world_id = 0x3
+   set_world_id(world_id)
+   lock_buffer()
+   # Storage prevents the following from happening till Chest Unloads
+    .....
+   # Storage Over
+   d_item::execItemGet(item_id)
+   unlock_buffer()
+
+
+ASM Patch Breakdown | Note: Avoid overwriting Registers we need for Data Storage
+:: Unpatched Registers ::
+R0 - Operation Location
+R1 - Stack Pointer
+R3 - Input Register
+R12 - Loads Jump Table Pointer
+
+:: Patch Registers? ::
+R0-R1 - No Change
+R12 - Loads Detour Function Pointer
+(Within Detour)
+R12 - Loads Item ID Storage location
+R0-R1|R3 - No Change
+R12 - Loads Jump Table Pointer
+Note: R12 is the only Register really used by the Patch
+
+**************************************************************
+* __stdcall patchedExecItemGet(Byte)                         *
+**************************************************************
+void __stdcall patchedExecItemGet(dItem_data__ItemNo itemNo)
+  800c2dfc    stwu    r1,-x10(r1) # Shift Stack
+  800c2e00    mfspr   r0,LR # Get Linking Register
+  800c2e04    stw     r0,0x14(r1) # Push Linking Register Value onto the Stack
+  800c2e08    lis     r12,-0x0000
+  800c2e0C    subi    r12,r12,0x0000 # Load Detour Function into R12
+  800c2e10    lwzx    CTR,r12
+  800c2e14    bctrl   # Branch to Detour
+  800c2e18    noop    # We're going to replicate this Function in the Detour, so the return has to do nothing
+  800c2e1C    lwz     r0,0x14(r1) # Get Callback Location
+  800c2e20    mtspr   LR,r0
+  800c2e24    addi    r1,r1,0x10 # Resolve Stack
+  800c2e28    blr     # Detour Finished
+  800c2e2c    noop    # Since we removed the Bit Mask Shift
+
+void detourExecItemGet(Byte item_id)
+  stwu   r1,-x10(r1)
+  mfspr  r0,LR
+  stw    r0,0x14(r1)
+  lis    r12,-x0000
+  subi   r12,r12,0x0000 # Load Item ID Buffer Location into R12
+  stb    r12,r3  # Store R3 into Item ID Buffer
+  rlwinm r0,r3,0x2,0x16,0x1d  #Mirror original execItemGet
+  lis    r3,-x7fc7
+  subi   r3,r3,0x7738  # Item Jump Table Location
+  lwzx   r12,r3,r0     # Jump Table + Offset -> R12
+  mtspr  CTR,r12       # Load R12 into the Control Reigster
+  bctrl
+  lwz    r0,0x14(r1)   # Get Callback Location
+  mtspr  LR,r0
+  addi   r1,r1,0x10    # Resolve Stack
+  blr                  # Return to patchedExecItemGet
+
+
+

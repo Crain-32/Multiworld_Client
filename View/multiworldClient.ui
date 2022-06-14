@@ -48,20 +48,20 @@
    <widget class="QPushButton" name="serverButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>280</y>
+      <x>90</x>
+      <y>240</y>
       <width>75</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Set-Up</string>
+     <string>Create</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="serverIpInput">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>90</x>
       <y>90</y>
       <width>120</width>
       <height>20</height>
@@ -71,12 +71,12 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="serverPortInput">
+   <widget class="QLineEdit" name="gameRoomPasswordInput">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>120</y>
-      <width>60</width>
+      <x>90</x>
+      <y>150</y>
+      <width>120</width>
       <height>20</height>
      </rect>
     </property>
@@ -90,8 +90,8 @@
    <widget class="QLineEdit" name="gameRoomNameInput">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>150</y>
+      <x>90</x>
+      <y>120</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -100,30 +100,17 @@
    <widget class="QLineEdit" name="playerName">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>90</x>
       <y>180</y>
-      <width>110</width>
+      <width>120</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="worldIdInput">
+   <widget class="QLineEdit" name="worldInfoInput">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>240</y>
-      <width>20</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="inputMethodHints">
-     <set>Qt::ImhDigitsOnly</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="maxPlayersInput">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
+      <x>90</x>
       <y>210</y>
       <width>20</width>
       <height>20</height>
@@ -136,8 +123,8 @@
    <widget class="QComboBox" name="connectionSelection">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>20</y>
+      <x>90</x>
+      <y>30</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -149,50 +136,40 @@
     </item>
     <item>
      <property name="text">
-      <string>Set-up Room</string>
+      <string>Create Room</string>
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="maxPLayersLabel">
+   <widget class="QLabel" name="worldInfoLabel">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>9</x>
       <y>210</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="inputMethodHints">
-     <set>Qt::ImhNone</set>
-    </property>
-    <property name="text">
-     <string>Max Players</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="worldIdLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>240</y>
-      <width>50</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>World ID</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
-   <widget class="QLabel" name="serverPortLabel">
+   <widget class="QLabel" name="gameRoomPasswordLabel">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>60</width>
-      <height>20</height>
+      <x>25</x>
+      <y>150</y>
+      <width>55</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Server Port</string>
+     <string>Password</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="playerNameLabel">
@@ -207,25 +184,31 @@
     <property name="text">
      <string>Player Name</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QLabel" name="serverIPLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>40</x>
       <y>90</y>
-      <width>50</width>
+      <width>40</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Server IP</string>
+     <string>Server</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="gameRoomNameLabel">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>150</y>
+      <y>120</y>
       <width>70</width>
       <height>20</height>
      </rect>
@@ -233,11 +216,14 @@
     <property name="text">
      <string>Room Name</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QCheckBox" name="readyBox">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>220</x>
       <y>280</y>
       <width>90</width>
       <height>20</height>
@@ -253,8 +239,8 @@
    <widget class="QPushButton" name="joinButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>280</y>
+      <x>90</x>
+      <y>240</y>
       <width>75</width>
       <height>25</height>
      </rect>
@@ -266,7 +252,7 @@
    <widget class="QPushButton" name="disconnectButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>120</x>
       <y>280</y>
       <width>75</width>
       <height>25</height>
@@ -279,8 +265,8 @@
    <widget class="QComboBox" name="modeSelector">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>50</y>
+      <x>90</x>
+      <y>60</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -300,13 +286,16 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>60</y>
       <width>71</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
      <string>Game Mode</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>

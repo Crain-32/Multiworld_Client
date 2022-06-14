@@ -1,11 +1,11 @@
 from unittest.mock import AsyncMock, mock_open
-from pytest_mock import MockerFixture
 
 import pytest
+from pytest_mock import MockerFixture
 
 from Client.clientGameConnection import ClientGameConnection
+from Model.ServerDto.itemDto import ItemDto
 from Model.config import Config
-from Model.multiworldDto import MultiworldDto
 
 
 class TestClientGameConnection:
@@ -34,7 +34,7 @@ class TestClientGameConnection:
 
         client_game_connection = ClientGameConnection(self._world_id, config=self._config)
 
-        client_game_connection._items_to_process = [MultiworldDto(0, 0, 0)]
+        client_game_connection._items_to_process = [ItemDto(0, 0, 0)]
 
         assert len(client_game_connection._items_to_process) == 1
         await client_game_connection.process_items()
@@ -76,24 +76,24 @@ class TestClientGameConnection:
 
     def test_get_item_to_send(self, client_game_connection_fixture):
         client_game_connection = ClientGameConnection(self._world_id, config=self._config)
-        client_game_connection._items_to_send = [MultiworldDto(0, 0, 0)]
+        client_game_connection._items_to_send = [ItemDto(0, 0, 0)]
 
         result = client_game_connection.get_item_to_send()
 
-        assert result == [MultiworldDto(0, 0, 0)]
+        assert result == [ItemDto(0, 0, 0)]
 
     def test_remove_item_to_send(self, client_game_connection_fixture):
         client_game_connection = ClientGameConnection(self._world_id, config=self._config)
-        client_game_connection._items_to_send = [MultiworldDto(5, 5, 5), MultiworldDto(10, 10, 10)]
+        client_game_connection._items_to_send = [ItemDto(5, 5, 5), ItemDto(10, 10, 10)]
 
-        client_game_connection.remove_item_to_send(MultiworldDto(5, 5, 5))
+        client_game_connection.remove_item_to_send(ItemDto(5, 5, 5))
 
-        assert client_game_connection._items_to_send == [MultiworldDto(10, 10, 10)]
+        assert client_game_connection._items_to_send == [ItemDto(10, 10, 10)]
 
     def test_push_item_to_process(self, client_game_connection_fixture):
         client_game_connection = ClientGameConnection(self._world_id, config=self._config)
-        client_game_connection._items_to_process = [MultiworldDto(0, 0, 0)]
+        client_game_connection._items_to_process = [ItemDto(0, 0, 0)]
 
-        client_game_connection.push_item_to_process(MultiworldDto(5, 5, 5))
+        client_game_connection.push_item_to_process(ItemDto(5, 5, 5))
 
-        assert client_game_connection._items_to_process == [MultiworldDto(0, 0, 0), MultiworldDto(5, 5, 5)]
+        assert client_game_connection._items_to_process == [ItemDto(0, 0, 0), ItemDto(5, 5, 5)]

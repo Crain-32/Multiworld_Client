@@ -1,1 +1,0 @@
-powershell -Command "python -m pip install -r ./requirements.txt"

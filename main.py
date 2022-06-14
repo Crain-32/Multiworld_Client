@@ -1,14 +1,11 @@
 import os
-
-from Model.config import Config
-
-from base_logger import logging
 import sys
 
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication
 
+from Model.config import Config
 from View.multiworldClient import MultiworldClientWindow
-from View.itemTestingMenu import ItemTestingWindow
+from base_logger import logging
 
 logger = logging.getLogger(__name__)
 
@@ -19,9 +16,6 @@ logger.debug("Loading Config...")
 config_info = Config.get_config(ROOT_DIR)
 app = QApplication(sys.argv)
 
-if len(sys.argv) > 1:
-    window = ItemTestingWindow()
-else:
-    window = MultiworldClientWindow()
+window = MultiworldClientWindow()
 
 sys.exit(app.exec())

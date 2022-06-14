@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict
-from .playerDto import PlayerDto
+
+from Model.ServerDto.playerDto import PlayerDto
 
 
 @dataclass

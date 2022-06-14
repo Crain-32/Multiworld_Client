@@ -5,14 +5,15 @@ from dataclasses import dataclass, asdict
 class ServerConfig:
     server_ip: str
     server_port: int
-    worldId: int
+    world_id: int
     game_mode: str
-    userName: str
+    game_room: str
+    user_name: str
     password: str
 
     def as_dict(self):
         return asdict(self)
 
     def get_uri(self):
-        return self.server_ip + ":" + str(self.server_port) + "/ws"
+        return self.server_ip + ":" + str(self.server_port)
 

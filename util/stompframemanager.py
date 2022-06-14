@@ -1,4 +1,6 @@
-from typing import Optional, Dict
+import uuid
+from typing import Optional, Dict, AnyStr
+
 from Model.serverConfig import ServerConfig
 
 
@@ -15,43 +17,54 @@ def base_frame_template(command: str) -> str:
 
 class StompFrameManager:
 
-    def __init__(self, serverConfig: Optional[ServerConfig]) -> None:
+    def __init__(self, serverConfig: ServerConfig) -> None:
         self.serverConfig = serverConfig
-        self.subscription_num = 0
+        self.subscription_num = uuid.uuid4()
         self.subscriptions = dict()
+
+    def get_target_header(self, message: AnyStr, target_header: AnyStr) -> str:
+        segments = message.split("\n")
+        for segment in segments[1:]:
+            header, value = segment.split(":")
+            if header == target_header:
+                return value
+        return None
 
     def connect(self, host) -> str:
         frame = base_frame_template("CONNECT")
         header = {"accept-version": "1.2",
                   "host": host}
+
         header_str = parse_headers(header)
         return frame.format(header_str, "")
 
-    def subscribe(self, destination) -> Optional[str]:
+    def subscribe(self, destination:str, password=None) -> Optional[str]:
         if destination in self.subscriptions.keys():
             return None
         frame = base_frame_template("SUBSCRIBE")
         header = {"id": str(self.subscription_num),
                   "destination": destination,
+                  "password": password if password is not None else self.serverConfig.password,
                   "ack": "auto"}
         self.subscriptions[destination] = self.subscription_num
-        self.subscription_num += 1
+        self.subscription_num = uuid.uuid4()
         header_str = parse_headers(header)
         return frame.format(header_str, "")
 
-    def send(self, destination, payload, payload_type) -> str:
+    def send(self, destination, payload, payload_type, password=None) -> str:
         frame = base_frame_template("SEND")
         header = {"destination": destination,
                   "content-type": payload_type,
-                  "content-length": str(len(payload))}
+                  "content-length": str(len(payload)),
+                  "password": password if password is not None else self.serverConfig.password}
         header_str = parse_headers(header)
         return frame.format(header_str, payload)
 
     def send_text(self, destination, payload) -> str:
-        return self.send(destination, payload, "text/plain")
+        return self.send(destination, payload, "text/plain", "")
 
-    def send_json(self, destination, payload) -> str:
-        return self.send(destination, payload, "application/json")
+    def send_json(self, destination, payload, password=None) -> str:
+        return self.send(destination, payload, "application/json", password)
 
     def ack(self, headers) -> str:
         frame = base_frame_template("ACK")

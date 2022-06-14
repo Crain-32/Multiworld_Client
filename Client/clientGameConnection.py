@@ -1,5 +1,9 @@
 import asyncio
 import json
+from os import path
+from typing import List
+from base_logger import logging
+from util.clientExceptions import InvalidItemException
 from random import Random
 from typing import List
 
@@ -15,6 +19,9 @@ from base_logger import logging
 from util.abstractGameHandler import AbstractGameHandler
 from util.clientExceptions import InvalidItemException
 from util.playerInventory import PlayerInventory
+from Dolphin.dolphinGameHandler import DolphinGameHandler
+from Client.types import ItemInfo
+from main_paths import DATA_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +36,7 @@ class ClientGameConnection(GuiWriter):
     def __init__(self, world_id: int, signal: Signal = None, config: Config = None):
         logger.info("Loading Client Game Connection")
         super().__init__(signal)
-        with open(config.root_dir + "/Data/item_information.json") as item_info_file:
+        with open(path.join(DATA_PATH, 'item_information.json')) as item_info_file:
             item_info: ItemInfo = json.load(item_info_file)
         inventory = PlayerInventory()
         inventory.create_inventory(item_info)

@@ -50,7 +50,7 @@ class DolphinGameHandler(AbstractGameHandler):
 
     async def get_queued_items(self) -> Union[ItemDto, None]:
         target_world, item_id = WWI.read_chest_items()
-        if target_world == 0 and item_id == 0:
+        if not (target_world and item_id): #If World ID or Item ID are 0, we'll skip this look.
             return None
         # If the player should have this item, then we want to track it in the Inventory
         elif self.give_item(item_id, target_world, self._inventory):

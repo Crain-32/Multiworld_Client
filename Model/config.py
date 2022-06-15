@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from os import path
+
 from main_paths import CONFIG_PATH
 
 
@@ -77,8 +78,8 @@ class Config:
         self.Disable_Multiplayer = bool(self._config_parser.get('GAME', 'disable_multiplayer', fallback=False))
         self.Random_Rupoors = bool(self._config_parser.get('GAME', 'random_rupoors', fallback=False))
 
-        self.World_Id_Location = int(self._config_parser.get('DOLPHIN', 'world_id_location'))
-        self.Item_Id_Location = int(self._config_parser.get('DOLPHIN', 'item_id_location'))
+        self.World_Id_Location = int(self._config_parser.get('DOLPHIN', 'world_id_location'), 16)
+        self.Item_Id_Location = int(self._config_parser.get('DOLPHIN', 'item_id_location'), 16)
 
     def get_uri(self):
         return self.Server_Address + ":" + str(self.Port)

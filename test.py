@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 address = "twwmultiplayer.com"
 port = 8081
-world_id = 5
-game_room = "qwer"
-room_password = "qwer"
-player_name = "Crain5"
+world_id = 1
+game_room = "qwert"
+room_password = "qwert"
+player_name = "Crain1"
 target_url = f"//{address}:{port}"
 httpSession = requests.Session()
 httpSession.mount(f"https://{target_url}", SslHttpAdapter())

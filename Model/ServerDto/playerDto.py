@@ -12,7 +12,7 @@ class PlayerDto:
     worldType: AnyStr
     connected: bool # The Client can't send this, but the Server can return it
 
-    def __init__(self, playerName: AnyStr, worldId: int, worldType: AnyStr = "SHARED", connected: bool = False):
+    def __init__(self, playerName: AnyStr, worldId: int = 0, worldType: AnyStr = "SHARED", connected: bool = False):
         self.worldId = worldId
         self.playerName = playerName
         self.worldType = worldType

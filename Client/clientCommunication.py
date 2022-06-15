@@ -10,6 +10,7 @@ from PySide6.QtCore import Signal, QThread
 
 from Client.clientGameConnection import ClientGameConnection
 from Model.ServerDto.itemDto import ItemDto
+from Model.ServerDto.playerDto import PlayerDto
 from Model.config import Config
 from Model.serverConfig import ServerConfig
 from View.guiWriter import GuiWriter
@@ -60,12 +61,15 @@ class ClientCommunication(GuiWriter):
                     await self.write(f"Successfully connected to {self.game_room}")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/event/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Event Queue")
+
+                    await client_websocket.send(self.frame_manager.send_json(f"/topic/connect/{self.game_room}", PlayerDto(playerName=self.player_name)))
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/names/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Name Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/error/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Error Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/general/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s General Queue")
+
 
                     while not QThread.currentThread().isInterruptionRequested():
                         for itemDto in self.game_handler.get_item_to_send():

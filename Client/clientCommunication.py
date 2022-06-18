@@ -62,7 +62,7 @@ class ClientCommunication(GuiWriter):
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/event/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Event Queue")
 
-                    await client_websocket.send(self.frame_manager.send_json(f"/topic/connect/{self.game_room}", PlayerDto(playerName=self.player_name)))
+                    await client_websocket.send(self.frame_manager.send_json(f"/topic/connect/{self.game_room}", json.dumps(PlayerDto(playerName=self.player_name).as_dict())))
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/names/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Name Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/error/{self.game_room}"))
@@ -100,6 +100,8 @@ class ClientCommunication(GuiWriter):
             await asyncio.sleep(.15)
 
     async def handle_message(self, message) -> None:
+        if message[:5] == "ERROR":
+            self.log(message)
         if message[:7] != "MESSAGE":
             return None
         try:

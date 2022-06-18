@@ -7,7 +7,7 @@ from Client.clientCommunication import ClientCommunication
 from Model.config import Config
 from Model.serverConfig import ServerConfig
 from View.uiMultiworldClient import Ui_MainWindow
-from util.clientExceptions import InvalidPlayerException
+from util.clientExceptions import InvalidPlayerException, InvalidGameRoomException
 from util.clientHttpUtil import create_game_room, create_player
 
 
@@ -92,7 +92,12 @@ class MultiworldClientWindow(QMainWindow):
 
     def create_room(self) -> None:
         self.update_config()
-        create_game_room(self.config, self.ui.gameRoomPasswordInput.text())
+        try:
+            create_game_room(self.config, self.ui.gameRoomPasswordInput.text())
+            self.log(f"{self.config.Game_Room} was successfully created!")
+        except InvalidGameRoomException as e:
+            self.log(f"Failed to create {self.config.Game_Room}, server returned {e.args}")
+            self.log(f"Please use a different Game Room.")
 
     def join_room(self) -> None:
         self.update_config()

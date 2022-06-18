@@ -56,6 +56,8 @@ class Config:
         self._config_parser['GAME']['gameroom_name'] = ""
         self._config_parser['GAME']['random_rupoors'] = ""
         self._config_parser['GAME']['max_players'] = "2"
+        self._config_parser['DOLPHIN']['world_id_location'] = "0x803FED90"
+        self._config_parser['DOLPHIN']['item_id_location'] = "0x803FED94"
         with open(CONFIG_PATH, 'w') as f:
             self._config_parser.write(f)
 
@@ -78,8 +80,8 @@ class Config:
         self.Disable_Multiplayer = bool(self._config_parser.get('GAME', 'disable_multiplayer', fallback=False))
         self.Random_Rupoors = bool(self._config_parser.get('GAME', 'random_rupoors', fallback=False))
 
-        self.World_Id_Location = int(self._config_parser.get('DOLPHIN', 'world_id_location'), 16)
-        self.Item_Id_Location = int(self._config_parser.get('DOLPHIN', 'item_id_location'), 16)
+        self.World_Id_Location = int(self._config_parser.get('DOLPHIN', 'world_id_location', fallback=0x803FED90), 16)
+        self.Item_Id_Location = int(self._config_parser.get('DOLPHIN', 'item_id_location', fallback=0x803FED94), 16)
 
     def get_uri(self):
         return self.Server_Address + ":" + str(self.Port)

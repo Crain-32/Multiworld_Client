@@ -30,7 +30,7 @@ class TestClientGameConnection:
     @pytest.mark.asyncio
     async def test_process_items(self, client_game_connection_fixture):
         console_handler_instance = client_game_connection_fixture["console_handler"].return_value
-        console_handler_instance.pass_item = AsyncMock()
+        console_handler_instance.give_item = AsyncMock()
 
         client_game_connection = ClientGameConnection(self._world_id, config=self._config)
 

@@ -2,7 +2,8 @@
 # STOMP Exposed Endpoints
 item_endpoint = "/item/{GameRoom}"
 event_endpoint = "/event/{GameRoom}"
-connect_endpoint = "/connect/{GameRoom}" # This is NOT FOR THE CONNECT FRAME | Rather to set a Player as connected
+connect_endpoint = "/connect/{GameRoom}"  # This is NOT FOR THE CONNECT FRAME | Rather to set a Player as connected
+coop_endpoint = "/coop/{GameRoom}"
 
 # GameRoom Endpoints
 create_game_room_endpoint = "/rest/gameroom"

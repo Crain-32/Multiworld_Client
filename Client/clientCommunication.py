@@ -4,11 +4,13 @@ Handles Requests/Responses to the Back-end.
 import asyncio
 import json
 import ssl
+from typing import Dict, AnyStr, Callable
 
 import websockets
 from PySide6.QtCore import Signal, QThread
 
 from Client.clientGameConnection import ClientGameConnection
+from Model.ServerDto.coopDto import CoopItemDto
 from Model.ServerDto.itemDto import ItemDto
 from Model.ServerDto.playerDto import PlayerDto
 from Model.config import Config
@@ -27,8 +29,11 @@ class ClientCommunication(GuiWriter):
     event_scanning: bool
     player_name: str
     disable_multiplayer: bool
+    game_mode: str
     frame_manager: StompFrameManager
     game_handler: ClientGameConnection
+    player_names: Dict[int, AnyStr]
+    item_dto_parser: Callable[[AnyStr], None]
 
     def __init__(self, config: Config, signal: Signal = None):
         super().__init__(signal)
@@ -37,7 +42,12 @@ class ClientCommunication(GuiWriter):
         self.player_name = config.Player_Name
         self.event_scanning = config.Scanner_Enabled
         self.disable_multiplayer = config.Disable_Multiplayer
+        self.game_mode = config.Game_Mode
         self.game_handler = ClientGameConnection(self.world_id, self.get_signal(), config)
+        self.item_dto_parser = self.multiplayer_item_dto_parser
+        if config.Game_Mode == "COOP":
+            self.log("COOP Mode Enabled")
+            self.item_dto_parser = self.coop_item_dto_parser
 
     async def start_connections(self, server_config: ServerConfig) -> None:
         asyncio.create_task(self.game_handler.connect())
@@ -56,13 +66,20 @@ class ClientCommunication(GuiWriter):
                 await client_websocket.send(self.frame_manager.connect(server_config.server_ip))
                 connected_frame = await client_websocket.recv()
                 if not connected_frame.startswith("ERROR"):
-                    asyncio.create_task(self.listen_to_server(client_websocket))
-                    await client_websocket.send(self.frame_manager.subscribe(f"/topic/multiplayer/{self.game_room}"))
                     await self.write(f"Successfully connected to {self.game_room}")
+                    asyncio.create_task(self.listen_to_server(client_websocket))
+                    if self.game_mode != "COOP":
+                        await client_websocket.send(
+                            self.frame_manager.subscribe(f"/topic/multiplayer/{self.game_room}"))
+                    else:
+                        await client_websocket.send(self.frame_manager.subscribe(f"/topic/coop/{self.game_room}"))
+                    await self.write(f"Subscribed to {self.game_room}'s Item Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/event/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Event Queue")
 
-                    await client_websocket.send(self.frame_manager.send_json(f"/topic/connect/{self.game_room}", json.dumps(PlayerDto(playerName=self.player_name).as_dict())))
+                    await client_websocket.send(self.frame_manager.send_json(f"/app/connect/{self.game_room}",
+                                                                             json.dumps(PlayerDto(
+                                                                                 playerName=self.player_name).as_dict())))
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/names/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Name Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/error/{self.game_room}"))
@@ -109,22 +126,31 @@ class ClientCommunication(GuiWriter):
             if target_destination == "multiplayer":
                 self.item_dto_parser(message)
             elif target_destination == "event":
-                pass # We do nothing for events yet
+                pass  # We do nothing for events yet
             elif target_destination == "error":
                 await self.write(f"The Server sent an Error, check the Logs for more information", False)
                 self.log(message)
             elif target_destination == "names":
-                pass # We do nothing for Names yet
+                pass  # We do nothing for Names yet
             elif target_destination == "general":
-                await self.write(f"The Server will be shutting {self.game_room} down due to a lack of Connected Players")
+                await self.write(
+                    f"The Server will be shutting {self.game_room} down due to a lack of Connected Players")
+            elif target_destination == "coop":
+                self.item_dto_parser(message)
             else:
                 await self.write(f"The Server sent an unknown message, check the Logs for more information", False)
                 self.log(f"Unknown Destination Header Sent: {target_destination}\n{message}")
         finally:
             pass
 
-    def item_dto_parser(self, frame: str):
+    def multiplayer_item_dto_parser(self, frame: str):
         contents = frame.split("\n")
-        item_dto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
+        item_dto: ItemDto = ItemDto.from_dict(json.loads(contents[-1][:-1]))
         if item_dto.targetPlayerWorldId == self.world_id and self.world_id != item_dto.sourcePlayerWorldId:
+            self.game_handler.push_item_to_process(item_dto)
+
+    def coop_item_dto_parser(self, frame: str):
+        contents = frame.split("\n")
+        item_dto: CoopItemDto = CoopItemDto.from_dict(json.loads(contents[-1][:-1]))
+        if self.player_name != item_dto.sourcePlayer:
             self.game_handler.push_item_to_process(item_dto)

@@ -1,38 +1,38 @@
 
 item_id_dict = {
-    "Heart (Pickup)": 0x00,           # Not going to Support
-    "Green Rupee": 0x01,              # Supported
-    "Blue Rupee": 0x02,               # Supported
-    "Yellow Rupee": 0x03,             # Supported
-    "Red Rupee": 0x04,                # Supported
-    "Purple Rupee": 0x05,             # Supported
-    "Orange Rupee": 0x06,             # Supported
-    "Piece of Heart": 0x07,           # Supported
-    "Heart Container": 0x08,          # Supported
-    "Small Magic Jar (Pickup)": 0x09, # Not Supported
-    "Large Magic Jar (Pickup)": 0x0A, # Not Supported
-    "5 Bombs (Pickup)": 0x0B,         # Mirrors Small Key Behavior?
-    "10 Bombs (Pickup)": 0x0C,        # ^
-    "20 Bombs (Pickup)": 0x0D,        # ^
-    "30 Bombs (Pickup)": 0x0E,        # ^
-    "Silver Rupee": 0x0F,             # Supported
-    "10 Arrows (Pickup)": 0x10,       # Mirrors Small Key Behavior?
-    "20 Arrows (Pickup)": 0x11,       # ^
-    "30 Arrows (Pickup)": 0x12,       # ^
-    "DRC Small Key": 0x13,            # Supported
-    "DRC Big Key": 0x14,              # Supported
-    "Small Key": 0x15,                # Not used
-    "Fairy (Pickup)": 0x16,           # Not going to Support
-    "Yellow Rupee (Joke Message)": 0x1A, # Not Randomized?
-    "DRC Dungeon Map": 0x1B,          # Supported
-    "DRC Dungeon Compass": 0x1C,      # Supported
-    "FW Small Key": 0x1D,             # Supported
-    "Three Hearts (Pickup)": 0x1E,    # Not going to Support, only Zelda Hearts
-    "Joy Pendant": 0x1F,              # Not Supported
-    "Telescope": 0x20,                # Supported
-    "Tingle Tuner": 0x21,             # Supported
-    "Wind Waker": 0x22,               # Supported (Not Randomized)
-    "Picto Box": 0x23,                # Supported
+    "Heart (Pickup)": 0x00,  # No need to support
+    "Green Rupee": 0x01,  # Supported
+    "Blue Rupee": 0x02,  # Supported
+    "Yellow Rupee": 0x03,  # Supported
+    "Red Rupee": 0x04,  # Supported
+    "Purple Rupee": 0x05,  # Supported
+    "Orange Rupee": 0x06,  # Supported
+    "Piece of Heart": 0x07,  # Supported
+    "Heart Container": 0x08,  # Supported
+    "Small Magic Jar (Pickup)": 0x09,  # Random Drops Only, no need to support
+    "Large Magic Jar (Pickup)": 0x0A,  # Random Drops Only, no need to support
+    "5 Bombs (Pickup)": 0x0B,  # Mirrors Small Key Behavior?
+    "10 Bombs (Pickup)": 0x0C,  # ^
+    "20 Bombs (Pickup)": 0x0D,  # ^
+    "30 Bombs (Pickup)": 0x0E,  # ^ Random Drops Only, no need to support
+    "Silver Rupee": 0x0F,  # Supported
+    "10 Arrows (Pickup)": 0x10,  # Mirrors Small Key Behavior?
+    "20 Arrows (Pickup)": 0x11,  # ^
+    "30 Arrows (Pickup)": 0x12,  # ^ Random Drops Only, no need to support
+    "DRC Small Key": 0x13,  # Supported
+    "DRC Big Key": 0x14,  # Supported
+    "Small Key": 0x15,  # Not used
+    "Fairy (Pickup)": 0x16,  # No need to support
+    "Yellow Rupee (Joke Message)": 0x1A,  # Not Randomized?
+    "DRC Dungeon Map": 0x1B,  # Supported
+    "DRC Dungeon Compass": 0x1C,  # Supported
+    "FW Small Key": 0x1D,  # Supported
+    "Three Hearts (Pickup)": 0x1E,  # Not going to Support, only Zelda Hearts
+    "Joy Pendant": 0x1F,  # Not Supported
+    "Telescope": 0x20,  # Supported
+    "Tingle Tuner": 0x21,  # Supported
+    "Wind Waker": 0x22,  # Supported (Not Randomized)
+    "Picto Box": 0x23,  # Supported
     "Spoils Bag": 0x24,               # Supported
     "Grappling Hook": 0x25,           # Supported
     "Deluxe Picto Box": 0x26,         # Supported
@@ -59,27 +59,27 @@ item_id_dict = {
     "Recovered Hero's Sword": 0x3D,   # Supported
     "Master Sword (Full Power)": 0x3E,# Supported
     "Piece of Heart (Alternate Message)": 0x3F,   # Not used in the Randomizer?
-    "FW Big Key": 0x40,               # Supported
-    "FW Dungeon Map": 0x41,           # Supported
-    "Pirate's Charm": 0x42,           # Not Randomized
-    "Hero's Charm": 0x43,             # Supported
-    "Skull Necklace": 0x45,           # Mirrors Delivery Bag Behavior
-    "Boko Baba Seed": 0x46,           # ^
-    "Golden Feather": 0x47,           # ^
-    "Knight's Crest": 0x48,           # ^
-    "Red Chu Jelly": 0x49,            # ^
-    "Green Chu Jelly": 0x4A,          # ^
-    "Blue Chu Jelly": 0x4B,           # Edge Case due to Blue Chus and Event flags. 0.0.5?
-    "Dungeon Map": 0x4C,              # Not used in the Randomizer
-    "Compass": 0x4D,                  # Not used in the Randomizer
-    "Big Key": 0x4E,                  # Not used in the Randomizer
-    "Empty Bottle": 0x50,             # Supported
-    "Red Potion": 0x51,               # Not going to Support
-    "Green Potion": 0x52,             # Not going to Support
-    "Blue Potion": 0x53,              # Not going to Support
-    "Elixir Soup (1/2)": 0x54,        # Not going to Support
-    "Elixir Soup": 0x55,              # Not going to Support
-    "Bottled Water": 0x56,            # Not going to Support
+    "FW Big Key": 0x40,  # Supported
+    "FW Dungeon Map": 0x41,  # Supported
+    "Pirate's Charm": 0x42,  # Not Randomized
+    "Hero's Charm": 0x43,  # Supported
+    "Skull Necklace": 0x45,  # Mirrors Delivery Bag Behavior
+    "Boko Baba Seed": 0x46,  # ^
+    "Golden Feather": 0x47,  # ^
+    "Knight's Crest": 0x48,  # ^
+    "Red Chu Jelly": 0x49,  # ^
+    "Green Chu Jelly": 0x4A,  # ^
+    "Blue Chu Jelly": 0x4B,  # Doable through Event Flags? More research required
+    "Dungeon Map": 0x4C,  # Not used in the Randomizer
+    "Compass": 0x4D,  # Not used in the Randomizer
+    "Big Key": 0x4E,  # Not used in the Randomizer
+    "Empty Bottle": 0x50,  # Supported
+    "Red Potion": 0x51,  # Not going to Support
+    "Green Potion": 0x52,  # Not going to Support
+    "Blue Potion": 0x53,  # Not going to Support
+    "Elixir Soup (1/2)": 0x54,  # Not going to Support
+    "Elixir Soup": 0x55,  # Not going to Support
+    "Bottled Water": 0x56,  # Not going to Support
     "Fairy in Bottle": 0x57,          # Not going to Support
     "Forest Firefly": 0x58,           # Not going to Support
     "Forest Water": 0x59,             # Not going to Support
@@ -103,78 +103,78 @@ item_id_dict = {
     "Farore's Pearl": 0x6B,           # Supported
     "Wind's Requiem": 0x6D,           # Supported
     "Ballad of Gales": 0x6E,          # Supported
-    "Command Melody": 0x6F,           # Supported
-    "Earth God's Lyric": 0x70,        # Supported
-    "Wind God's Aria": 0x71,          # Supported
-    "Song of Passing": 0x72,          # Supported
-    "ET Small Key": 0x73,             # Supported
-    "ET Big Key": 0x74,               # Supported
-    "ET Dungeon Map": 0x75,           # Supported
-    "ET Dungeon Compass": 0x76,       # Supported
-    "WT Small Key": 0x77,             # Supported
-    "Boat's Sail": 0x78,              # Not Randomized
-    "Triforce Chart 1 got deciphered": 0x79,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 2 got deciphered": 0x7A,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 3 got deciphered": 0x7B,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 4 got deciphered": 0x7C,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 5 got deciphered": 0x7D,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 6 got deciphered": 0x7E,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 7 got deciphered": 0x7F,     # Memory Scan, or Translation Patch?
-    "Triforce Chart 8 got deciphered": 0x80,     # Memory Scan, or Translation Patch?
-    "WT Big Key": 0x81,               # Supported
-    "All-Purpose Bait": 0x82,         # Mirror Delivery Bag Handling?
-    "Hyoi Pear": 0x83,                # Mirror Delivery Bag Handling?
-    "WT Dungeon Map": 0x84,           # Supported
-    "WT Dungeon Compass": 0x85,       # Supported
-    "Town Flower": 0x8C,              # Not going to Support
-    "Sea Flower": 0x8D,               # Not going to Support
-    "Exotic Flower": 0x8E,            # Not going to Support
-    "Hero's Flag": 0x8F,              # Not going to Support
-    "Big Catch Flag": 0x90,           # Not going to Support
+    "Command Melody": 0x6F,  # Supported
+    "Earth God's Lyric": 0x70,  # Supported
+    "Wind God's Aria": 0x71,  # Supported
+    "Song of Passing": 0x72,  # Supported
+    "ET Small Key": 0x73,  # Supported
+    "ET Big Key": 0x74,  # Supported
+    "ET Dungeon Map": 0x75,  # Supported
+    "ET Dungeon Compass": 0x76,  # Supported
+    "WT Small Key": 0x77,  # Supported
+    "Boat's Sail": 0x78,  # Not Randomized
+    "Triforce Chart 1 got deciphered": 0x79,  # New Item ID method supports Co-op using this
+    "Triforce Chart 2 got deciphered": 0x7A,  # ^
+    "Triforce Chart 3 got deciphered": 0x7B,  # ^
+    "Triforce Chart 4 got deciphered": 0x7C,  # ^
+    "Triforce Chart 5 got deciphered": 0x7D,  # ^
+    "Triforce Chart 6 got deciphered": 0x7E,  # ^
+    "Triforce Chart 7 got deciphered": 0x7F,  # ^
+    "Triforce Chart 8 got deciphered": 0x80,  # ^
+    "WT Big Key": 0x81,  # Supported
+    "All-Purpose Bait": 0x82,  # Mirror Delivery Bag Handling?
+    "Hyoi Pear": 0x83,  # Mirror Delivery Bag Handling?
+    "WT Dungeon Map": 0x84,  # Supported
+    "WT Dungeon Compass": 0x85,  # Supported
+    "Town Flower": 0x8C,  # Not going to Support
+    "Sea Flower": 0x8D,  # Not going to Support
+    "Exotic Flower": 0x8E,  # Not going to Support
+    "Hero's Flag": 0x8F,  # Not going to Support
+    "Big Catch Flag": 0x90,  # Not going to Support
     "Big Sale Flag": 0x91,            # Not going to Support
     "Pinwheel": 0x92,                 # Not going to Support
     "Sickle Moon Flag": 0x93,         # Not going to Support
-    "Skull Tower Idol": 0x94,         # Not going to Support
-    "Fountain Idol": 0x95,            # Not going to Support
-    "Postman Statue": 0x96,           # Not going to Support
-    "Shop Guru Statue": 0x97,         # Not going to Support
-    "Father's Letter": 0x98,          # Not Randomized
-    "Note to Mom": 0x99,              # Supported
-    "Maggie's Letter": 0x9A,          # Supported
-    "Moblin's Letter": 0x9B,          # Supported
-    "Cabana Deed": 0x9C,              # Supported
-    "Complimentary ID": 0x9D,         # Not Researched
-    "Fill-Up Coupon": 0x9E,           # Usable using current Mailing system?
-    "Legendary Pictograph": 0x9F,     # Not Randomized
-    "Dragon Tingle Statue": 0xA3,     # 0.0.3
-    "Forbidden Tingle Statue": 0XA4,  # 0.0.3
-    "Goddess Tingle Statue": 0XA5,    # 0.0.3
-    "Earth Tingle Statue": 0XA6,      # 0.0.3
-    "Wind Tingle Statue": 0XA7,       # 0.0.3
-    "Hurricane Spin": 0XAA,           # Not Researched
-    "1000 Rupee Wallet": 0XAB,        # Supported
-    "5000 Rupee Wallet": 0XAC,        # Supported
-    "60 Bomb Bomb Bag": 0XAD,         # Supported
-    "99 Bomb Bomb Bag": 0XAE,         # Supported
-    "60 Arrow Quiver": 0XAF,          # Supported
-    "99 Arrow Quiver": 0XB0,          # Supported
-    "Magic Meter Upgrade": 0XB2,      # Need additional Handling
-    "50 Rupees, reward for finding 1 Tingle Statue": 0XB3,       # Not going to Support
-    "100 Rupees, reward for finding 2 Tingle Statues": 0XB4,     # Not going to Support
-    "150 Rupees, reward for finding 3 Tingle Statues": 0XB5,     # Not going to Support
-    "200 Rupees, reward for finding 4 Tingle Statues": 0XB6,     # Not going to Support
-    "250 Rupees, reward for finding 5 Tingle Statues": 0XB7,     # Not going to Support
-    "500 Rupees, reward for finding all Tingle Statues": 0XB8,   # Not Researched
-    "Submarine Chart": 0XC2,         # Supported
-    "Beedle's Chart": 0XC3,          # Supported
-    "Platform Chart": 0XC4,          # Supported
-    "Light Ring Chart": 0XC5,        # Supported
-    "Secret Cave Chart": 0XC6,       # Supported
-    "Sea Hearts Chart": 0XC7,        # Supported
-    "Island Hearts Chart": 0XC8,     # Supported
-    "Great Fairy Chart": 0XC9,       # Supported
-    "Octo Chart": 0XCA,              # Supported
-    "IN-credible Chart": 0XCB,       # Supported
+    "Skull Tower Idol": 0x94,  # Not going to Support
+    "Fountain Idol": 0x95,  # Not going to Support
+    "Postman Statue": 0x96,  # Not going to Support
+    "Shop Guru Statue": 0x97,  # Not going to Support
+    "Father's Letter": 0x98,  # Not Randomized
+    "Note to Mom": 0x99,  # Supported
+    "Maggie's Letter": 0x9A,  # Supported
+    "Moblin's Letter": 0x9B,  # Supported
+    "Cabana Deed": 0x9C,  # Supported
+    "Complimentary ID": 0x9D,  # Not Researched
+    "Fill-Up Coupon": 0x9E,  # Supported
+    "Legendary Pictograph": 0x9F,  # Not Randomized
+    "Dragon Tingle Statue": 0xA3,  # Supported
+    "Forbidden Tingle Statue": 0XA4,  # Supported
+    "Goddess Tingle Statue": 0XA5,  # Supported
+    "Earth Tingle Statue": 0XA6,  # Supported
+    "Wind Tingle Statue": 0XA7,  # Supported
+    "Hurricane Spin": 0XAA,  # Supported
+    "1000 Rupee Wallet": 0XAB,  # Supported
+    "5000 Rupee Wallet": 0XAC,  # Supported
+    "60 Bomb Bomb Bag": 0XAD,  # Supported
+    "99 Bomb Bomb Bag": 0XAE,  # Supported
+    "60 Arrow Quiver": 0XAF,  # Supported
+    "99 Arrow Quiver": 0XB0,  # Supported
+    "Magic Meter Upgrade": 0XB2,  # Supported
+    "50 Rupees, reward for finding 1 Tingle Statue": 0XB3,  # Not going to Support
+    "100 Rupees, reward for finding 2 Tingle Statues": 0XB4,  # Not going to Support
+    "150 Rupees, reward for finding 3 Tingle Statues": 0XB5,  # Not going to Support
+    "200 Rupees, reward for finding 4 Tingle Statues": 0XB6,  # Not going to Support
+    "250 Rupees, reward for finding 5 Tingle Statues": 0XB7,  # Not going to Support
+    "500 Rupees, reward for finding all Tingle Statues": 0XB8,  # Location needs World ID Patch
+    "Submarine Chart": 0XC2,  # Supported
+    "Beedle's Chart": 0XC3,  # Supported
+    "Platform Chart": 0XC4,  # Supported
+    "Light Ring Chart": 0XC5,  # Supported
+    "Secret Cave Chart": 0XC6,  # Supported
+    "Sea Hearts Chart": 0XC7,  # Supported
+    "Island Hearts Chart": 0XC8,  # Supported
+    "Great Fairy Chart": 0XC9,  # Supported
+    "Octo Chart": 0XCA,  # Supported
+    "IN-credible Chart": 0XCB,  # Supported
     "Treasure Chart 7": 0XCC,        # Supported
     "Treasure Chart 27": 0XCD,       # Supported
     "Treasure Chart 21": 0XCE,       # Supported
@@ -559,3 +559,146 @@ charts = [key for key in chart_mapping.keys()]
     58 - Forest Firefly
     59 - Forest Water
 """
+
+# Don't need to send these to the Server for Coop
+useless_items = [
+    0x00,  # Heart (Pickup)
+    0x01,  # Green Rupee
+    0x02,  # Blue Rupee
+    0x03,  # Yellow Rupee
+    0x04,  # Red Rupee
+    0x05,  # Purple Rupee
+    0x06,  # Orange Rupee
+    0x07,  # Piece of Heart
+    0x08,  # Heart Container
+    0x09,  # Small Magic Jar (Pickup)
+    0x0A,  # Large Magic Jar (Pickup)
+    0x0B,  # 5 Bombs (Pickup)
+    0x0C,  # 10 Bombs (Pickup)
+    0x0D,  # 20 Bombs (Pickup)
+    0x0E,  # 30 Bombs (Pickup)
+    0x0F,  # Silver Rupee
+    0x10,  # 10 Arrows (Pickup)
+    0x11,  # 20 Arrows (Pickup)
+    0x12,  # 30 Arrows (Pickup)
+    0x13,  # DRC Small Key
+    0x14,  # DRC Big Key
+    0x15,  # Small Key
+    0x16,  # Fairy (Pickup)
+    0x1A,  # Yellow Rupee (Joke Message)
+    0x1B,  # DRC Dungeon Map
+    0x1C,  # DRC Dungeon Compass
+    0x1D,  # FW Small Key
+    0x1E,  # Three Hearts (Pickup)
+    0x1F,  # Joy Pendant
+    0x20,  # Telescope
+    0x21,  # Tingle Tuner
+    0x22,  # Wind Waker
+    0x23,  # Picto Box
+    0x24,  # Spoils Bag
+    0x25,  # Grappling Hook
+    0x26,  # Deluxe Picto Box
+    0x27,  # Hero's Bow
+    0x28,  # Power Bracelets
+    0x29,  # Iron Boots
+    0x2A,  # Magic Armor
+    0x2C,  # Bait Bag
+    0x2D,  # Boomerang
+    0x2F,  # Hookshot
+    0x30,  # Delivery Bag
+    0x31,  # Bombs
+    0x32,  # Hero's Clothes
+    0x33,  # Skull Hammer
+    0x34,  # Deku Leaf
+    0x35,  # Fire and Ice Arrows
+    0x36,  # Light Arrow
+    0x37,  # Hero's New Clothes
+    0x38,  # Hero's Sword
+    0x39,  # Master Sword (Powerless)
+    0x3A,  # Master Sword (Half Power)
+    0x3B,  # Hero's Shield
+    0x3C,  # Mirror Shield
+    0x3D,  # Recovered Hero's Sword
+    0x3E,  # Master Sword (Full Power)
+    0x3F,  # Piece of Heart (Alternate Message)
+    0x40,  # FW Big Key
+    0x41,  # FW Dungeon Map
+    0x42,  # Pirate's Charm
+    0x43,  # Hero's Charm
+    0x45,  # Skull Necklace
+    0x46,  # Boko Baba Seed
+    0x47,  # Golden Feather
+    0x48,  # Knight's Crest
+    0x49,  # Red Chu Jelly
+    0x4A,  # Green Chu Jelly
+    0x4B,  # Blue Chu Jelly
+    0x4C,  # Dungeon Map
+    0x4D,  # Compass
+    0x4E,  # Big Key
+    0x50,  # Empty Bottle
+    0x51,  # Red Potion
+    0x52,  # Green Potion
+    0x53,  # Blue Potion
+    0x54,  # Elixir Soup (1/2)
+    0x55,  # Elixir Soup
+    0x56,  # Bottled Water
+    0x57,  # Fairy in Bottle
+    0x58,  # Forest Firefly
+    0x59,  # Forest Water
+    0x5A,  # FW Dungeon Compass
+    0x5B,  # TotG Small Key
+    0x5C,  # TotG Big Key
+    0x5D,  # TotG Dungeon Map
+    0x5E,  # TotG Dungeon Compass
+    0x5F,  # FF Dungeon Map
+    0x60,  # FF Dungeon Compass
+    0x61,  # Triforce Shard 1
+    0x62,  # Triforce Shard 2
+    0x63,  # Triforce Shard 3
+    0x64,  # Triforce Shard 4
+    0x65,  # Triforce Shard 5
+    0x66,  # Triforce Shard 6
+    0x67,  # Triforce Shard 7
+    0x68,  # Triforce Shard 8
+    0x69,  # Nayru's Pearl
+    0x6A,  # Din's Pearl
+    0x6B,  # Farore's Pearl
+    0x6D,  # Wind's Requiem
+    0x6E,  # Ballad of Gales
+    0x6F,  # Command Melody
+    0x70,  # Earth God's Lyric
+    0x71,  # Wind God's Aria
+    0x72,  # Song of Passing
+    0x73,  # ET Small Key
+    0x74,  # ET Big Key
+    0x75,  # ET Dungeon Map
+    0x76,  # ET Dungeon Compass
+    0x77,  # WT Small Key
+    0x78,  # Boat's Sail
+    0x79,  # Triforce Chart 1 got deciphered
+    0x7A,  # Triforce Chart 2 got deciphered
+    0x7B,  # Triforce Chart 3 got deciphered
+    0x7C,  # Triforce Chart 4 got deciphered
+    0x7D,  # Triforce Chart 5 got deciphered
+    0x7E,  # Triforce Chart 6 got deciphered
+    0x7F,  # Triforce Chart 7 got deciphered
+    0x80,  # Triforce Chart 8 got deciphered
+    0x81,  # WT Big Key
+    0x82,  # All-Purpose Bait
+    0x83,  # Hyoi Pear
+    0x84,  # WT Dungeon Map
+    0x85,  # WT Dungeon Compass
+    0x8C,  # Town Flower
+    0x8D,  # Sea Flower
+    0x8E,  # Exotic Flower
+    0x8F,  # Hero's Flag
+    0x90,  # Big Catch Flag
+    0x91,  # Big Sale Flag
+    0x92,  # Pinwheel
+    0x93,  # Sickle Moon Flag
+    0x94,  # Skull Tower Idol
+    0x95,  # Fountain Idol
+    0x96,  # Postman Statue
+    0x97,  # Shop Guru Statue
+    0xFF  # INVALID ID
+]

@@ -551,8 +551,15 @@ def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
         dme.write_byte(address, (curr_val ^ bit_offset))
 
 
-
 def is_title_screen() -> bool:
     curr_val = dme.read_bytes(0x803C9D3C, 8)
     return curr_val == b'Name\x00\x00\x00\x00' or curr_val == b'sea_T\x00\x00\x00'
 
+
+"""
+Returns True if the provided Item Id DOES NOT need to be sent to the server
+"""
+
+
+def coop_item_filter(item_id: int):
+    return true

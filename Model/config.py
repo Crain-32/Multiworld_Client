@@ -56,6 +56,8 @@ class Config:
         self._config_parser['GAME']['gameroom_name'] = ""
         self._config_parser['GAME']['random_rupoors'] = ""
         self._config_parser['GAME']['max_players'] = "2"
+
+        self._config_parser.add_section('DOLPHIN')
         self._config_parser['DOLPHIN']['world_id_location'] = "0x803FED90"
         self._config_parser['DOLPHIN']['item_id_location'] = "0x803FED94"
         with open(CONFIG_PATH, 'w') as f:

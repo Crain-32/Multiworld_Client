@@ -42,7 +42,7 @@ class ClientCommunication(GuiWriter):
         self.player_name = config.Player_Name
         self.event_scanning = config.Scanner_Enabled
         self.disable_multiplayer = config.Disable_Multiplayer
-        self.game_mode = config.Game_Mode
+        self.game_mode = config.Game_Mode.upper()
         self.game_handler = ClientGameConnection(self.world_id, self.get_signal(), config)
         self.item_dto_parser = self.multiplayer_item_dto_parser
         if config.Game_Mode == "COOP":
@@ -72,8 +72,10 @@ class ClientCommunication(GuiWriter):
                     if self.game_mode != "COOP":
                         await client_websocket.send(
                             self.frame_manager.subscribe(f"/topic/multiplayer/{self.game_room}"))
+                        await self.write(f"Subscribed to {self.game_room}'s Multiworld Queue")
                     else:
                         await client_websocket.send(self.frame_manager.subscribe(f"/topic/coop/{self.game_room}"))
+                        await self.write(f"Subscribed to {self.game_room}'s Coop Queue")
                     await self.write(f"Subscribed to {self.game_room}'s Item Queue")
                     await client_websocket.send(self.frame_manager.subscribe(f"/topic/event/{self.game_room}"))
                     await self.write(f"Subscribed to {self.game_room}'s Event Queue")

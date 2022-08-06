@@ -61,7 +61,8 @@ class ClientCommunication(GuiWriter):
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
         try:
-            async with websockets.connect("wss://" + server_config.get_uri() + "/ws", ssl=context, extra_headers={"sessionId": None}) as client_websocket:
+            async with websockets.connect("ws://" + server_config.get_uri() + "/ws",
+                                          extra_headers={"sessionId": None}) as client_websocket:
                 await self.write(f"Attempting to Connect to {self.game_room}.........")
                 await client_websocket.send(self.frame_manager.connect(server_config.server_ip))
                 connected_frame = await client_websocket.recv()

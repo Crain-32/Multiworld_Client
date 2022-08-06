@@ -23,13 +23,13 @@ room_password = "qwert"
 player_name = "Crain1"
 target_url = f"//{address}:{port}"
 httpSession = requests.Session()
-httpSession.mount(f"http://{target_url}", SslHttpAdapter())
+httpSession.mount(f"https://{target_url}", SslHttpAdapter())
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 context.check_hostname = False
 context.verify_mode = ssl.CERT_NONE
 
 def check_empty():
-    response = httpSession.get(f"http:{target_url}/rest/gameroom/empty", verify=False)
+    response = httpSession.get(f"https:{target_url}/rest/gameroom/empty", verify=False)
     if response.status_code == 200:
         print(response.json())
     else:
@@ -44,7 +44,7 @@ def check_gameroom():
         print(response.text)
 
 def create_gameroom():
-    response = httpSession.get(f"http:{target_url}/rest/gameroom", verify=False)
+    response = httpSession.get(f"https:{target_url}/rest/gameroom", verify=False)
     # game_room_name = str(len(response.json()))
     game_room_name = "1"
     gameRoom = CreateGameRoomDto(worldAmount=world_id, playerAmount=world_id + 1, gameRoomName=game_room_name,

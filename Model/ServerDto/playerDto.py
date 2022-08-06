@@ -29,4 +29,4 @@ class PlayerDto:
 
     @staticmethod
     def from_config(config: Config):               #Default to Shared Type since it can handle anything
-        return PlayerDto(config.Player_Name, config.World_id, config.Game_Mode)
+        return PlayerDto(config.Player_Name, config.World_id, config.Game_Mode.upper())

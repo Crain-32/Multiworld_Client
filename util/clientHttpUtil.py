@@ -24,9 +24,10 @@ class SslHttpAdapter(HTTPAdapter):
 
 def create_game_room(config: Config, password: AnyStr):
     with requests.Session() as httpSession:
-        httpSession.mount(f"https://{config.get_uri()}", SslHttpAdapter())
+        # httpSession.mount(f"http://{config.get_uri()}", SslHttpAdapter())
         dto = CreateGameRoomDto.from_client_config(config, password)
-        response = httpSession.post(f"https://{config.get_uri()}{create_game_room_endpoint}", json=dto.as_dict(), verify=False)
+        response = httpSession.post(f"http://{config.get_uri()}{create_game_room_endpoint}", json=dto.as_dict(),
+                                    verify=False)
         if response.status_code >= 300:
             logging.debug(f"Server returned a {response.status_code}")
             logging.debug(response.json())
@@ -35,12 +36,14 @@ def create_game_room(config: Config, password: AnyStr):
 
 def create_player(config: Config, password: AnyStr):
     with requests.Session() as httpSession:
-        httpSession.mount(f"https://{config.get_uri()}", SslHttpAdapter())
+        # httpSession.mount(f"https://{config.get_uri()}", SslHttpAdapter())
         dto = PlayerDto.from_config(config)
         check_response = check_player_status(config, httpSession, dto, password)
         if check_response.playerName == dto.playerName:
             return check_response.connected is not True
-        response = httpSession.post(f"https://{config.get_uri()}{add_player_endpoint.format(GameRoom=config.Game_Room)}?password={password}", json=dto.as_dict(), verify=False)
+        response = httpSession.post(
+            f"http://{config.get_uri()}{add_player_endpoint.format(GameRoom=config.Game_Room)}?password={password}",
+            json=dto.as_dict(), verify=False)
         if response.status_code >= 300:
             logging.debug(f"Server returned a {response.status_code}")
             logging.debug(response.json())
@@ -48,7 +51,9 @@ def create_player(config: Config, password: AnyStr):
         return True
 
 def check_player_status(config: Config, httpSession: requests.Session, dto: PlayerDto, password: AnyStr):
-    response = httpSession.post(f"https://{config.get_uri()}{check_player_endpoint.format(GameRoom=config.Game_Room)}?password={password}", json=dto.as_dict(), verify=False)
+    response = httpSession.post(
+        f"http://{config.get_uri()}{check_player_endpoint.format(GameRoom=config.Game_Room)}?password={password}",
+        json=dto.as_dict(), verify=False)
     if response.status_code == 404:
         raise InvalidGameRoomException(f"The provided Game Room/Password Combo does not exist.")
     return PlayerDto.from_dict(response.json())

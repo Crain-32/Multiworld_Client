@@ -42,10 +42,10 @@ class ClientCommunication(GuiWriter):
         self.player_name = config.Player_Name
         self.event_scanning = config.Scanner_Enabled
         self.disable_multiplayer = config.Disable_Multiplayer
-        self.game_mode = config.Game_Mode.upper()
+        self.game_mode = config.Game_Mode
         self.game_handler = ClientGameConnection(self.world_id, self.get_signal(), config)
         self.item_dto_parser = self.multiplayer_item_dto_parser
-        if config.Game_Mode == "COOP":
+        if config.Game_Mode.upper() == "COOP":
             self.log("COOP Mode Enabled")
             self.item_dto_parser = self.coop_item_dto_parser
 

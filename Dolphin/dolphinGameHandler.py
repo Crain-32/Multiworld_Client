@@ -26,7 +26,7 @@ class DolphinGameHandler(AbstractGameHandler):
         self._inventory = inventory
         self._game_mode = game_mode
         self.give_item = functools.partial(validate_receivable_item, player_world_id=world_id)
-        if game_mode == "COOP":
+        if game_mode.upper() == "COOP":
             self.dto_factory = functools.partial(coop_dto_wrapper, source_player=config.Player_Name)
         else:
             self.dto_factory = functools.partial(item_dto_wrapper, world_id)

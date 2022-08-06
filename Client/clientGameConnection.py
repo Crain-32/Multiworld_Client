@@ -45,7 +45,7 @@ class ClientGameConnection(GuiWriter):
         self._random = Random()
 
         self._write_item_dto = self.write_multiplayer_item
-        if config.Game_Mode == "COOP":
+        if config.Game_Mode.upper() == "COOP":
             self._write_item_dto = self.write_coop_item
 
     async def process_items(self) -> None:

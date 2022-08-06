@@ -67,7 +67,7 @@ class MultiworldClientWindow(QMainWindow):
         self.ui.serverIpInput.setText(self.config.Server_Address)
         self.ui.gameRoomNameInput.setText(self.config.Game_Room)
         self.ui.worldInfoInput.setText(str(self.config.World_id))
-        if self.config.Game_Mode == "Multiworld":
+        if self.config.Game_Mode.upper() == "MULTIPLAYER":
             self.ui.modeSelector.setCurrentIndex(0)
         else:
             self.ui.modeSelector.setCurrentIndex(1)

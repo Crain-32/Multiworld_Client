@@ -64,12 +64,12 @@ class DolphinGameHandler(AbstractGameHandler):
         if self._game_mode == "COOP" and WWI.coop_item_filter(item_id):
             return None
 
-        elif not (target_world and item_id):
+        elif not item_id:
             return None
 
-        elif self.give_item(item_id, target_world, self._inventory):
-            logger.debug(f"Giving {item_id} to {target_world}'s Inventory")
-            self._inventory.give_item(item_id)
+        # elif self.give_item(item_id, target_world, self._inventory):
+        #     logger.debug(f"Giving {item_id} to {target_world}'s Inventory")
+        #     self._inventory.give_item(item_id)
         return self.dto_factory(item_id, target_world)
 
     async def clear_queued_items(self):

@@ -69,7 +69,7 @@ class ClientCommunication(GuiWriter):
                 if not connected_frame.startswith("ERROR"):
                     await self.write(f"Successfully connected to {self.game_room}")
                     asyncio.create_task(self.listen_to_server(client_websocket))
-                    if self.game_mode != "COOP":
+                    if self.game_mode.upper() != "COOP":
                         await client_websocket.send(
                             self.frame_manager.subscribe(f"/topic/multiplayer/{self.game_room}"))
                         await self.write(f"Subscribed to {self.game_room}'s Multiworld Queue")

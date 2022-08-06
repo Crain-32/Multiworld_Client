@@ -562,4 +562,4 @@ Returns True if the provided Item Id DOES NOT need to be sent to the server
 
 
 def coop_item_filter(item_id: int):
-    return true
+    return false

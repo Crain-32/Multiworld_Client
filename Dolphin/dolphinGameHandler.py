@@ -29,7 +29,7 @@ class DolphinGameHandler(AbstractGameHandler):
         if game_mode.upper() == "COOP":
             self.dto_factory = functools.partial(coop_dto_wrapper, source_player=config.Player_Name)
         else:
-            self.dto_factory = functools.partial(item_dto_wrapper, world_id)
+            self.dto_factory = functools.partial(item_dto_wrapper, source_world=world_id)
 
     async def connect(self):
         WWI.hook()
@@ -70,7 +70,7 @@ class DolphinGameHandler(AbstractGameHandler):
         # elif self.give_item(item_id, target_world, self._inventory):
         #     logger.debug(f"Giving {item_id} to {target_world}'s Inventory")
         #     self._inventory.give_item(item_id)
-        return self.dto_factory(item_id, target_world)
+        return self.dto_factory(item_id=item_id, target_world=target_world)
 
     async def clear_queued_items(self):
         WWI.clear_chest_items()
@@ -79,12 +79,13 @@ class DolphinGameHandler(AbstractGameHandler):
         pass
 
 
-def item_dto_wrapper(source_world: int, item_id: int, target_world: int) -> ItemDto:
-    return ItemDto(sourcePlayerWorldId=source_world, targetPlayerWorldId=target_world, itemId=item_id)
+def item_dto_wrapper(**kwargs: int) -> ItemDto:
+    return ItemDto(sourcePlayerWorldId=kwargs["source_world"], targetPlayerWorldId=kwargs["target_world"],
+                   itemId=kwargs["item_id"])
 
 
-def coop_dto_wrapper(source_player: AnyStr, item_id: int, *args) -> CoopItemDto:
-    return CoopItemDto(sourcePlayer=source_player, itemId=item_id)
+def coop_dto_wrapper(**kwargs: Union[AnyStr, int]) -> CoopItemDto:
+    return CoopItemDto(sourcePlayer=kwargs["source_player"], itemId=kwargs["item_id"])
 
 
 def validate_receivable_item(item_id: int, target_world: int, player_inventory: PlayerInventory,

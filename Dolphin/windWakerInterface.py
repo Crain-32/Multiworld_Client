@@ -538,7 +538,7 @@ def toggle_generic_progressive_item(progressive_list: List[int], source_address:
     curr_val = dme.read_byte(source_address)
     for index, value in enumerate(progressive_list):
         if value == curr_val and index != len(progressive_list) - 1:
-            write_byte_and_toggle_flag(source_address, progressive_list[index + 1], flag_address, (index + 1), enable)
+            write_byte_and_toggle_flag(source_address, progressive_list[index + 1], flag_address, index, enable)
 
 def toggle_bit_flag(address: int, offset: int, enable: bool) -> None:
     logger.debug(f"From Address: {address}, with Bit offset {offset}, set to {enable}")
